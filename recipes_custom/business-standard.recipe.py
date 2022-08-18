@@ -22,6 +22,9 @@ class BusinessStandard(BasicNewsRecipe):
     max_articles_per_feed = 20
     no_stylesheets = True
     use_embedded_content = False
+    compress_news_images = True
+    compress_news_images_auto_size = 10
+    scale_news_images = (800, 800)
     encoding = 'utf-8'
     publisher = 'Business Standard Limited'
     category = 'news, business, money, india, world'
@@ -43,16 +46,22 @@ class BusinessStandard(BasicNewsRecipe):
     remove_tags = [
             classes('also-read-panel'),
             dict(name='p', attrs={'id':'auto_disclaimer'}),
+
     ]
+    extra_css = """
+            h2 { font-size: medium; font-weight: bold;}
+            .pubDate {font-size: small; color: gray;}
+            .full-img {float: left; clear: both; font-style:italic; padding: 10px 10px 10px 0px;}
+    """
 
     feeds = [
-        (u'Companies', u'https://www.business-standard.com/rss/companies-101.rss'),
         (u'Economy and Policy', u'https://www.business-standard.com/rss/economy-policy-102.rss'),
         (u'Finance', u'https://www.business-standard.com/rss/finance-103.rss'),
         (u'Beyond Business', u'https://www.business-standard.com/rss/beyond-business-104.rss'),
         (u'Opinion', 'https://www.business-standard.com/rss/opinion-105.rss'),
         (u'Markets', u'https://www.business-standard.com/rss/markets-106.rss'),
         (u'Technology', u'https://www.business-standard.com/rss/technology-108.rss'),
+        (u'Companies', u'https://www.business-standard.com/rss/companies-101.rss'),
         (u'Personal Finance', u'https://www.business-standard.com/rss/pf-114.rss'),
         (u'International', u'https://www.business-standard.com/rss/international-116.rss'),
         # (u'Today\'s Paper', u'https://www.business-standard.com/rss/todays-paper.rss'),

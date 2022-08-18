@@ -39,12 +39,20 @@ class IndianExpress(BasicNewsRecipe):
         dict(name='a', attrs={'href':'https://indianexpress.com/section/explained/?utm_source=newbanner'}),
         dict(name='img', attrs={'src':'https://images.indianexpress.com/2021/06/opinion-button-300-ie.jpeg'}),
         dict(name='a', attrs={'href':'https://indianexpress.com/section/opinion/?utm_source=newbanner'}),
+        dict(name='div', attrs={'class': lambda x: x and 'related-widget' in x}),
         classes(
             'share-social appstext ie-int-campign-ad ie-breadcrumb custom_read_button unitimg copyright'
-            ' storytags pdsc-related-modify news-guard premium-story append_social_share'
-            ' digital-subscriber-only h-text-widget'
+            ' storytags pdsc-related-modify news-guard premium-story append_social_share brand-logo immigrationimg'
+            ' digital-subscriber-only h-text-widget next-story-wrap ie-ie-share adboxtop ie-first-publish'
         )
     ]
+
+    extra_css = """
+        em{font-style:italic; color:#808080;}
+        #sub-d{color:#202020; font-style:italic;}
+        .editor{font-size:small;color:gray;}
+        blockquote{text-align:center; color:#404040;}
+    """
     
     feeds = [
         ('Front Page', 'https://indianexpress.com/print/front-page/feed/'),
@@ -72,9 +80,12 @@ class IndianExpress(BasicNewsRecipe):
             return citem['content']
 
     def preprocess_html(self, soup):
-        h2 = soup.findAll('h2')
-        for sub in h2:
-            sub.name = 'h4'
+        h1 = soup.find('h1')
+        if h1:
+            h2 = h1.findNext('h2')
+            if h2:
+                h2.name = 'p' 
+                h2['id'] = 'sub-d'
         for span in soup.findAll('span', attrs ={'class':['ie-custom-caption', 'custom-caption']}):
             span['id'] = 'img-cap' 
         for img in soup.findAll('img'):

@@ -28,11 +28,15 @@ class TheHindu(BasicNewsRecipe):
     max_articles_per_feed = 100
     no_stylesheets = True
     remove_attributes = ['style', 'height', 'width']
-    extra_css = '.lead-img-cont { text-align: center; } ' \
-                '.lead-img-caption { font-size: small; font-style: italic; } ' \
-                '.mobile-author-cont { font-size: small; text-transform: uppercase; } ' \
-                '.intro ~ .intro, .update-time, .ksl-time-stamp * { display: none; } '
-
+    extra_css = """
+        .lead-img-cont { text-align: center; padding: 0.6em; }
+        .lead-img-caption { font-size: small; font-style: italic; }
+        .mobile-author-cont { font-size: small; text-transform: uppercase; }
+        .intro ~ .intro, .update-time, .ksl-time-stamp * { display: none; }
+        h2.intro{font-size:medium;}
+        div.mobile-ut-container::before{content: ", ";}
+        div.mobile-ut-container{display:inline;}
+    """
     ignore_duplicate_articles = {'title', 'url'}
     keep_only_tags = [
         dict(name='h1', attrs={'class': ['title', 'special-article-heading']}),

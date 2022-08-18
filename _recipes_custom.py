@@ -15,7 +15,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="News",
-        enable_on=onlyat_hours(list(range(6, 10)), +5),  # from 6am-11.59am daily, for the timezone UTC-5
+        # enable_on=onlyat_hours(list(range(6, 10)), +5),  # from 6am-11.59am daily, for the timezone UTC-5
     ),
     Recipe(
         recipe="indian-express",
@@ -23,7 +23,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="News",
-        enable_on=onlyat_hours(list(range(6, 10)), +5),
+        # enable_on=onlyat_hours(list(range(6, 10)), +5),
     ),
     Recipe(
         recipe="live-mint",
@@ -31,7 +31,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="News",
-        enable_on=onlyat_hours(list(range(6, 10)), +5),
+        # enable_on=onlyat_hours(list(range(6, 10)), +5),
     ),
     Recipe(
         recipe="business-standard",
@@ -39,7 +39,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="News",
-        enable_on=onlyat_hours(list(range(6, 10)), +5),
+        # enable_on=onlyat_hours(list(range(6, 10)), +5),
     ),
     Recipe(
         recipe="gujarat-samachar",

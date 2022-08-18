@@ -22,6 +22,9 @@ class BusinessStandard(BasicNewsRecipe):
     max_articles_per_feed = 20
     no_stylesheets = True
     use_embedded_content = False
+    compress_news_images = True
+    compress_news_images_auto_size = 10
+    scale_news_images = (800, 800)
     encoding = 'utf-8'
     publisher = 'Business Standard Limited'
     category = 'news, business, money, india, world'
@@ -44,6 +47,11 @@ class BusinessStandard(BasicNewsRecipe):
             classes('also-read-panel'),
             dict(name='p', attrs={'id':'auto_disclaimer'}),
     ]
+    extra_css = """
+            h2 { font-size: medium; font-weight: bold;}
+            .pubDate {font-size: small; color: gray;}
+            .full-img {float: left; clear: both; font-style:italic; padding: 10px 10px 10px 0px;}
+    """
 
     feeds = [
         (u'Companies', u'https://www.business-standard.com/rss/companies-101.rss'),

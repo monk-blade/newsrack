@@ -34,6 +34,14 @@ recipes: List[Recipe] = [
         # enable_on=onlyat_hours(list(range(6, 10)), +5),
     ),
     Recipe(
+        recipe="daily-current",
+        slug="daily-current",
+        src_ext="mobi",
+        target_ext=[],
+        category="UPSC",
+        # enable_on=onlyat_hours(list(range(6, 10)), +5),
+    ), 
+    Recipe(
         recipe="business-standard",
         slug="business-standard",
         src_ext="mobi",

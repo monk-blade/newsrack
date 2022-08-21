@@ -55,7 +55,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="Gujarati Newspapers",
-        enable_on=onlyat_hours(list(range(6, 9)), +5),
+        enable_on=onlyat_hours(list(range(6, 12)), +5),
     ),
     Recipe(
         recipe="sandesh",
@@ -63,7 +63,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="Gujarati Newspapers",
-        enable_on=onlyat_hours(list(range(6, 9)), +5),
+        enable_on=onlyat_hours(list(range(6, 12)), +5),
     ),
     Recipe(
         recipe="substack-nl",
@@ -117,7 +117,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="Indian Magazines",
-        enable_on=onlyon_days(list(range(15, 31)), -5),  # middle of the month?
+        enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
     ),
     Recipe(
         recipe="open",
@@ -127,7 +127,7 @@ recipes: List[Recipe] = [
         timeout=180,
         overwrite_cover=True,
         category="Indian Magazines",
-        enable_on=onlyon_days(list(range(15, 31)), -5),
+        enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
     ),
     Recipe(
         recipe="atlantic-magazine",

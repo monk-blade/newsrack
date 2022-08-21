@@ -5,6 +5,7 @@ _name = "Down To Earth"
 class dte(BasicNewsRecipe):
     title = 'Down To Earth'
     language = 'en_IN'
+    description = 'Down to Earth is a fortnightly magazine focused on politics of environment and development.'
     oldest_article = 15
     __author__ = 'Amit'
     max_articles_per_feed = 100

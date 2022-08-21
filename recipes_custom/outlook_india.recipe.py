@@ -6,7 +6,7 @@ _name = 'Outlook Magazine'
 class outlook(BasicNewsRecipe):
     title = _name
     __author__ = 'unkn0wn'
-    description = ''
+    description = 'Outlook is India’s most credible current affairs and news magazine launched in 1995.'
     language = 'en_IN'
     use_embedded_content = False
     no_stylesheets = True

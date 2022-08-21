@@ -6,7 +6,7 @@ _name = 'Daily Current Affairs'
 
 class dailycurrentaffairs(BasicNewsRecipe):
     title = _name
-    description = ''
+    description = 'My Daily Current Affairs feeds from populer UPSC Aspirant websites.'
     language = 'en_IN'
     __author__ = 'Arpan'
     oldest_article = 1.5  # days

@@ -19,7 +19,7 @@ class TheHindu(BasicNewsRecipe):
     title = u'The Hindu'
     language = 'en_IN'
     epaper_url = 'https://epaper.thehindu.com'
-
+    description = 'The Hindu is an English language, daily newspaper of India. The second most circulated english newspaper in India.'
     oldest_article = 1.15
     __author__ = 'Kovid Goyal'
     compress_news_images = True

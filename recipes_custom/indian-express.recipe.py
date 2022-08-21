@@ -12,6 +12,7 @@ class IndianExpress(BasicNewsRecipe):
     title = u'Indian Express'
     language = 'en_IN'
     __author__ = 'Krittika Goyal'
+    description = 'Indian Express is an English language, daily newspaper of India.'
     oldest_article = 1.15  # days
     max_articles_per_feed = 25
     encoding = 'utf-8'

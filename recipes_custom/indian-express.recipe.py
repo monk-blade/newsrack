@@ -26,7 +26,11 @@ class IndianExpress(BasicNewsRecipe):
     ignore_duplicate_articles = {'url'}
     extra_css = '''
         #storycenterbyline {font-size:small;}
-        #img-cap {font-size:small;}    
+        #img-cap {font-size:small;}
+        blockquote{text-align:center; color:#404040;}
+        em{font-style:italic; color:#808080;}
+        #sub-d{color:#202020; font-style:italic;}
+        .editor{font-size:small;color:gray;}
     '''
     resolve_internal_links = True
     remove_empty_feeds = True
@@ -47,13 +51,6 @@ class IndianExpress(BasicNewsRecipe):
             ' digital-subscriber-only h-text-widget next-story-wrap ie-ie-share adboxtop ie-first-publish'
         )
     ]
-
-    extra_css = """
-        em{font-style:italic; color:#808080;}
-        #sub-d{color:#202020; font-style:italic;}
-        .editor{font-size:small;color:gray;}
-        blockquote{text-align:center; color:#404040;}
-    """
     
     feeds = [
         ('Front Page', 'https://indianexpress.com/print/front-page/feed/'),
@@ -99,4 +96,4 @@ class IndianExpress(BasicNewsRecipe):
         return soup
 
 
-calibre_most_common_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'
+#calibre_most_common_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'

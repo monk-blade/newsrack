@@ -186,6 +186,23 @@ def _write_opds(generated_output, publish_site):
         f.write(main_doc.toprettyxml(encoding="utf-8", indent=""))
 
 
+def _find_output(folder_path, slug, ext):
+    """
+    This is an improvement over using just glob because it finds outputs
+    more precisely by the exact slug.
+    Previously, if 2 recipes have similar slugs, e.g. "wsj" vs "wsj-print",
+    using glob will result in the wrong outputs being detected.
+    """
+    exact_re = re.compile(slug + r"\." + ext)
+    dated_re = re.compile(slug + r"-\d{4}-\d{2}-\d{2}\." + ext)
+    res = glob.glob(f"{folder_path}/{slug}*.{ext}")
+    return [
+        r
+        for r in res
+        if exact_re.match(os.path.basename(r)) or dated_re.match(os.path.basename(r))
+    ]
+
+
 def run(publish_site, source_url, commit_hash, verbose_mode):
     # for GitHub
     job_summary = """| Recipe | Status | Duration |
@@ -278,15 +295,19 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
         if verbose_mode:
             os.environ["recipe_debug_folder"] = os.path.abspath(publish_folder)
 
-        # use glob for re-run cases in local dev
-        if not glob.glob(publish_folder + f"/{recipe.slug}*.{recipe.src_ext}"):
+        if not _find_output(publish_folder, recipe.slug, recipe.src_ext):
             # existing file does not exist
             try:
-                # regenerate restriction is not in place and recipe is enabled
-                if (recipe.is_enabled() and not regenerate_recipes_slugs) or (
+                if (
+                    # regenerate restriction is not in place and recipe is enabled
+                    (recipe.is_enabled() and not regenerate_recipes_slugs)
                     # regenerate restriction is in place and recipe is included
-                    regenerate_recipes_slugs
-                    and recipe.slug in regenerate_recipes_slugs
+                    or (
+                        regenerate_recipes_slugs
+                        and recipe.slug in regenerate_recipes_slugs
+                    )
+                    # not cached (so that we always have a copy available)
+                    or not cached.get(recipe.name)
                 ):
                     for attempt in range(recipe.retry_attempts + 1):
                         try:
@@ -314,78 +335,51 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
                 else:
                     # use cache
                     logger.warning(f'Using cached copy for "{recipe.name}".')
-                    if cached.get(recipe.name):
-                        abort_recipe = False
-                        for cached_item in cached[recipe.name]:
-                            _, ext = os.path.splitext(cached_item["filename"])
-                            if ext != f".{recipe.src_ext}" and ext not in [
-                                f".{x}" for x in recipe.target_ext
-                            ]:
-                                continue
-
-                            ebook_url = urljoin(publish_site, cached_item["filename"])
-                            timeout = 120
-                            for attempt in range(1 + recipe.retry_attempts):
-                                try:
-                                    ebook_res = cache_sess.get(
-                                        ebook_url, timeout=timeout, stream=True
-                                    )
-                                    ebook_res.raise_for_status()
-                                    with open(  # type: ignore
-                                        os.path.join(
-                                            publish_folder, os.path.basename(ebook_url)
-                                        ),
-                                        "wb",
-                                    ) as f:
-                                        shutil.copyfileobj(ebook_res.raw, f)
-                                    job_status = ":outbox_tray: From cache"
-                                    break
-                                except requests.exceptions.ReadTimeout as err:
-                                    if attempt < recipe.retry_attempts:
-                                        logger.warning(f"ReadTimeout for {ebook_url}")
-                                        timeout += 30
-                                        time.sleep(2)
-                                        continue
-                                    logger.error(f"[!] ReadTimeout for {ebook_url}")
-                                    abort_recipe = True
-
-                        if abort_recipe:
-                            recipe_elapsed_time = timedelta(
-                                seconds=timer() - recipe_start_time
-                            )
-                            logger.info(
-                                f'{"=" * 10} "{recipe.name}" recipe took {humanize.precisedelta(recipe_elapsed_time)} {"=" * 20}'
-                            )
-                            job_summary += _add_recipe_summary(
-                                recipe, ":x: Cache Timeout", recipe_elapsed_time
-                            )
+                    abort_recipe = False
+                    for cached_item in cached[recipe.name]:
+                        _, ext = os.path.splitext(cached_item["filename"])
+                        if ext != f".{recipe.src_ext}" and ext not in [
+                            f".{x}" for x in recipe.target_ext
+                        ]:
                             continue
-                    else:
-                        # not cached, so run it anyway to ensure that we try to have a copy
-                        logger.warning(f'"{recipe.name}" is not cached.')
-                        for attempt in range(recipe.retry_attempts + 1):
+
+                        ebook_url = urljoin(publish_site, cached_item["filename"])
+                        timeout = 60
+                        for attempt in range(1 + recipe.retry_attempts):
                             try:
-                                # run recipe
-                                exit_code = subprocess.call(
-                                    cmd,
-                                    timeout=recipe.timeout,
-                                    stdout=sys.stdout,
-                                    stderr=sys.stderr,
+                                ebook_res = cache_sess.get(
+                                    ebook_url, timeout=timeout, stream=True
                                 )
+                                ebook_res.raise_for_status()
+                                with open(  # type: ignore
+                                    os.path.join(
+                                        publish_folder, os.path.basename(ebook_url)
+                                    ),
+                                    "wb",
+                                ) as f:
+                                    shutil.copyfileobj(ebook_res.raw, f)
+                                job_status = ":outbox_tray: From cache"
                                 break
-                            except subprocess.TimeoutExpired:
+                            except requests.exceptions.ReadTimeout as err:
                                 if attempt < recipe.retry_attempts:
-                                    recipe_elapsed_time = timedelta(
-                                        seconds=timer() - recipe_start_time
-                                    )
-                                    logger.warning(
-                                        f"TimeoutExpired fetching '{recipe.name}' "
-                                        f"after {humanize.precisedelta(recipe_elapsed_time)}. Retrying..."
-                                    )
+                                    logger.warning(f"ReadTimeout for {ebook_url}")
+                                    timeout += 30
                                     time.sleep(2)
                                     continue
-                                raise
-                        curr_job_log[recipe.name] = int(time.time())
+                                logger.error(f"[!] ReadTimeout for {ebook_url}")
+                                abort_recipe = True
+
+                    if abort_recipe:
+                        recipe_elapsed_time = timedelta(
+                            seconds=timer() - recipe_start_time
+                        )
+                        logger.info(
+                            f'{"=" * 10} "{recipe.name}" recipe took {humanize.precisedelta(recipe_elapsed_time)} {"=" * 20}'
+                        )
+                        job_summary += _add_recipe_summary(
+                            recipe, ":x: Cache Timeout", recipe_elapsed_time
+                        )
+                        continue
 
             except subprocess.TimeoutExpired:
                 logger.exception(f"[!] TimeoutExpired fetching '{recipe.name}'")
@@ -405,7 +399,7 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
             del os.environ["recipe_debug_folder"]
 
         source_file_paths = sorted(
-            glob.glob(publish_folder + f"/{recipe.slug}*.{recipe.src_ext}")
+            _find_output(publish_folder, recipe.slug, recipe.src_ext)
         )
         if not source_file_paths:
             logger.error(
@@ -538,7 +532,7 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
                     cmd.extend(["--pdf-page-numbers"])
                 if verbose_mode:
                     cmd.append("-vv")
-                if not glob.glob(publish_folder + f"/{recipe.slug}*.{ext}"):
+                if not _find_output(publish_folder, recipe.slug, ext):
                     exit_code = subprocess.call(
                         cmd,
                         timeout=recipe.timeout,
@@ -546,7 +540,7 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
                         stderr=sys.stderr,
                     )
                 target_file_path = sorted(
-                    glob.glob(publish_folder + f"/{recipe.slug}*.{ext}")
+                    _find_output(publish_folder, recipe.slug, ext)
                 )[-1]
                 target_file_name = os.path.basename(target_file_path)
 

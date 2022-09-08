@@ -220,6 +220,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="News",
+        timeout=480,
         enable_on=onlyat_hours(
             list(range(0, 4)) + list(range(8, 18)) + list(range(22, 24))
         ),
@@ -360,6 +361,6 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="News",
         timeout=300,
-        enable_on=onlyat_hours(list(range(0, 4)) + list(range(20, 24))),
+        enable_on=onlyat_hours(list(range(0, 8)), -4),
     ),
 ]

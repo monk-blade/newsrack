@@ -250,9 +250,11 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
                 continue
 
         job_status = ""
+        logger.info(f"::group::{recipe.name}")
 
         if recipe.slug in skip_recipes_slugs:
             logger.info(f'[!] SKIPPED recipe: "{recipe.slug}"')
+            logger.info("::endgroup::")
             job_summary += _add_recipe_summary(recipe, ":arrow_right_hook: Skipped")
             continue
 
@@ -363,6 +365,7 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
                         logger.info(
                             f'{"=" * 10} "{recipe.name}" recipe took {humanize.precisedelta(recipe_elapsed_time)} {"=" * 20}'
                         )
+                        logger.info("::endgroup::")
                         job_summary += _add_recipe_summary(
                             recipe, ":x: Cache Timeout", recipe_elapsed_time
                         )
@@ -374,6 +377,7 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
                 logger.info(
                     f'{"=" * 10} "{recipe.name}" recipe took {humanize.precisedelta(recipe_elapsed_time)} {"=" * 20}'
                 )
+                logger.info("::endgroup::")
                 job_summary += _add_recipe_summary(
                     recipe, ":x: Convert Timeout", recipe_elapsed_time
                 )
@@ -396,6 +400,7 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
             logger.info(
                 f'{"=" * 20} "{recipe.name}" recipe took {humanize.precisedelta(recipe_elapsed_time)} {"=" * 20}'
             )
+            logger.info("::endgroup::")
             job_summary += _add_recipe_summary(
                 recipe, ":x: No output", recipe_elapsed_time
             )
@@ -553,6 +558,7 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
             logger.info(
                 f'{"=" * 20} "{recipe.name}" recipe took {humanize.precisedelta(recipe_elapsed_time)} {"=" * 20}'
             )
+            logger.info("::endgroup::")
             job_summary += _add_recipe_summary(
                 recipe,
                 job_status or ":white_check_mark: Completed",

@@ -55,6 +55,11 @@ class LiveMint(BasicNewsRecipe):
             ('How to Lounge','https://lifestyle.livemint.com/rss/how-to-lounge'),
             ('Smart Living','https://lifestyle.livemint.com/rss/smart-living'),
         ]
+
+        def preprocess_html(self, soup):
+            for img in soup.findAll('img', attrs={'data-img': True}):
+                img['src'] = img['data-img']
+            return soup
     else:
         keep_only_tags = [
             dict(name='h1'),
@@ -88,25 +93,31 @@ class LiveMint(BasicNewsRecipe):
             ('Budget', 'https://www.livemint.com/rss/budget'),
             ('Elections', 'https://www.livemint.com/rss/elections'),
         ]
-    def preprocess_raw_html(self, raw, *a):
-        if '<script>var wsjFlag=true;</script>' in raw:
-            m = re.search(r'type="application/ld\+json">[^<]+?"@type": "NewsArticle"', raw)
-            raw1 = raw[m.start():]
-            raw1 = raw1.split('>', 1)[1].strip()
-            data = json.JSONDecoder().raw_decode(raw1)[0]
-            value = data['hasPart']['value']
-            body = data['articleBody'] + '</p> <p>' + re.sub(r'([a-z]\.|[0-9]\.)([A-Z])', r'\1 <p> \2', value)
-            body = '<div class="FirstEle"> <p>' +  body  + '</p> </div>'
-            raw = re.sub(r'<div class="FirstEle">([^}]*)</div>', body, raw)
-            return raw
-        else:
-            return raw
-    def preprocess_html(self, soup):
-        for img in soup.findAll('img', attrs={'data-src': True}):
-            img['src'] = img['data-src']
-        if is_saturday:
-            for img in soup.findAll('img', attrs={'data-img': True}):
-                img['src'] = img['data-img']
-        return soup
+        def preprocess_raw_html(self, raw, *a):
+            if '<script>var wsjFlag=true;</script>' in raw:
+                m = re.search(r'type="application/ld\+json">[^<]+?"@type": "NewsArticle"', raw)
+                raw1 = raw[m.start():]
+                raw1 = raw1.split('>', 1)[1].strip()
+                data = json.JSONDecoder().raw_decode(raw1)[0]
+                value = data['hasPart']['value']
+                body = data['articleBody'] + '</p> <p>'\
+                        + re.sub(r'(([a-z]|[^A-Z])\.|\.”)([A-Z]|“[A-Z])', r'\1 <p> \3', value)
+                body = '<div class="FirstEle"> <p>' +  body  + '</p> </div>'
+                raw = re.sub(r'<div class="FirstEle">([^}]*)</div>', body, raw)
+                return raw
+            else:
+                return raw
+
+        def preprocess_html(self, soup):
+            for span in soup.findAll('figcaption'):
+                span['id'] = 'img-cap'
+            for auth in soup.findAll('span', attrs={'class':['articleInfo pubtime','articleInfo author']}):
+                auth['id'] = 'auth-info'
+                auth.name = 'div'
+            for span in soup.findAll('span', attrs={'class':'exclusive'}):
+                span.extract()
+            for img in soup.findAll('img', attrs={'data-src': True}):
+                img['src'] = img['data-src']
+            return soup
 
 calibre_most_common_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'

@@ -20,8 +20,8 @@ class livelaw(BasicNewsRecipe):
     language = 'en_IN'
     remove_attributes = ['height', 'width', 'style'] 
     masthead_url = 'https://www.livelaw.in/images/logo.png'
-    oldest_article = 2
-    max_articles_per_feed = 20
+    oldest_article = 1
+    max_articles_per_feed = 40
     remove_empty_feeds = True
     ignore_duplicate_articles = {'title', 'url'}
     extra_css = '[data-datestring]{font-size:smaller;}'  
@@ -31,6 +31,7 @@ class livelaw(BasicNewsRecipe):
     ]
     
     remove_tags = [
+        classes('in-image-ad-wrap'),
         dict(name = 'div', attrs = {'id' : lambda x: x and x.startswith('inside_post_content_ad')}),    
         dict(name = 'div', attrs = {'id' : lambda x: x and x.startswith('filler_ad')})
     ]
@@ -80,7 +81,9 @@ class livelaw(BasicNewsRecipe):
     
     def is_accepted_entry(self, entry):
         # Those sections in the top nav bar that we will omit
-        omit_list = ['videos', 'job-updates', 'events-corner','sponsored', 'hindi.livelaw.in']
+        omit_list = [
+            'videos', 'job-updates', 'events-corner', 'sponsored', 'hindi.livelaw.in', 'javascript:void(0);',
+        ]
         is_accepted = True
         for omit_entry in omit_list:
             if entry['href'].endswith(omit_entry):

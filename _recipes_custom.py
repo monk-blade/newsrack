@@ -158,6 +158,15 @@ recipes: List[Recipe] = [
         timeout=240,
     ),
     Recipe(
+        recipe="thirdpole",
+        slug="thirdpole",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="Intl Magazines",
+        enable_on=onlyat_hours(list(range(5, 20)), 5.5),
+        tags=["asia", "climate"],
+    ),
+    Recipe(
         recipe="hbr",
         slug="hbr",
         src_ext="mobi",
@@ -167,12 +176,49 @@ recipes: List[Recipe] = [
         enable_on=onlyon_days(list(range(1, 1 + 3)) + list(range(32 - 14, 32)), -5),
     ),
     Recipe(
+        recipe="foreign-affairs",
+        slug="foreign-affairs",
+        src_ext="mobi",
+        target_ext=["epub"],
+        overwrite_cover=False,
+        category="Intl Magazines",
+        enable_on=onlyon_days(list(range(1, 1 + 7)) + list(range(32 - 7, 32)), -4)
+        and onlyat_hours(list(range(8, 22)), -4),
+    ),
+    Recipe(
+        recipe="harvard-intl-review",
+        slug="harvard-intl-review",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="Intl Magazines",
+        enable_on=onlyat_hours(list(range(11, 15))),
+    ),
+    Recipe(
+        recipe="mit-press-reader",
+        slug="mit-press-reader",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="Intl Magazines",
+        enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4),
+    ),
+    Recipe(
         recipe="mit-tech-review",
         slug="mit-tech-review-feed",
         src_ext="mobi",
-        target_ext=[],
+        target_ext=["epub"],
         category="Intl Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], -4),
+        tags=["technology"],
+    ),
+    Recipe(
+        recipe="mit-tech-review-magazine",
+        slug="mit-tech-review-magazine",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="Intl Magazines",
+        overwrite_cover=False,
+        enable_on=onlyon_days(list(range(1, 1 + 7)) + list(range(32 - 7, 32)), -5),
+        tags=["technology"],
     ),
     Recipe(
         recipe="nature",
@@ -191,6 +237,16 @@ recipes: List[Recipe] = [
         category="Intl Magazines",
         overwrite_cover=False,
         enable_on=onlyon_days(list(range(15, 31)), -5),  # middle of the month?
+    ),
+    Recipe(
+        recipe="restofworld",
+        slug="restofworld",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="Intl Magazines",
+        enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5])
+        and onlyat_hours(list(range(9, 19))),
+        tags=["technology"],
     ),
     Recipe(
         recipe="wired",

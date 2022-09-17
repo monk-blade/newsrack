@@ -8,21 +8,26 @@ class OpenMagazine(BasicNewsRecipe):
     description = 'The weekly current affairs and features magazine.'
     language = 'en_IN'
     __author__ = 'unkn0wn'
-    oldest_article = 15  # days
-    max_articles_per_feed = 1
+    oldest_article = 7  # days
+    max_articles_per_feed = 50
     encoding = 'utf-8'
+    compress_news_images = True
+    compress_news_images_auto_size = 10
+    scale_news_images = (800, 800)
     use_embedded_content = False
     no_stylesheets = True
     remove_attributes = ['style', 'height', 'width']
     masthead_url = 'https://openthemagazine.com/wp-content/themes/open/images/logo.png'
     ignore_duplicate_articles = {'url'}
     extra_css = '[id^="caption-attachment"] {font-size: small;font-style: italic;}'
+    'blockquote{color:#404040;}'
+    '.about-author{font-size:small;}'
 
     def get_cover_url(self):
         soup = self.index_to_soup('https://openthemagazine.com/magazine/')
         tag = soup.find(attrs={'class': 'mb-2 right-image'})
         if tag:
-            self.cover_url = tag.find('img')['src']
+            self.cover_url = tag.find('img')['data-src']
         return super().get_cover_url()
 
     keep_only_tags = [
@@ -46,3 +51,7 @@ class OpenMagazine(BasicNewsRecipe):
         ('Art & Culture', 'https://openthemagazine.com/art-culture/feed'),
         ('Cinema', 'https://openthemagazine.com/cinema/feed'),
     ]
+    def preprocess_html(self, soup):
+        for img in soup.findAll('img', attrs={'data-src':True}):
+            img['src'] = img['data-src']
+        return soup

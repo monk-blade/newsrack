@@ -1,25 +1,37 @@
-import json, re
+import json
+import re
+
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 
-#TODO Learning 
-_name = 'Outlook Magazine'
+
 class outlook(BasicNewsRecipe):
-    title = _name
+    title = 'Outlook Magazine'
     __author__ = 'unkn0wn'
-    description = 'Outlook is India’s most credible current affairs and news magazine launched in 1995.'
+    description = (
+        'Outlook covers the latest India news, analysis, business news and long-form stories on culture,'
+        ' money market and personal finance. Read India\'s best online magazine.'
+    )
     language = 'en_IN'
     use_embedded_content = False
     no_stylesheets = True
     remove_javascript = True
+    remove_attributes = ['height', 'width', 'style']
+    ignore_duplicate_articles = {'url'}
+    resolve_internal_links = True
     compress_news_images = True
     compress_news_images_auto_size = 10
     scale_news_images = (800, 800)
-    remove_attributes = ['height', 'width', 'style']
-    ignore_duplicate_articles = {'url'}
+    keep_only_tags = [classes('__story_detail')]
+    remove_tags = [
+        classes(
+            'social_sharing_article left_trending left-sticky __tag_links next_prev_stories	downarrow uparrow more_from_author_links next prev relatedCategory downarrow __related_stories_thumbs'
+        )
+    ]
 
     def parse_index(self):
-        soup = self.index_to_soup('https://www.outlookindia.com/')
-        a = soup.find('a', href=lambda x: x and x.startswith('/magazine/issue/'))
+        soup = self.index_to_soup('https://www.outlookindia.com/magazine')
+        div = soup.find('div', attrs={'class':'wrapper'})
+        a = div.find('a', href=lambda x: x and x.startswith('/magazine/issue/'))
         url = a['href']
         self.log('Downloading issue:', url)
         soup = self.index_to_soup('https://www.outlookindia.com' + url)
@@ -35,13 +47,15 @@ class outlook(BasicNewsRecipe):
             desc = ''
             p = h3.find_next_sibling('p')
             if p:
-                desc = self.tag_to_string(desc)
-            self.log('\t\tFound article:', title)
-            self.log('\t\t\t', url)
+                desc = self.tag_to_string(p)
+            self.log('\t', title)
+            self.log('\t', desc)
+            self.log('\t\t', url)
             ans.append({'title': title, 'url': url, 'description': desc})
         return [('Articles', ans)]
 
     def preprocess_raw_html(self, raw, *a):
+        return raw
         m = re.search('<!-- NewsArticle Schema -->.*?script.*?>', raw, flags=re.DOTALL)
         raw = raw[m.end():].lstrip()
         data = json.JSONDecoder().raw_decode(raw)[0]
@@ -56,3 +70,6 @@ class outlook(BasicNewsRecipe):
             desc = '<h2>' + data['description'] + '</h2>'
         html = '<html><body><h1>' + title + '</h1>' + desc + '<h3>' + author + '</h3>' + image + '<p>' + body
         return html
+
+
+calibre_most_common_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'

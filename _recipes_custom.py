@@ -3,7 +3,7 @@ from typing import List
 from _recipe_utils import Recipe, onlyon_days, onlyat_hours, onlyon_weekdays
 
 # Define the categories display order, optional
-categories_sort: List[str] = ["News","UPSC","Gujarati Newspapers","Newsletters","Indian Magazines","Intl Magazines","Books"]
+categories_sort: List[str] = ["News","UPSC","Gujarati Newspapers","Hindi Newspapers","Newsletters","Indian Magazines","Intl Magazines","Books"]
 
 # Define your custom recipes list here
 # Example: https://github.com/ping/newsrack-fork-test/blob/custom/_recipes_custom.py
@@ -15,7 +15,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="News",
-        # enable_on=onlyat_hours(list(range(6, 10)), +5),  # from 6am-11.59am daily, for the timezone UTC-5
+        enable_on=onlyat_hours(list(range(6, 10)), +5),  # from 6am-11.59am daily, for the timezone UTC-5
     ),
     Recipe(
         recipe="indian-express",
@@ -23,7 +23,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="News",
-        # enable_on=onlyat_hours(list(range(6, 10)), +5),
+        enable_on=onlyat_hours(list(range(6, 10)), +5),
     ),
     Recipe(
         recipe="live-mint",
@@ -31,7 +31,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="News",
-        # enable_on=onlyat_hours(list(range(6, 10)), +5),
+        enable_on=onlyat_hours(list(range(6, 10)), +5),
     ),
     Recipe(
         recipe="daily-current",
@@ -39,7 +39,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="UPSC",
-        # enable_on=onlyat_hours(list(range(6, 10)), +5),
+        enable_on=onlyat_hours(list(range(6, 10)), +5),
     ), 
     Recipe(
         recipe="business-standard",
@@ -47,7 +47,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="News",
-        # enable_on=onlyat_hours(list(range(6, 10)), +5),
+        enable_on=onlyat_hours(list(range(6, 10)), +5),
     ),
     Recipe(
         recipe="dainikbhaskar",
@@ -87,6 +87,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="Newsletters",
+        enable_on=onlyat_hours(list(range(6, 12)), +5),
     ),
     Recipe(
         recipe="finshots",
@@ -94,6 +95,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="Newsletters",
+        enable_on=onlyat_hours(list(range(6, 12)), +5),
     ),
     Recipe(
         recipe="frontline",
@@ -172,6 +174,7 @@ recipes: List[Recipe] = [
         overwrite_cover=False,
         category="Intl Magazines",
         timeout=240,
+        enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
     ),
     Recipe(
         recipe="thirdpole",
@@ -271,5 +274,6 @@ recipes: List[Recipe] = [
         target_ext=[],
         overwrite_cover=True,
         category="Intl Magazines",
+        enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
     ),
 ]

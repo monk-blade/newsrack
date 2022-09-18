@@ -38,15 +38,16 @@ class dainikbhaskar(BasicNewsRecipe):
     ]
 
     feeds = [
-        ('देश ', 'https://www.bhaskar.com/rss-v1--category-1061.xml'),
+        ('देश', 'https://www.bhaskar.com/rss-v1--category-1061.xml'),
         ('ओपिनियन', 'https://www.bhaskar.com/rss-v1--category-1944.xml'),
-        ('विदेश ', 'https://www.bhaskar.com/rss-v1--category-1125.xml'),
+        ('विदेश', 'https://www.bhaskar.com/rss-v1--category-1125.xml'),
         ('ओरिजिनल', 'https://www.bhaskar.com/rss-v1--category-4587.xml'),
         ('बिजनेस', 'https://www.bhaskar.com/rss-v1--category-1051.xml'),
-        ('स्पोर्ट्स ', 'https://www.bhaskar.com/rss-v1--category-1053.xml'),
-        ('मैगजीन ', 'https://www.bhaskar.com/rss-v1--category-1057.xml'),
-        ('करिअर ', 'https://www.bhaskar.com/rss-v1--category-11945.xml'),
-        #https://www.bhaskar.com/rss
+        ('स्पोर्ट्स', 'https://www.bhaskar.com/rss-v1--category-1053.xml'),
         ]
 
 calibre_most_common_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'
+
+#('मैगजीन', 'https://www.bhaskar.com/rss-v1--category-1057.xml'),
+#('करिअर', 'https://www.bhaskar.com/rss-v1--category-11945.xml'),
+#https://www.bhaskar.com/rss

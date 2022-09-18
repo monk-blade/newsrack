@@ -50,12 +50,28 @@ recipes: List[Recipe] = [
         # enable_on=onlyat_hours(list(range(6, 10)), +5),
     ),
     Recipe(
+        recipe="dainikbhaskar",
+        slug="dainikbhaskar",
+        src_ext="mobi",
+        target_ext=[],
+        category="Hindi Newspapers",
+        #enable_on=onlyat_hours(list(range(6, 12)), +5),
+    ),
+    Recipe(
         recipe="gujarat-samachar",
         slug="gujarat-samachar",
         src_ext="mobi",
         target_ext=[],
         category="Gujarati Newspapers",
         enable_on=onlyat_hours(list(range(6, 12)), +5),
+    ),
+    Recipe(
+        recipe="divyabhaskar",
+        slug="divyabhaskar",
+        src_ext="mobi",
+        target_ext=[],
+        category="Gujarati Newspapers",
+        #enable_on=onlyat_hours(list(range(6, 12)), +5),
     ),
     Recipe(
         recipe="sandesh",

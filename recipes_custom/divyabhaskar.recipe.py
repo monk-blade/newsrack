@@ -46,9 +46,9 @@ class divyabhaskar(BasicNewsRecipe):
         ('Business', 'https://divyabhaskar.co.in/rss-v1--category-969.xml'),
         ('Lifestyle', 'https://divyabhaskar.co.in/rss-v1--category-5029.xml'),
         ('Utility', 'https://divyabhaskar.co.in/rss-v1--category-10695.xml'),
-        ('Dharm Darshan', 'https://divyabhaskar.co.in/rss-v1--category-11256.xml'),
-        ('Entertainment', 'https://divyabhaskar.co.in/rss-v1--category-12042.xml')
         ]
 
 # calibre_most_common_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'
 # ('Magazine', 'https://divyabhaskar.co.in/rss-v1--category-14980.xml'),
+#        ('Dharm Darshan', 'https://divyabhaskar.co.in/rss-v1--category-11256.xml'),
+#       ('Entertainment', 'https://divyabhaskar.co.in/rss-v1--category-12042.xml')

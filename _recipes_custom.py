@@ -63,7 +63,8 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="Gujarati Newspapers",
-        #enable_on=onlyat_hours(list(range(6, 12)), +5),
+        enable_on=onlyat_hours(list(range(6, 12)), +5),
+        timeout=240,
     ),
     Recipe(
         recipe="sandesh",

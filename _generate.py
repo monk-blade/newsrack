@@ -16,6 +16,7 @@ import time
 from collections import namedtuple
 from datetime import datetime, timezone, timedelta
 from functools import cmp_to_key
+from math import ceil
 from timeit import default_timer as timer
 from typing import List, Dict
 from urllib.parse import urljoin
@@ -45,6 +46,7 @@ logger.setLevel(logging.INFO)
 publish_folder = "public"
 catalog_path = "catalog.xml"
 index_json_filename = "index.json"
+default_retry_wait_interval = 2
 
 RecipeOutput = namedtuple(
     "RecipeOutput",
@@ -104,11 +106,11 @@ def _fetch_cache(site):
         except Exception as err:  # noqa
             if attempt < retry_attempts:
                 logger.warning(
-                    f"{err.__class__.__name__} fetching {index_json_filename}"
+                    f"{err.__class__.__name__} downloading {index_json_filename}"
+                    f"Retrying after {default_retry_wait_interval}s..."
                 )
-                logger.debug(f"Retrying {index_json_filename} download...")
                 timeout += 15
-                time.sleep(2)
+                time.sleep(default_retry_wait_interval)
                 continue
             logger.exception(f"{err.__class__.__name__} fetching {index_json_filename}")
             return {}
@@ -251,9 +253,9 @@ def _download_from_cache(recipe, cached, publish_site, cache_sess):
             requests.exceptions.HTTPError,  # it happens
         ) as head_err:  # noqa
             logger.warning(
-                f"{head_err.__class__.__name__} when sending HEAD {ebook_url}"
+                f"{head_err.__class__.__name__} sending HEAD request for {ebook_url}"
             )
-            time.sleep(2)
+            time.sleep(default_retry_wait_interval)
 
         timeout = 30
         for attempt in range(1 + recipe.retry_attempts):
@@ -273,9 +275,12 @@ def _download_from_cache(recipe, cached, publish_site, cache_sess):
                 requests.exceptions.HTTPError,  # it happens
             ) as err:
                 if attempt < recipe.retry_attempts:
-                    logger.warning(f"{err.__class__.__name__} for {ebook_url}")
+                    logger.warning(
+                        f"{err.__class__.__name__} downloading {ebook_url}. "
+                        f"Retrying after {default_retry_wait_interval}s..."
+                    )
                     timeout += 30
-                    time.sleep(2)
+                    time.sleep(default_retry_wait_interval)
                     continue
                 logger.error(f"[!] {err.__class__.__name__} for {ebook_url}")
                 abort = True
@@ -409,11 +414,13 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
                                 recipe_elapsed_time = timedelta(
                                     seconds=timer() - recipe_start_time
                                 )
+                                wait_interval = ceil(recipe.timeout / 100)
                                 logger.warning(
                                     f"TimeoutExpired fetching '{recipe.name}' "
-                                    f"after {humanize.precisedelta(recipe_elapsed_time)}. Retrying..."
+                                    f"after {humanize.precisedelta(recipe_elapsed_time)}. "
+                                    f"Retrying after {wait_interval}s..."
                                 )
-                                time.sleep(2)
+                                time.sleep(max(min(wait_interval, 2), 10))
                                 continue
                             raise
 

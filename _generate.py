@@ -44,6 +44,8 @@ logger.addHandler(ch)
 logger.setLevel(logging.INFO)
 
 publish_folder = "public"
+meta_folder = "meta"
+job_log_filename = "job_log.json"
 catalog_path = "catalog.xml"
 index_json_filename = "index.json"
 default_retry_wait_interval = 2
@@ -298,6 +300,15 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
     if not publish_site.endswith("/"):
         publish_site += "/"
 
+    job_log: Dict[str, float] = {}
+    try:
+        with open(
+            os.path.join(meta_folder, job_log_filename), "r", encoding="utf-8"
+        ) as f:
+            job_log = json.load(f)
+    except:  # noqa
+        pass
+
     today = datetime.utcnow().replace(tzinfo=timezone.utc)
     cache_sess = requests.Session()
     cached = _fetch_cache(publish_site)
@@ -340,7 +351,9 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
                 logger.exception("Error getting recipe name")
                 continue
 
+        recipe.is_enabled()
         job_status = ""
+        recipe.last_run = job_log.get(recipe.slug, 0)
         logger.info(f"::group::{recipe.name}")
 
         if recipe.slug in skip_recipes_slugs:
@@ -399,6 +412,7 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
                     # not cached (so that we always have a copy available)
                     or not cached.get(recipe.name)
                 ):
+                    original_recipe_timeout = recipe.timeout
                     for attempt in range(recipe.retry_attempts + 1):
                         try:
                             # run recipe
@@ -420,9 +434,17 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
                                     f"after {humanize.precisedelta(recipe_elapsed_time)}. "
                                     f"Retrying after {wait_interval}s..."
                                 )
+                                # increase recipe timeout by 10% on retry but up to a max of 20min
+                                recipe.timeout = max(int(1.1 * recipe.timeout), 20 * 60)
                                 time.sleep(max(min(wait_interval, 2), 10))
                                 continue
                             raise
+                        finally:
+                            # it's not used anymore, but restore original timeout
+                            # value just in case
+                            recipe.timeout = original_recipe_timeout
+
+                    job_log[recipe.slug] = time.time()
 
                 else:
                     # use cache
@@ -726,6 +748,11 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
         json.dump(index, f_in, indent=0)
 
     elapsed_time = timedelta(seconds=timer() - start_time)
+
+    if not os.path.exists(meta_folder):
+        os.makedirs(meta_folder)
+    with open(os.path.join(meta_folder, job_log_filename), "w", encoding="utf-8") as f:
+        json.dump(job_log, f, indent=0)
 
     with (
         open("static/site.css", "r", encoding="utf-8") as f_site_css,

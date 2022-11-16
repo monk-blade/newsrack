@@ -13,7 +13,7 @@ _name = "Sydney Morning Herald"
 class SydneyMorningHerald(BasicNewsRecipe):
     title = _name
     __author__ = "Darko Miletic"
-    description = "Breaking news from Sydney, Australia and the world. Features the latest business, sport, entertainment, travel, lifestyle, and technology news."  # noqa
+    description = "Breaking news from Sydney, Australia and the world. Features the latest business, sport, entertainment, travel, lifestyle, and technology news. https://www.smh.com.au/"  # noqa
     publisher = "Fairfax Digital"
     category = "news, politics, Australia, Sydney"
     oldest_article = 1
@@ -24,7 +24,7 @@ class SydneyMorningHerald(BasicNewsRecipe):
 
     language = "en_AU"
     remove_empty_feeds = True
-    masthead_url = "http://images.smh.com.au/2010/02/02/1087188/smh-620.jpg"
+    masthead_url = "https://upload.wikimedia.org/wikipedia/en/thumb/8/86/Sydney_Morning_Herald_logo.svg/1024px-Sydney_Morning_Herald_logo.svg.png"
     publication_type = "newspaper"
 
     no_stylesheets = True

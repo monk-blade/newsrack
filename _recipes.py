@@ -12,7 +12,15 @@
 
 from typing import List
 
-from _recipe_utils import Recipe, onlyon_days, onlyat_hours, onlyon_weekdays
+from _recipe_utils import (
+    Recipe,
+    CoverOptions,
+    onlyon_days,
+    onlyat_hours,
+    onlyon_weekdays,
+    first_n_days_of_month,
+    last_n_days_of_month,
+)
 
 # Only mobi work as periodicals on the Kindle
 # Notes:
@@ -37,7 +45,10 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="News",
-        tags=["asia"],
+        tags=["asia", "japan"],
+        cover_options=CoverOptions(
+            logo_path_or_url="https://p.potaufeu.asahi.com/ajw/css/images/en_logo@2x.png"
+        ),
     ),
     Recipe(
         recipe="asian-review",
@@ -47,6 +58,9 @@ recipes: List[Recipe] = [
         category="Books",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4], 8),
         tags=["asia"],
+        cover_options=CoverOptions(
+            logo_path_or_url="https://i2.wp.com/asianreviewofbooks.com/content/wp-content/uploads/2016/09/ARBwidelogo.png"
+        ),
     ),
     Recipe(
         recipe="atlantic",
@@ -55,6 +69,9 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Magazines",
         tags=["editorial", "commentary"],
+        cover_options=CoverOptions(
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/The_Atlantic_Logo_11.2019.svg/1200px-The_Atlantic_Logo_11.2019.svg.png"
+        ),
     ),
     Recipe(
         recipe="atlantic-magazine",
@@ -63,9 +80,32 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         overwrite_cover=False,
         category="Magazines",
-        enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4)
-        and onlyon_days(list(range(32 - 14, 32)), -4),
+        enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4) and last_n_days_of_month(14, -4),
         tags=["editorial", "commentary"],
+    ),
+    Recipe(
+        recipe="bloomberg-businessweek",
+        slug="bloomberg-businessweek",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="Magazines",
+        tags=["business"],
+        overwrite_cover=False,
+        enable_on=onlyon_weekdays([5]) and onlyat_hours(list(range(2, 8))),
+        timeout=360,
+    ),
+    Recipe(
+        recipe="bloomberg-news",
+        slug="bloomberg-news",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="News",
+        tags=["business"],
+        enable_on=not (onlyon_weekdays([5]) and onlyat_hours(list(range(2, 8)))),
+        timeout=360,
+        cover_options=CoverOptions(
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/New_Bloomberg_Logo.svg/1024px-New_Bloomberg_Logo.svg.png"
+        ),
     ),
     Recipe(
         recipe="channelnewsasia",
@@ -73,7 +113,10 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="News",
-        tags=["asia"],
+        tags=["asia", "singapore"],
+        cover_options=CoverOptions(
+            logo_path_or_url="https://www.channelnewsasia.com/sites/default/themes/mc_cna_theme/images/logo.png"
+        ),
     ),
     Recipe(
         recipe="thediplomat",
@@ -84,6 +127,9 @@ recipes: List[Recipe] = [
         category="Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
         tags=["asia"],
+        cover_options=CoverOptions(
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/The_Diplomat_logo.svg/1024px-The_Diplomat_logo.svg.png"
+        ),
     ),
     Recipe(
         recipe="economist",
@@ -102,6 +148,9 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Books",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4]),
+        cover_options=CoverOptions(
+            logo_path_or_url="https://fivebooks.com/app/themes/five-books/assets/images/logo.png"
+        ),
     ),
     Recipe(
         recipe="forbes-editors-picks",
@@ -114,6 +163,9 @@ recipes: List[Recipe] = [
         tags=["business"],
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4)
         and onlyat_hours(list(range(8, 20)), -4),
+        cover_options=CoverOptions(
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/d/db/Forbes_logo.svg/1024px-Forbes_logo.svg.png"
+        ),
     ),
     Recipe(
         recipe="foreign-affairs",
@@ -122,7 +174,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         overwrite_cover=False,
         category="Magazines",
-        enable_on=onlyon_days(list(range(1, 1 + 7)) + list(range(32 - 7, 32)), -4)
+        enable_on=(first_n_days_of_month(7, -4) or last_n_days_of_month(7, -4))
         and onlyat_hours(list(range(8, 22)), -4),
     ),
     Recipe(
@@ -132,6 +184,9 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="News",
         tags=["business"],
+        cover_options=CoverOptions(
+            logo_path_or_url="https://www.ft.com/partnercontent/content-hub/static/media/ft-horiz-new-black.215c1169.png"
+        ),
     ),
     Recipe(
         recipe="ft-paper",
@@ -140,6 +195,9 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="News",
         tags=["business"],
+        cover_options=CoverOptions(
+            logo_path_or_url="https://www.ft.com/partnercontent/content-hub/static/media/ft-horiz-new-black.215c1169.png"
+        ),
     ),
     Recipe(
         recipe="guardian",
@@ -147,6 +205,9 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="News",
+        cover_options=CoverOptions(
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/0/0e/The_Guardian.svg/1024px-The_Guardian.svg.png"
+        ),
     ),
     Recipe(
         recipe="harvard-intl-review",
@@ -155,6 +216,9 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Magazines",
         enable_on=onlyat_hours(list(range(11, 15))),
+        cover_options=CoverOptions(
+            logo_path_or_url="https://hir.harvard.edu/content/images/2020/12/HIRlogo_crimson-4.png"
+        ),
     ),
     Recipe(
         recipe="hbr",
@@ -163,7 +227,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         overwrite_cover=False,
         category="Magazines",
-        enable_on=onlyon_days(list(range(1, 1 + 3)) + list(range(32 - 14, 32)), -5),
+        enable_on=first_n_days_of_month(3, -5) or last_n_days_of_month(14, -5),
         tags=["business"],
     ),
     Recipe(
@@ -172,7 +236,10 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="News",
-        tags=["asia"],
+        tags=["asia", "southkorea"],
+        cover_options=CoverOptions(
+            logo_path_or_url="https://koreajoongangdaily.joins.com/resources/images/common/logo.png"
+        ),
     ),
     Recipe(
         recipe="knowable-magazine",
@@ -181,6 +248,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Magazines",
         tags=["science"],
+        cover_options=CoverOptions(logo_path_or_url="https://i.imgur.com/OMxGtzQ.jpg"),
     ),
     Recipe(
         recipe="korea-herald",
@@ -188,7 +256,10 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="News",
-        tags=["asia"],
+        tags=["asia", "southkorea"],
+        cover_options=CoverOptions(
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/en/thumb/5/55/The_Korea_Herald.svg/1024px-The_Korea_Herald.svg.png"
+        ),
     ),
     Recipe(
         recipe="london-review",
@@ -206,6 +277,10 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4),
+        cover_options=CoverOptions(
+            text_colour="#444444",
+            logo_path_or_url="https://dhjhkxawhe8q4.cloudfront.net/mit-press/wp-content/uploads/2022/03/25123303/mitp-reader-logo_0-scaled.jpg",
+        ),
     ),
     Recipe(
         recipe="mit-tech-review",
@@ -215,6 +290,10 @@ recipes: List[Recipe] = [
         category="Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], -4),
         tags=["technology"],
+        cover_options=CoverOptions(
+            text_colour="#444444",
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/MIT_Technology_Review_modern_logo.svg/1024px-MIT_Technology_Review_modern_logo.svg.png",
+        ),
     ),
     Recipe(
         recipe="mit-tech-review-magazine",
@@ -223,7 +302,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Magazines",
         overwrite_cover=False,
-        enable_on=onlyon_days(list(range(1, 1 + 7)) + list(range(32 - 7, 32)), -5),
+        enable_on=first_n_days_of_month(7, -5) or last_n_days_of_month(7, -5),
         tags=["technology"],
     ),
     Recipe(
@@ -243,6 +322,9 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Magazines",
         tags=["science"],
+        cover_options=CoverOptions(
+            logo_path_or_url="https://assets.nautil.us/13891_bb83b72bf545e376f3ff9443bda39421.png"
+        ),
     ),
     Recipe(
         recipe="new-republic-magazine",
@@ -251,7 +333,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Magazines",
         overwrite_cover=False,
-        enable_on=onlyon_days(list(range(1, 7)) + list(range(24, 32)))
+        enable_on=(first_n_days_of_month(7) or last_n_days_of_month(7))
         and onlyat_hours(list(range(8, 16))),
     ),
     Recipe(
@@ -271,9 +353,13 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="News",
-        timeout=480,
+        timeout=600,
+        retry_attempts=0,
         enable_on=onlyat_hours(
             list(range(0, 4)) + list(range(8, 18)) + list(range(22, 24))
+        ),
+        cover_options=CoverOptions(
+            logo_path_or_url="https://static01.nyt.com/newsgraphics/2015/12/23/masthead-2016/8118277965bda8228105578895f2f4a7aeb22ce2/nyt-logo.png"
         ),
     ),
     Recipe(
@@ -281,9 +367,13 @@ recipes: List[Recipe] = [
         slug="nytimes-print",
         src_ext="mobi",
         target_ext=["epub"],
-        overwrite_cover=False,
         category="News",
+        timeout=900,
+        retry_attempts=0,
         enable_on=onlyat_hours(list(range(4, 8))),
+        cover_options=CoverOptions(
+            logo_path_or_url="https://static01.nyt.com/newsgraphics/2015/12/23/masthead-2016/8118277965bda8228105578895f2f4a7aeb22ce2/nyt-logo.png"
+        ),
     ),
     Recipe(
         recipe="nytimes-books",
@@ -291,7 +381,12 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="Books",
+        timeout=300,
+        retry_attempts=0,
         enable_on=onlyat_hours(list(range(18, 22))),
+        cover_options=CoverOptions(
+            logo_path_or_url="https://static01.nyt.com/newsgraphics/2015/12/23/masthead-2016/8118277965bda8228105578895f2f4a7aeb22ce2/nyt-logo.png"
+        ),
     ),
     Recipe(
         recipe="poetry",
@@ -300,7 +395,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         overwrite_cover=False,
         category="Magazines",
-        enable_on=onlyon_days(list(range(1, 1 + 7)) + list(range(32 - 7, 32)), -5),
+        enable_on=first_n_days_of_month(7, -6) or last_n_days_of_month(7, -5),
         tags=["literature", "arts"],
     ),
     Recipe(
@@ -309,6 +404,9 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="Magazines",
+        cover_options=CoverOptions(
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/ProPublica_text_logo.svg/1280px-ProPublica_text_logo.svg.png"
+        ),
     ),
     Recipe(
         recipe="politico-magazine",
@@ -317,6 +415,9 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], -5),
+        cover_options=CoverOptions(
+            logo_path_or_url="https://www.politico.com/dims4/default/bbb0fd2/2147483647/resize/1160x%3E/quality/90/?url=https%3A%2F%2Fstatic.politico.com%2F0e%2F5b%2F3cf3e0f04ca58370112ab667c255%2Fpolitico-logo.png"
+        ),
     ),
     Recipe(
         recipe="restofworld",
@@ -327,6 +428,9 @@ recipes: List[Recipe] = [
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5])
         and onlyat_hours(list(range(9, 19))),
         tags=["technology"],
+        cover_options=CoverOptions(
+            logo_path_or_url="https://149346090.v2.pressablecdn.com/wp-content/uploads/2020/05/cropped-SocialCard-1.png"
+        ),
     ),
     Recipe(
         recipe="scientific-american",
@@ -344,7 +448,10 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="News",
-        tags=["asia"],
+        tags=["asia", "hongkong"],
+        cover_options=CoverOptions(
+            logo_path_or_url="https://cdn.shopify.com/s/files/1/0280/0258/2595/files/SCMP_Logo_2018_540x.png"
+        ),
     ),
     Recipe(
         recipe="sydney-morning-herald",
@@ -352,6 +459,10 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="News",
+        tags=["australia"],
+        cover_options=CoverOptions(
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/en/thumb/8/86/Sydney_Morning_Herald_logo.svg/1024px-Sydney_Morning_Herald_logo.svg.png"
+        ),
     ),
     Recipe(
         recipe="taipei-times",
@@ -361,7 +472,10 @@ recipes: List[Recipe] = [
         timeout=600,
         category="News",
         enable_on=onlyat_hours(list(range(6, 14)), 8),
-        tags=["asia"],
+        tags=["asia", "taiwan"],
+        cover_options=CoverOptions(
+            logo_path_or_url="https://www.taipeitimes.com/assets/images/logo.gif"
+        ),
     ),
     Recipe(
         recipe="thirdpole",
@@ -371,6 +485,9 @@ recipes: List[Recipe] = [
         category="Magazines",
         enable_on=onlyat_hours(list(range(5, 20)), 5.5),
         tags=["asia", "climate"],
+        cover_options=CoverOptions(
+            logo_path_or_url="https://www.thethirdpole.net/content/uploads/2020/02/TheThirdPoleLogo2.png"
+        ),
     ),
     Recipe(
         recipe="time-magazine",
@@ -387,6 +504,9 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="Magazines",
+        cover_options=CoverOptions(
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Vox_logo.svg/300px-Vox_logo.svg.png"
+        ),
     ),
     Recipe(
         recipe="wapo",
@@ -395,6 +515,9 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         timeout=600,
         category="News",
+        cover_options=CoverOptions(
+            logo_path_or_url="https://www.washingtonpost.com/sf/brand-connect/dell-technologies/the-economics-of-change/media/wp_logo_black.png"
+        ),
     ),
     Recipe(
         recipe="wired",
@@ -404,6 +527,9 @@ recipes: List[Recipe] = [
         overwrite_cover=True,
         category="Magazines",
         tags=["technology"],
+        cover_options=CoverOptions(
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Wired_logo.svg/1024px-Wired_logo.svg.png"
+        ),
     ),
     Recipe(
         recipe="world-today",
@@ -411,7 +537,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="Magazines",
-        enable_on=onlyon_days(list(range(1, 7)) + list(range(24, 32)))
+        enable_on=(first_n_days_of_month(7) or last_n_days_of_month(7))
         and onlyat_hours(list(range(4, 12))),
     ),
     Recipe(
@@ -423,5 +549,8 @@ recipes: List[Recipe] = [
         tags=["business"],
         timeout=300,
         enable_on=onlyat_hours(list(range(0, 8)), -4),
+        cover_options=CoverOptions(
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/WSJ_Logo.svg/1024px-WSJ_Logo.svg.png"
+        ),
     ),
 ]

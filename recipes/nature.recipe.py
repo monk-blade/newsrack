@@ -34,6 +34,7 @@ class Nature(BasicNewsRecipe):
         " surprising conclusions.  Nature also provides rapid, authoritative,"
         " insightful and arresting news and interpretation of topical and coming"
         " trends affecting science, scientists and the wider public."
+        " https://www.nature.com/nature/current-issue/"
     )
     language = "en"
     encoding = "utf-8"
@@ -52,20 +53,19 @@ class Nature(BasicNewsRecipe):
 
     remove_tags = [
         dict(
-            attrs={
-                "class": [
-                    "u-hide-print",
-                    "hide-print",
-                    "c-latest-content__item",
-                    "c-context-bar",
-                    "c-pdf-button__container",
-                    "u-js-hide",
-                ]
-            }
+            class_=[
+                "u-hide-print",
+                "hide-print",
+                "c-latest-content__item",
+                "c-context-bar",
+                "c-pdf-button__container",
+                "u-js-hide",
+                "recommended",
+            ]
         ),
         dict(
             name="img",
-            attrs={"class": ["visually-hidden"]},
+            class_=["visually-hidden"],
         ),
     ]
 

@@ -13,7 +13,10 @@ _name = "ProPublica"
 
 class ProPublica(BasicNewsRecipe):
     title = _name
-    description = "ProPublica is an independent, nonprofit newsroom that produces investigative journalism with moral force."
+    description = (
+        "ProPublica is an independent, nonprofit newsroom that produces investigative "
+        "journalism with moral force. https://www.propublica.org/"
+    )
     language = "en"
     __author__ = "ping"
     publication_type = "newspaper"
@@ -61,7 +64,7 @@ class ProPublica(BasicNewsRecipe):
 
     extra_css = """
     h1 { font-size: 1.8rem; margin-bottom: 0.4rem; }
-    h2 { font-size: 1.2rem; font-style: italic; margin-bottom: 1rem; }
+    h2 { font-size: 1.2rem; font-style: italic; margin-bottom: 1rem; font-weight: normal; }
     .article-meta-1__byline { font-weight: bold; color: #444; }
     .article-meta-1 { margin-bottom: 1rem; }
     .article img {

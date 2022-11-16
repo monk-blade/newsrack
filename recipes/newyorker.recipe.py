@@ -11,7 +11,7 @@ from datetime import datetime, timezone
 
 from calibre import browser
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
-from calibre.web.feeds.news import BasicNewsRecipe, classes
+from calibre.web.feeds.news import BasicNewsRecipe, classes, prefixed_classes
 
 
 def absurl(x):
@@ -26,7 +26,9 @@ _name = "New Yorker"
 class NewYorker(BasicNewsRecipe):
 
     title = _name
-    description = "Articles of the week's New Yorker magazine"
+    description = (
+        "Articles of the week's New Yorker magazine https://www.newyorker.com/"
+    )
 
     url_list = []
     language = "en"
@@ -48,7 +50,7 @@ class NewYorker(BasicNewsRecipe):
         [data-testid="message-banner"] { font-size: 0.8rem; }
         [data-testid="message-banner"] h4 { margin-bottom: 0.2rem; }
         .headline { font-size: 1.8rem; margin-bottom: 0.5rem; }
-        .sub-headline { font-size: 1.2rem; margin-top: 0; margin-bottom: 0.5rem; }
+        .sub-headline { font-size: 1.2rem; margin-top: 0; margin-bottom: 0.5rem; font-style: italic; }
         .article-meta {  margin-top: 1rem; margin-bottom: 1rem; }
         .article-meta .author { font-weight: bold; color: #444; display: inline-block; }
         .article-meta .published-dt { display: inline-block; margin-left: 0.5rem; }
@@ -58,7 +60,8 @@ class NewYorker(BasicNewsRecipe):
         .caption { font-size: 0.8rem; font-weight: normal; }
     """
     keep_only_tags = [
-        dict(attrs={"class": "og"}),
+        prefixed_classes("IframeEmbedWrapper-sc-"),
+        dict(class_="og"),
         dict(attrs={"data-attribute-verso-pattern": "article-body"}),
         dict(
             attrs={

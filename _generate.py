@@ -24,6 +24,7 @@ from xml.dom import minidom
 
 import humanize  # type: ignore
 import requests  # type: ignore
+from bleach import linkify
 
 from _opds import init_feed, simple_tag, extension_contenttype_map
 from _recipe_utils import sort_category, Recipe
@@ -239,7 +240,9 @@ def _download_from_cache(recipe, cached, publish_site, cache_sess):
     :return:
     """
     abort = False
-    for cached_item in cached.get(recipe.name, []):
+    # [TODO] changed from using name to slug, check name to keep backward compat
+    cached_files = cached.get(recipe.slug, []) or cached.get(recipe.name, [])
+    for cached_item in cached_files:
         _, ext = os.path.splitext(cached_item["filename"])
         if ext != f".{recipe.src_ext}" and ext not in [
             f".{x}" for x in recipe.target_ext
@@ -290,6 +293,18 @@ def _download_from_cache(recipe, cached, publish_site, cache_sess):
                     # if primary format, abort early
                     return abort
     return abort
+
+
+def _linkify_attrs(attrs, new=False):
+    """
+    Add required attributes when linkifying
+    :param attrs:
+    :param new:
+    :return:
+    """
+    attrs[(None, "rel")] = "noreferrer nofollow noopener"
+    attrs[(None, "target")] = "_blank"
+    return attrs
 
 
 def run(publish_site, source_url, commit_hash, verbose_mode):
@@ -368,7 +383,7 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
         if recipe.category not in generated:
             generated[recipe.category] = {}
         generated[recipe.category][recipe.name] = []
-        index[recipe.name] = []
+        index[recipe.slug] = []
 
         source_file_name = f"{recipe.slug}.{recipe.src_ext}"
         source_file_path = os.path.join(publish_folder, source_file_name)
@@ -401,6 +416,9 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
         if verbose_mode:
             os.environ["recipe_debug_folder"] = os.path.abspath(publish_folder)
 
+        # [TODO] changed from using name to slug, check name to keep backward compat
+        cached_files = cached.get(recipe.slug, []) or cached.get(recipe.name, [])
+
         if not _find_output(publish_folder, recipe.slug, recipe.src_ext):
             # existing file does not exist
             try:
@@ -413,7 +431,7 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
                         and recipe.slug in regenerate_recipes_slugs
                     )
                     # not cached (so that we always have a copy available)
-                    or not cached.get(recipe.name)
+                    or not cached_files
                 ):
                     original_recipe_timeout = recipe.timeout
                     for attempt in range(recipe.retry_attempts + 1):
@@ -491,7 +509,7 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
         source_file_paths = sorted(
             _find_output(publish_folder, recipe.slug, recipe.src_ext)
         )
-        if cached.get(recipe.name, []) and not source_file_paths:
+        if cached_files and not source_file_paths:
             logger.warning(
                 f'Using cached copy for "{recipe.name}" because recipe has no output.'
             )
@@ -556,7 +574,7 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
                     ]
                     description = f"""{comments[0]}
                     <ul><li>{"</li><li>".join(comments[1:-1])}</li></ul>
-                    {comments[-1]}
+                    {linkify(comments[-1], callbacks=[_linkify_attrs])}
                     """
                 except:  # noqa
                     pass
@@ -584,7 +602,9 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
                 logger.debug(f'Setting cover for "{source_file_path}"')
                 try:
                     cover_file_path = f"{source_file_path}.png"
-                    generate_cover(cover_file_path, title, recipe.cover_options)
+                    generate_cover(
+                        cover_file_path, title, recipe.cover_options, logger=logger
+                    )
                     cover_cmd = [
                         "ebook-meta",
                         source_file_path,
@@ -608,7 +628,7 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
                 ]
                 _ = subprocess.call(series_cmd, stdout=subprocess.PIPE)
 
-            index[recipe.name].append(
+            index[recipe.slug].append(
                 {
                     "filename": f"{recipe.slug}-{pub_date:%Y-%m-%d}.{recipe.src_ext}",
                     "published": pub_date.timestamp(),
@@ -659,7 +679,7 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
                             description=comments,
                         )
                     )
-                    index[recipe.name].append(
+                    index[recipe.slug].append(
                         {
                             "filename": f"{recipe.slug}-{pub_date:%Y-%m-%d}.{ext}",
                             "published": pub_date.timestamp(),

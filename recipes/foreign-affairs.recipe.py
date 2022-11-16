@@ -113,7 +113,7 @@ class ForeignAffairsRecipe(BasicNewsRecipe):
     title = _name
     __author__ = "Kovid Goyal"
     language = "en"
-    publisher = "Council on Foreign Relations"
+    publisher = "Council on Foreign Relations https://www.foreignaffairs.com/magazine"
     category = "USA, Foreign Affairs"
     description = "The leading forum for serious discussion of American foreign policy and international affairs. https://www.foreignaffairs.com/magazine"
     masthead_url = (
@@ -137,8 +137,9 @@ class ForeignAffairsRecipe(BasicNewsRecipe):
         classes("article-header article-body article-lead-image article-body-text"),
     ]
     remove_tags = [
-        classes("loading-indicator paywall article-footer article-tools"),
-        dict(name=["svg"]),
+        classes("loading-indicator paywall article-footer article-tools "),
+        dict(attrs={"data-buylink-isbn": True}),
+        dict(name=["svg", "button"]),
     ]
 
     extra_css = """

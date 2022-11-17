@@ -153,6 +153,17 @@ recipes: List[Recipe] = [
         ),
     ),
     Recipe(
+        recipe="fivethirtyeight",
+        slug="fivethirtyeight",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="Magazines",
+        tags=["politics"],
+        cover_options=CoverOptions(
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/FiveThirtyEight_Logo.svg/1024px-FiveThirtyEight_Logo.svg.png"
+        ),
+    ),
+    Recipe(
         recipe="forbes-editors-picks",
         slug="forbes-editors-picks",
         src_ext="mobi",
@@ -353,7 +364,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="News",
-        timeout=600,
+        timeout=900,
         retry_attempts=0,
         enable_on=onlyat_hours(
             list(range(0, 4)) + list(range(8, 18)) + list(range(22, 24))

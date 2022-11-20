@@ -92,7 +92,7 @@ recipes: List[Recipe] = [
         tags=["business"],
         overwrite_cover=False,
         enable_on=onlyon_weekdays([5]) and onlyat_hours(list(range(2, 8))),
-        timeout=360,
+        timeout=600,
     ),
     Recipe(
         recipe="bloomberg-news",
@@ -463,6 +463,16 @@ recipes: List[Recipe] = [
         cover_options=CoverOptions(
             logo_path_or_url="https://cdn.shopify.com/s/files/1/0280/0258/2595/files/SCMP_Logo_2018_540x.png"
         ),
+    ),
+    Recipe(
+        recipe="spectator-magazine",
+        slug="spectator-magazine",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="Magazines",
+        tags=["europe", "britain"],
+        enable_on=onlyon_weekdays([4]),
+        overwrite_cover=False,
     ),
     Recipe(
         recipe="sydney-morning-herald",

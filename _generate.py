@@ -149,7 +149,11 @@ def _write_opds(generated_output, publish_site):
         ):
             for doc, feed in [(main_doc, main_feed), (cat_doc, cat_feed)]:
                 entry = doc.createElement("entry")
-                entry.appendChild(simple_tag(doc, "id", recipe_name))
+                entry.appendChild(
+                    simple_tag(
+                        doc, "id", books[0].recipe.slug if books else recipe_name
+                    )
+                )
                 entry.appendChild(
                     simple_tag(
                         doc,
@@ -328,6 +332,7 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
     cache_sess = requests.Session()
     cached = _fetch_cache(publish_site)
     index = {}  # type: ignore
+    recipe_descriptions = {}
     generated: Dict[str, Dict[str, List[RecipeOutput]]] = {}
 
     # skip specified recipes in CI
@@ -572,10 +577,11 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
                         for c in mobj.group("comments").split("\n")
                         if c.strip()
                     ]
-                    description = f"""{comments[0]}
-                    <ul><li>{"</li><li>".join(comments[1:-1])}</li></ul>
-                    {linkify(comments[-1], callbacks=[_linkify_attrs])}
-                    """
+                    description = (
+                        f"{comments[0]}"
+                        f'<ul><li>{"</li><li>".join(comments[1:-1])}</li></ul>'
+                        f"{linkify(comments[-1], callbacks=[_linkify_attrs])}"
+                    )
                 except:  # noqa
                     pass
 
@@ -731,9 +737,10 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
                 Published at {books[0].published_dt:%Y-%m-%d %-I:%M%p %z}
                 {"" if not books[0].recipe.tags else '<span class="tags">#' + " #".join(books[0].recipe.tags) + "</span>"}
             </div>
-            <div class="contents hide">{books[0].description}</div>
+            <div class="contents hide"></div>
             </li>"""
             )
+            recipe_descriptions[books[0].recipe.slug] = books[0].description
 
         # display recipes without output
         category_recipes = [r for r in recipes if r.category == category]
@@ -755,11 +762,11 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
                 </div></li>"""
             )
 
-        listing += f"""<div class="category-container"><h2 id="cat-{slugify(category, True)}" class="category is-open">{category}
+        listing += f"""<div class="category-container is-open"><h2 id="cat-{slugify(category, True)}" class="category is-open">{category}
         <a class="opds" title="OPDS for {category.title()}" href="{slugify(category, True)}.xml">OPDS</a></h2>
-        <ol class="books">{"".join(publication_listing)}
-        <div class="close-cat-container"><a class="close-cat-shortcut" href="#" data-click-target="cat-{slugify(category)}"></a></div>
-        </ol></div>
+        <ol class="books">{"".join(publication_listing)}</ol>
+        <div class="close-cat-container"><div class="close-cat-shortcut" data-click-target="cat-{slugify(category)}"></div></div>
+        </div>
         """
 
     with open(
@@ -777,7 +784,6 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
 
     with (
         open("static/site.css", "r", encoding="utf-8") as f_site_css,
-        open("static/nonkindle.css", "r", encoding="utf-8") as f_nonkindle_css,
         open("static/site.js", "r", encoding="utf-8") as f_site_js,
         open("static/index.html", "r", encoding="utf-8") as f_in,
         open(
@@ -785,10 +791,8 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
         ) as f_out,
     ):
         site_css = f_site_css.read()
-        nonkindle_css = f_nonkindle_css.read()
-        site_js = f_site_js.read().replace(
-            '"{nonkindle}"', json.dumps(nonkindle_css.strip())
-        )
+        site_js = f"var RECIPE_DESCRIPTIONS = {json.dumps(recipe_descriptions)};"
+        site_js += f_site_js.read()
         html_output = f_in.read().format(
             listing=listing,
             css=site_css,

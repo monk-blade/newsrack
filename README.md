@@ -166,55 +166,62 @@ In alphabetical order:
 <summary><b>News</b></summary>
 
 1. [Asahi Shimbun](https://www.asahi.com/ajw/)
-2. [Bloomberg News](https://www.bloomberg.com/)
-3. [Channel News Asia](https://www.channelnewsasia.com/)
-4. [The Financial Times](https://www.ft.com/)
-5. [The Financial Times (Print)](https://www.ft.com/todaysnewspaper/international)
-6. [The Guardian](https://www.theguardian.com/international)
-7. [The JoongAng Daily](https://koreajoongangdaily.joins.com/)
-8. [The Korea Herald](https://koreaherald.com/)
-9. [The New York Times](https://www.nytimes.com/)
-10. [The New York Times (Print)](https://www.nytimes.com/section/todayspaper)
-11. [South China Morning Post](https://www.scmp.com/)
-12. [Sydney Morning Herald](https://www.smh.com.au/)
-13. [Taipei Times](https://www.taipeitimes.com/)
-14. [Wall Street Journal (Print)](https://www.wsj.com/print-edition/today)
-15. [The Washington Post](https://www.washingtonpost.com/)
-16. ~~[The Japan Times](https://www.japantimes.co.jp/)~~
+2. [Channel News Asia](https://www.channelnewsasia.com/)
+3. [The Financial Times](https://www.ft.com/)
+4. [The Financial Times (Print)](https://www.ft.com/todaysnewspaper/international)
+5. [The Guardian](https://www.theguardian.com/international)
+6. [The JoongAng Daily](https://koreajoongangdaily.joins.com/)
+7. [The Korea Herald](https://koreaherald.com/)
+8. [The New York Times](https://www.nytimes.com/)
+9. [The New York Times (Print)](https://www.nytimes.com/section/todayspaper)
+10. [South China Morning Post](https://www.scmp.com/)
+11. [Sydney Morning Herald](https://www.smh.com.au/)
+12. [Taipei Times](https://www.taipeitimes.com/)
+13. [Wall Street Journal (Print)](https://www.wsj.com/print-edition/today)
+14. [The Washington Post](https://www.washingtonpost.com/)
+15. ~~[The Japan Times](https://www.japantimes.co.jp/)~~
+16. ~~[Bloomberg News](https://www.bloomberg.com/)~~
 
 </details>
 
 <details>
 <summary><b>Magazines</b></summary>
 
+1. [The Atlantic Magazine](https://www.theatlantic.com/magazine/)
+2. [The Economist](https://www.economist.com/printedition)
+3. [Foreign Affairs](https://www.foreignaffairs.com/magazine)
+4. [Harvard Business Review](https://hbr.org/magazine)
+5. [Harvard International Review](https://hir.harvard.edu/)
+6. [MIT Technology Review Magazine](https://www.technologyreview.com/magazine/)
+7. [Nature](https://www.nature.com/nature/current-issue/)
+8. [The New Republic Magazine](https://newrepublic.com/magazine)
+9. [The New Yorker](https://www.newyorker.com/)
+10. [Scientific American](https://www.scientificamerican.com/)
+11. [The Spectator](https://www.spectator.co.uk/magazine)
+12. [Time Magazine](https://time.com/magazine/)
+13. [The World Today](https://www.chathamhouse.org/publications/the-world-today/)
+14. ~~[Bloomberg Businessweek](https://www.bloomberg.com/businessweek)~~
+
+</details>
+
+<details>
+<summary><b>Online Magazines</b></summary>
+
 1. [The Atlantic](https://www.theatlantic.com/)
-2. [The Atlantic Magazine](https://www.theatlantic.com/magazine/)
-3. [Bloomberg Businessweek](https://www.bloomberg.com/businessweek)
-4. [The Diplomat](https://thediplomat.com/)
-5. [The Economist](https://www.economist.com/printedition)
-6. [FiveThirtyEight](https://fivethirtyeight.com/)
-7. [Forbes - Editor's Picks](https://www.forbes.com/editors-picks/)
-8. [Foreign Affairs](https://www.foreignaffairs.com/magazine)
-9. [Harvard Business Review](https://hbr.org/magazine)
-10. [Harvard International Review](https://hir.harvard.edu/)
-11. [MIT Press Reader](https://thereader.mitpress.mit.edu/)
-12. [MIT Technology Review](https://www.technologyreview.com/)
-13. [MIT Technology Review Magazine](https://www.technologyreview.com/magazine/)
-14. [Nature](https://www.nature.com/nature/current-issue/)
-15. [Nautilus](https://nautil.us/)
-16. [The New Republic Magazine](https://newrepublic.com/magazine)
-17. [The New Yorker](https://www.newyorker.com/)
-18. [Poetry](https://www.poetryfoundation.org/poetrymagazine)
-19. [Politico](https://www.politico.com/)
-20. [ProPublica](https://www.propublica.org/)
-21. [Rest of World](https://restofworld.org)
-22. [Scientific American](https://www.scientificamerican.com/)
-23. [The Spectator](https://www.spectator.co.uk/magazine)
-24. [The Third Pole](https://www.thethirdpole.net/)
-25. [Time Magazine](https://time.com/magazine/)
-26. [Vox](https://www.vox.com/)
-27. [Wired](https://www.wired.com/magazine/)
-28. [The World Today](https://www.chathamhouse.org/publications/the-world-today/)
+2. [The Diplomat](https://thediplomat.com/)
+3. [FiveThirtyEight](https://fivethirtyeight.com/)
+4. [Forbes - Editor's Picks](https://www.forbes.com/editors-picks/)
+5. [Knowable Magazine](https://knowablemagazine.org/)
+6. [Longreads - Features](https://longreads.com/features/)
+7. [MIT Press Reader](https://thereader.mitpress.mit.edu/)
+8. [MIT Technology Review](https://www.technologyreview.com/)
+9. [Nautilus](https://nautil.us/)
+10. [Politico](https://www.politico.com/)
+11. [ProPublica](https://www.propublica.org/)
+12. [Rest of World](https://restofworld.org)
+13. [The Third Pole](https://www.thethirdpole.net/)
+14. [Vox](https://www.vox.com/)
+15. [Wired](https://www.wired.com/magazine/)
 
 </details>
 
@@ -225,6 +232,7 @@ In alphabetical order:
 2. [Five Books](https://fivebooks.com/)
 3. [London Review of Books](https://www.lrb.co.uk/)
 4. [The New Yorks Times - Books](https://www.nytimes.com/section/books)
+5. [Poetry](https://www.poetryfoundation.org/poetrymagazine)
 
 </details>
 

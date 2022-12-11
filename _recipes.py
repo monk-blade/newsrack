@@ -35,7 +35,7 @@ from _recipe_utils import (
 #   - Recipe can be defined twice with different src_ext, will work except
 #     for potential throttling and time/bandwidth taken
 
-categories_sort: List[str] = ["News", "Magazines", "Books"]
+categories_sort: List[str] = ["News", "Magazines", "Online Magazines", "Books"]
 
 # Keep this list in alphabetical order
 recipes: List[Recipe] = [
@@ -67,7 +67,7 @@ recipes: List[Recipe] = [
         slug="the-atlantic",
         src_ext="mobi",
         target_ext=["epub"],
-        category="Magazines",
+        category="Online Magazines",
         tags=["editorial", "commentary"],
         cover_options=CoverOptions(
             logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/The_Atlantic_Logo_11.2019.svg/1200px-The_Atlantic_Logo_11.2019.svg.png"
@@ -82,30 +82,6 @@ recipes: List[Recipe] = [
         category="Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4) and last_n_days_of_month(14, -4),
         tags=["editorial", "commentary"],
-    ),
-    Recipe(
-        recipe="bloomberg-businessweek",
-        slug="bloomberg-businessweek",
-        src_ext="mobi",
-        target_ext=["epub"],
-        category="Magazines",
-        tags=["business"],
-        overwrite_cover=False,
-        enable_on=onlyon_weekdays([5]) and onlyat_hours(list(range(2, 8))),
-        timeout=600,
-    ),
-    Recipe(
-        recipe="bloomberg-news",
-        slug="bloomberg-news",
-        src_ext="mobi",
-        target_ext=["epub"],
-        category="News",
-        tags=["business"],
-        enable_on=not (onlyon_weekdays([5]) and onlyat_hours(list(range(2, 8)))),
-        timeout=360,
-        cover_options=CoverOptions(
-            logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5d/New_Bloomberg_Logo.svg/1024px-New_Bloomberg_Logo.svg.png"
-        ),
     ),
     Recipe(
         recipe="channelnewsasia",
@@ -124,7 +100,7 @@ recipes: List[Recipe] = [
         slug="the-diplomat",
         src_ext="mobi",
         target_ext=["epub"],
-        category="Magazines",
+        category="Online Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
         tags=["asia"],
         cover_options=CoverOptions(
@@ -157,7 +133,7 @@ recipes: List[Recipe] = [
         slug="fivethirtyeight",
         src_ext="mobi",
         target_ext=["epub"],
-        category="Magazines",
+        category="Online Magazines",
         tags=["politics"],
         cover_options=CoverOptions(
             logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/1/13/FiveThirtyEight_Logo.svg/1024px-FiveThirtyEight_Logo.svg.png"
@@ -170,7 +146,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         timeout=360,  # will glitch often and take a really long time
         retry_attempts=2,
-        category="Magazines",
+        category="Online Magazines",
         tags=["business"],
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4)
         and onlyat_hours(list(range(8, 20)), -4),
@@ -282,11 +258,22 @@ recipes: List[Recipe] = [
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4]),
     ),
     Recipe(
+        recipe="longreads-features",
+        slug="longreads-features",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="Online Magazines",
+        enable_on=onlyon_weekdays([0, 2, 4, 6]) and onlyat_hours(list(range(0, 6))),
+        cover_options=CoverOptions(
+            logo_path_or_url="https://i0.wp.com/longreads.com/wp-content/uploads/2022/08/longreads-logo-1.png?w=600&ssl=1"
+        ),
+    ),
+    Recipe(
         recipe="mit-press-reader",
         slug="mit-press-reader",
         src_ext="mobi",
         target_ext=["epub"],
-        category="Magazines",
+        category="Online Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4),
         cover_options=CoverOptions(
             text_colour="#444444",
@@ -298,7 +285,7 @@ recipes: List[Recipe] = [
         slug="mit-tech-review-feed",
         src_ext="mobi",
         target_ext=["epub"],
-        category="Magazines",
+        category="Online Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], -4),
         tags=["technology"],
         cover_options=CoverOptions(
@@ -331,7 +318,7 @@ recipes: List[Recipe] = [
         slug="nautilus",
         src_ext="mobi",
         target_ext=["epub"],
-        category="Magazines",
+        category="Online Magazines",
         tags=["science"],
         cover_options=CoverOptions(
             logo_path_or_url="https://assets.nautil.us/13891_bb83b72bf545e376f3ff9443bda39421.png"
@@ -405,29 +392,29 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         overwrite_cover=False,
-        category="Magazines",
+        category="Books",
         enable_on=first_n_days_of_month(7, -6) or last_n_days_of_month(7, -5),
         tags=["literature", "arts"],
-    ),
-    Recipe(
-        recipe="propublica",
-        slug="propublica",
-        src_ext="mobi",
-        target_ext=["epub"],
-        category="Magazines",
-        cover_options=CoverOptions(
-            logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/ProPublica_text_logo.svg/1280px-ProPublica_text_logo.svg.png"
-        ),
     ),
     Recipe(
         recipe="politico-magazine",
         slug="politico-magazine",
         src_ext="mobi",
         target_ext=["epub"],
-        category="Magazines",
+        category="Online Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], -5),
         cover_options=CoverOptions(
             logo_path_or_url="https://www.politico.com/dims4/default/bbb0fd2/2147483647/resize/1160x%3E/quality/90/?url=https%3A%2F%2Fstatic.politico.com%2F0e%2F5b%2F3cf3e0f04ca58370112ab667c255%2Fpolitico-logo.png"
+        ),
+    ),
+    Recipe(
+        recipe="propublica",
+        slug="propublica",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="Online Magazines",
+        cover_options=CoverOptions(
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/ProPublica_text_logo.svg/1280px-ProPublica_text_logo.svg.png"
         ),
     ),
     Recipe(
@@ -435,7 +422,7 @@ recipes: List[Recipe] = [
         slug="restofworld",
         src_ext="mobi",
         target_ext=["epub"],
-        category="Magazines",
+        category="Online Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5])
         and onlyat_hours(list(range(9, 19))),
         tags=["technology"],
@@ -503,7 +490,7 @@ recipes: List[Recipe] = [
         slug="thirdpole",
         src_ext="mobi",
         target_ext=["epub"],
-        category="Magazines",
+        category="Online Magazines",
         enable_on=onlyat_hours(list(range(5, 20)), 5.5),
         tags=["asia", "climate"],
         cover_options=CoverOptions(
@@ -524,7 +511,7 @@ recipes: List[Recipe] = [
         slug="vox",
         src_ext="mobi",
         target_ext=["epub"],
-        category="Magazines",
+        category="Online Magazines",
         cover_options=CoverOptions(
             logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a2/Vox_logo.svg/300px-Vox_logo.svg.png"
         ),
@@ -546,8 +533,10 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         overwrite_cover=True,
-        category="Magazines",
+        category="Online Magazines",
         tags=["technology"],
+        enable_on=(first_n_days_of_month(7) or last_n_days_of_month(7))
+        and onlyat_hours(list(range(10, 18))),
         cover_options=CoverOptions(
             logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Wired_logo.svg/1024px-Wired_logo.svg.png"
         ),

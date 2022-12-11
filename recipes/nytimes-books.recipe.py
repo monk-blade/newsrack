@@ -14,7 +14,7 @@ from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from calibre.web.feeds import Feed
 from calibre.web.feeds.news import BasicNewsRecipe
 
-_name = "NY Times Books"
+_name = "New York Times Books"
 
 
 class NYTimesBooks(BasicNewsRecipe):
@@ -799,11 +799,9 @@ class NYTimesBooks(BasicNewsRecipe):
 
     def open_novisit(self, *args, **kwargs):
         target_url = args[0]
-        is_nyt_static_asset = re.match(
-            r"static\d+\.nyt\.com", urlparse(target_url).netloc
-        )
+        is_wayback_cached = urlparse(target_url).netloc == "www.nytimes.com"
 
-        if not is_nyt_static_asset and self.bot_blocked:
+        if is_wayback_cached and self.bot_blocked:
             # don't use wayback for static assets because these are not blocked currently
             # and the wayback cache does not support them anyway
             self.log.warn(f"Block detected. Fetching from wayback cache: {target_url}")
@@ -818,16 +816,17 @@ class NYTimesBooks(BasicNewsRecipe):
             if hasattr(e, "code") and e.code == 403:
                 self.bot_blocked = True
                 self.delay = 0  # I don't think this makes a difference but oh well
-                if is_nyt_static_asset:
-                    # if static asset is also blocked, give up
-                    err_msg = f"Blocked by bot detection: {target_url}"
-                    self.log.warn(err_msg)
-                    self.abort_recipe_processing(err_msg)
-                    self.abort_article(err_msg)
-                self.log.warn(
-                    f"Blocked by bot detection. Fetching from wayback cache: {target_url}"
-                )
-                return self.open_from_wayback(target_url)
+                if is_wayback_cached:
+                    self.log.warn(
+                        f"Blocked by bot detection. Fetching from wayback cache: {target_url}"
+                    )
+                    return self.open_from_wayback(target_url)
+
+                # if static asset is also blocked, give up
+                err_msg = f"Blocked by bot detection: {target_url}"
+                self.log.warn(err_msg)
+                self.abort_recipe_processing(err_msg)
+                self.abort_article(err_msg)
             raise
 
     open = open_novisit

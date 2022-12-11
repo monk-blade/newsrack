@@ -11,30 +11,23 @@ from urllib.parse import urlencode
 
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from calibre.ptempfile import PersistentTemporaryDirectory, PersistentTemporaryFile
-from calibre.web.feeds.news import BasicNewsRecipe
+from calibre.web.feeds.news import BasicNewsRecipe, prefixed_classes
 
-_name = "The Third Pole"
+_name = "Longreads Features"
 
 
-class ThirdPole(BasicNewsRecipe):
+class LongreadsFeatures(BasicNewsRecipe):
     title = _name
     __author__ = "ping"
-    description = (
-        "The Third Pole is a multilingual platform dedicated to promoting "
-        "information and discussion about the Himalayan watershed and the "
-        "rivers that originate there. https://www.thethirdpole.net/"
-    )
+    description = "Sharing the best nonfiction storytelling on the web since 2011. https://longreads.com/features/"
     language = "en"
-    publication_type = "blog"
-    oldest_article = 14  # days
+    oldest_article = 30  # days
     use_embedded_content = False
     encoding = "utf-8"
     remove_javascript = True
     no_stylesheets = True
     compress_news_images = True
-    masthead_url = (
-        "https://www.thethirdpole.net/content/uploads/2020/10/ThirdPoleLogo.svg"
-    )
+    masthead_url = "https://i0.wp.com/longreads.com/wp-content/uploads/2022/08/longreads-logo-1.png?w=600&ssl=1"
     scale_news_images = (800, 800)
     scale_news_images_to_device = False  # force img to be resized to scale_news_images
     auto_cleanup = True
@@ -45,8 +38,9 @@ class ThirdPole(BasicNewsRecipe):
     temp_dir = None
 
     remove_tags = [
-        dict(class_=["block--related-news"]),
+        prefixed_classes("subscribe__"),
         dict(name=["script", "noscript", "style"]),
+        dict(class_=["wp-block-group"]),
     ]
 
     extra_css = """
@@ -58,22 +52,12 @@ class ThirdPole(BasicNewsRecipe):
     .article-img .caption, .block--article-image__caption, .wp-caption-text {
         font-size: 0.8rem; display: block; margin-top: 0.2rem;
     }
-
-    .block--pullout-stat, .block--accordion { margin-left: 0.5rem; font-family: monospace; text-align: left; }
-    .block--pullout-stat .block--pullout-stat__title,
-    .block--accordion .block--accordion__title
-    { font-size: 1rem; font-weight: bold; margin-bottom: 0.4rem; }
-    .block--pullout-stat .block--pullout-stat__content p,
-    .block--accordion .block--accordion__content__inner p
-    { margin: 0.2rem 0; }
-
-    .block--pull-quote { text-align: center; }
-    .block--pull-quote blockquote { margin-left: 0; margin-bottom: 0.4rem; font-size: 1.25rem; }
-    .block--pull-quote cite { font-style: italic; font-size: 0.8rem; }
+    p.has-text-align-center { text-align: center; }
+    blockquote.wp-block-quote, .wp-block-pullquote blockquote { text-align: center; margin-left: 0; margin-bottom: 0.4rem; font-size: 1.25rem; }
     """
 
     feeds = [
-        (_name, "https://www.thethirdpole.net/wp-json/wp/v2/posts"),
+        (_name, "https://longreads.com/wp-json/wp/v2/posts"),
     ]
 
     def _extract_featured_media(self, post, soup):
@@ -203,6 +187,12 @@ class ThirdPole(BasicNewsRecipe):
                     "page": page,
                     "per_page": per_page,
                     "after": cutoff_date.isoformat(),
+                    "categories": ",".join(
+                        [str(i) for i in [6, 15974]]
+                    ),  # 6 - Essays, 15974 - Features
+                    "tags_exclude": ",".join(
+                        [str(i) for i in [3643]]
+                    ),  # 3643 - Podcast
                     "_embed": "1",
                     "_": int(time.time() * 1000),
                 }

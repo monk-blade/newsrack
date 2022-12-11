@@ -14,13 +14,11 @@ https://opensource.org/licenses/GPL-3.0
 */
 (function () {
 
-    // stupid workaround instead of relying on screen size
-    // to increase font size for non-kindle devices
-    if (navigator.userAgent.indexOf("Mozilla/5.0 (X11") < 0) {
-        var cssEle = document.createElement("style");
-        cssEle.innerText = "{nonkindle}";       // replaced by _generate.py
-        document.head.appendChild(cssEle);
-    }
+    var searchInfo = document.getElementById("search-info");
+    var searchTextField = document.getElementById("search-text");
+    var searchButton = document.getElementById("search-button");
+    searchTextField.disabled = true;
+    searchButton.disabled = true;
 
     // in miliseconds
     var units = {
@@ -103,10 +101,14 @@ https://opensource.org/licenses/GPL-3.0
         accordion.onclick = function () {
             this.classList.toggle("is-open");
             this.nextElementSibling.classList.toggle("hide");   // content
+            var slug = this.parentElement.id;
+            if (this.nextElementSibling.childElementCount <= 0 && RECIPE_DESCRIPTIONS[slug] !== undefined) {
+                this.nextElementSibling.innerHTML = RECIPE_DESCRIPTIONS[slug];
+            }
         };
     }
 
-    // toggle collapsible toc for publication
+    // toggle publications listing for category
     var categoryButtons = document.querySelectorAll("h2.category");
     for (var i = 0; i < categoryButtons.length; i++) {
         var category = categoryButtons[i];
@@ -115,7 +117,7 @@ https://opensource.org/licenses/GPL-3.0
                 // don't do toggle action if it's a link
                 return;
             }
-            this.classList.toggle("is-open");
+            this.parentElement.classList.toggle("is-open");
             this.nextElementSibling.classList.toggle("hide");   // content
         };
     }
@@ -126,16 +128,16 @@ https://opensource.org/licenses/GPL-3.0
         shortcut.onclick = function (e) {
             e.preventDefault();
             var cat = document.getElementById(e.target.dataset["clickTarget"]);
-            cat.classList.toggle("is-open");
+            cat.parentElement.classList.toggle("is-open");
             cat.nextElementSibling.classList.toggle("hide");    // content
+            if (!cat.parentElement.classList.contains("is-open")) {
+                cat.parentElement.scrollIntoView();
+           }
         };
     }
 
-    var searchInfo = document.getElementById("search-info");
     window.addEventListener("DOMContentLoaded", function() {
         if (typeof(lunr) !== "undefined") {
-            var searchTextField = document.getElementById("search-text");
-            var searchButton = document.getElementById("search-button");
             var ogPlaceholderText = searchTextField.placeholder;
             searchTextField.placeholder = "Indexing search...";
             var periodicalsEles = document.querySelectorAll("ol.books > li");

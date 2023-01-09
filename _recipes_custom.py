@@ -269,4 +269,13 @@ recipes: List[Recipe] = [
         category="Intl Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
     ),
+    Recipe(
+        recipe="knowable-magazine",
+        slug="knowable-magazine",
+        src_ext="mobi",
+        target_ext=[],
+        category="Intl Magazines",
+        tags=["science"],
+        cover_options=CoverOptions(logo_path_or_url="https://i.imgur.com/OMxGtzQ.jpg"),
+    ),
 ]

@@ -276,6 +276,5 @@ recipes: List[Recipe] = [
         target_ext=[],
         category="Intl Magazines",
         tags=["science"],
-        cover_options=CoverOptions(logo_path_or_url="https://i.imgur.com/OMxGtzQ.jpg"),
     ),
 ]

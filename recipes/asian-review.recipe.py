@@ -4,6 +4,14 @@
 
 __license__ = "GPL v3"
 __copyright__ = "2012-2017, Darko Miletic <darko.miletic at gmail.com>"
+
+import os
+import sys
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import format_title
+
 """
 asianreviewofbooks.com
 """
@@ -67,7 +75,7 @@ class AsianReviewOfBooks(BasicNewsRecipe):
     def populate_article_metadata(self, article, soup, _):
         if not self.pub_date or self.pub_date < article.utctime:
             self.pub_date = article.utctime
-            self.title = f"{_name}: {self.pub_date:%-d %b, %Y}"
+            self.title = format_title(_name, self.pub_date)
 
     def preprocess_html(self, soup):
         # find empty <p>

@@ -2,6 +2,9 @@
 # License: GPLv3 Copyright: 2008, Kovid Goyal <kovid at kovidgoyal.net>
 
 # Modified from https://github.com/kovidgoyal/calibre/blob/1f9c67ce02acfd69b5934bba3d74ce6875b9809e/recipes/economist.recipe
+import os
+import sys
+
 try:
     from http.cookiejar import Cookie
 except ImportError:
@@ -10,6 +13,10 @@ except ImportError:
 import json
 from collections import defaultdict
 from datetime import datetime, timezone
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import format_title
 
 from calibre import replace_entities
 from calibre.ebooks.BeautifulSoup import NavigableString, Tag
@@ -386,7 +393,7 @@ class Economist(BasicNewsRecipe):
                 data["props"]["pageProps"]["content"]["datePublished"],
                 "%Y-%m-%dT%H:%M:%SZ",
             ).replace(tzinfo=timezone.utc)
-            self.title = f"{_name}: {date_published:%-d %b, %Y}"
+            self.title = format_title(_name, date_published)
             feeds_dict = defaultdict(list)
             for part in safe_dict(
                 data, "props", "pageProps", "content", "hasPart", "parts"

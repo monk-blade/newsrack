@@ -5,16 +5,23 @@
 #
 # [!] Ad-blocked, requires login
 #
+"""
+japantimes.co.jp
+"""
 
 __license__ = "GPL v3"
 __copyright__ = (
     "2008-2013, Darko Miletic <darko.miletic at gmail.com>. "
     "2022, Albert Aparicio Isarn <aaparicio at posteo.net>"
 )
-"""
-japantimes.co.jp
-"""
+
+import os
+import sys
 from datetime import datetime
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import format_title
 
 from calibre.web.feeds.news import BasicNewsRecipe
 
@@ -146,7 +153,7 @@ class JapanTimes(BasicNewsRecipe):
             meta.append(pub_date_ele)
             if (not self.pub_date) or pub_date > self.pub_date:
                 self.pub_date = pub_date
-                self.title = f"{_name}: {pub_date:%-d %B, %Y}"
+                self.title = format_title(_name, pub_date)
         soup.body.h1.insert_after(meta)
         return soup
 

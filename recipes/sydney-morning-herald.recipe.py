@@ -1,8 +1,16 @@
-__license__ = "GPL v3"
-__copyright__ = "2010-2011, Darko Miletic <darko.miletic at gmail.com>"
 """
 smh.com.au
 """
+__license__ = "GPL v3"
+__copyright__ = "2010-2011, Darko Miletic <darko.miletic at gmail.com>"
+
+import os
+import sys
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import format_title
+
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 
 # Original at https://github.com/kovidgoyal/calibre/blob/8bc3d757f4bb78ee002caf2766d7285497349097/recipes/smh.recipe
@@ -78,7 +86,7 @@ class SydneyMorningHerald(BasicNewsRecipe):
     def populate_article_metadata(self, article, _, __):
         if not self.pub_date or article.utctime > self.pub_date:
             self.pub_date = article.utctime
-            self.title = f"{_name}: {self.pub_date:%-d %b, %Y}"
+            self.title = format_title(_name, self.pub_date)
 
     def preprocess_raw_html(self, raw_html, url):
         soup = BeautifulSoup(raw_html)

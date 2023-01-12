@@ -6,6 +6,13 @@
 """
 propublica.org
 """
+import os
+import sys
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import format_title
+
 from calibre.web.feeds.news import BasicNewsRecipe
 
 _name = "ProPublica"
@@ -89,7 +96,7 @@ class ProPublica(BasicNewsRecipe):
     def populate_article_metadata(self, article, __, _):
         if (not self.pub_date) or article.utctime > self.pub_date:
             self.pub_date = article.utctime
-            self.title = f"{_name}: {article.utctime:%-d %b, %Y}"
+            self.title = format_title(_name, article.utctime)
 
     def preprocess_html(self, soup):
         for img in soup.select(".bb-image img.lazyload[data-srcset]"):

@@ -4,9 +4,15 @@
 # https://opensource.org/licenses/GPL-3.0
 
 import json
+import os
 import re
+import sys
 from datetime import datetime, timedelta, timezone
 from urllib.parse import urlparse
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import format_title
 
 from calibre import browser
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
@@ -166,7 +172,7 @@ class BloombergNews(BasicNewsRecipe):
         )
         if (not self.pub_date) or date_published > self.pub_date:
             self.pub_date = date_published
-            self.title = f"{_name}: {date_published:%-d %b, %Y}"
+            self.title = format_title(_name, date_published)
         published_at = soup.find(class_="published-dt")
         published_at.append(f"{date_published:%-I:%M%p, %-d %b, %Y}")
         if article.get("updatedAt"):
@@ -174,7 +180,7 @@ class BloombergNews(BasicNewsRecipe):
             published_at.append(f", Updated {date_updated:%-I:%M%p, %-d %b, %Y}")
             if (not self.pub_date) or date_updated > self.pub_date:
                 self.pub_date = date_updated
-                self.title = f"{_name}: {date_updated:%-d %b, %Y}"
+                self.title = format_title(_name, date_updated)
 
         soup.head.title.append(article.get("headlineText") or article["headline"])
         h1_title = soup.find("h1")

@@ -7,9 +7,15 @@
 ft.com
 """
 import json
+import os
 import re
+import sys
 from datetime import datetime, timezone
 from urllib.parse import urljoin, quote_plus
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import format_title
 
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from calibre.web.feeds.news import BasicNewsRecipe
@@ -150,7 +156,7 @@ class FinancialTimes(BasicNewsRecipe):
             article.url = og_link[0]["data-og-link"]
         if (not self.pub_date) or article.utctime > self.pub_date:
             self.pub_date = article.utctime
-            self.title = f"{_name}: {article.utctime:%-d %b, %Y}"
+            self.title = format_title(_name, article.utctime)
 
     def publication_date(self):
         return self.pub_date

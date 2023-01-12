@@ -1,8 +1,13 @@
 # Original at https://github.com/kovidgoyal/calibre/blob/29cd8d64ea71595da8afdaec9b44e7100bff829a/recipes/nature.recipe
-
+import os
 import re
+import sys
 from collections import OrderedDict
 from datetime import datetime, timezone
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import format_title
 
 from calibre.web.feeds.news import BasicNewsRecipe
 
@@ -164,7 +169,7 @@ class Nature(BasicNewsRecipe):
             )
             if mobj:
                 issue_date = datetime.strptime(mobj.group("issue_date"), "%d %B %Y")
-                self.title = f"{_name}: {issue_date:%-d %b, %Y}"
+                self.title = format_title(_name, issue_date)
 
         sectioned_feeds = OrderedDict()
         section_tags = soup.find_all(

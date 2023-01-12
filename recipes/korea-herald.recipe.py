@@ -1,9 +1,16 @@
-__license__ = "GPL v3"
-__copyright__ = "2011, Seongkyoun Yoo <Seongkyoun.yoo at gmail.com>"
 """
 koreaherald.com
 """
+__license__ = "GPL v3"
+__copyright__ = "2011, Seongkyoun Yoo <Seongkyoun.yoo at gmail.com>"
+
+import os
 import re
+import sys
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import format_title
 
 from calibre.web.feeds.news import BasicNewsRecipe
 
@@ -78,7 +85,7 @@ class KoreaHerald(BasicNewsRecipe):
     def populate_article_metadata(self, article, __, _):
         if (not self.pub_date) or article.utctime > self.pub_date:
             self.pub_date = article.utctime
-            self.title = f"{_name}: {article.utctime:%-d %b, %Y}"
+            self.title = format_title(_name, article.utctime)
 
     def preprocess_html(self, soup):
         byline_date = soup.find(attrs={"class": "view_tit_byline_r"})

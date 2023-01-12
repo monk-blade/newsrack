@@ -6,11 +6,17 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import json
+import os
 import random
 import re
+import sys
 import time
 from collections import OrderedDict
 from datetime import datetime, timedelta, timezone
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import format_title
 
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from calibre.web.feeds.news import BasicNewsRecipe, classes
@@ -144,7 +150,7 @@ class WSJ(BasicNewsRecipe):
                     if s.get("id") and s.get("label"):
                         sections.append(s)
             if sections:
-                self.title = f"{_name}: {issue_date:%-d %b, %Y}"
+                self.title = format_title(_name, issue_date)
                 break
 
         if not sections:

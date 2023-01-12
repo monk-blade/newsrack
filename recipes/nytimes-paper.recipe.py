@@ -8,8 +8,14 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import datetime
 import json
+import os
 import re
+import sys
 from urllib.parse import urlparse
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import format_title
 
 from calibre import browser
 from calibre import strftime
@@ -763,7 +769,7 @@ class NewYorkTimesPrint(BasicNewsRecipe):
         )
         # self.timefmt = strftime(" [%d %b, %Y]", date)
         self.pub_date = date
-        self.title = f"{_name}: {date:%-d %b, %Y}"
+        self.title = format_title(_name, date)
         return soup
 
     def parse_index(self):

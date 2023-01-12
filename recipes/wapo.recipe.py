@@ -4,8 +4,14 @@
 # https://opensource.org/licenses/GPL-3.0
 
 import json
+import os
+import sys
 from datetime import datetime
 from urllib.parse import urljoin
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import format_title
 
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from calibre.web.feeds.news import BasicNewsRecipe
@@ -225,7 +231,7 @@ class TheWashingtonPost(BasicNewsRecipe):
                 pass
         if not self.pub_date or post_date > self.pub_date:
             self.pub_date = post_date
-            self.title = f"{_name}: {post_date:%-d %b, %Y}"
+            self.title = format_title(_name, post_date)
         title = content["headlines"]["basic"]
         html = f"""<html>
         <head></head>

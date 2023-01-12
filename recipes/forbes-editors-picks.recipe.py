@@ -1,6 +1,12 @@
 import json
+import os
+import sys
 from datetime import datetime, timezone, timedelta
 from urllib.parse import urlencode
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import format_title
 
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from calibre.web.feeds.news import BasicNewsRecipe
@@ -96,7 +102,7 @@ class ForbesEditorsPicks(BasicNewsRecipe):
             ).replace(tzinfo=timezone.utc)
             if (not self.pub_date) or modified_date > self.pub_date:
                 self.pub_date = modified_date
-                self.title = f"{_name}: {self.pub_date:%-d %b, %Y}"
+                self.title = format_title(_name, self.pub_date)
             article.utctime = modified_date
             article.localtime = modified_date
 
@@ -141,7 +147,7 @@ class ForbesEditorsPicks(BasicNewsRecipe):
 
                 if (not self.pub_date) or item_date > self.pub_date:
                     self.pub_date = item_date
-                    self.title = f"{_name}: {self.pub_date:%-d %b, %Y}"
+                    self.title = format_title(_name, self.pub_date)
 
                 articles.append(
                     {

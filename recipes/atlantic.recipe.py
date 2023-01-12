@@ -4,8 +4,14 @@
 from __future__ import unicode_literals
 
 import json
+import os
 import re
+import sys
 from datetime import datetime, timezone
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import format_title
 
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from calibre.web.feeds.news import BasicNewsRecipe
@@ -254,7 +260,7 @@ class TheAtlantic(BasicNewsRecipe):
             ).replace(tzinfo=timezone.utc)
             if (not self.pub_date) or modified_date > self.pub_date:
                 self.pub_date = modified_date
-                self.title = f"{_name}: {modified_date:%-d %b, %Y}"
+                self.title = format_title(_name, modified_date)
 
         published = soup.find(attrs={"data-published": True})
         if published:
@@ -264,4 +270,4 @@ class TheAtlantic(BasicNewsRecipe):
             article.utctime = published_date
             if (not self.pub_date) or published_date > self.pub_date:
                 self.pub_date = published_date
-                self.title = f"{_name}: {published_date:%-d %b, %Y}"
+                self.title = format_title(_name, published_date)

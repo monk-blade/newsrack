@@ -312,6 +312,10 @@ def _linkify_attrs(attrs, new=False):
 
 
 def run(publish_site, source_url, commit_hash, verbose_mode):
+
+    # set path to recipe includes in os environ so that recipes can pick it up
+    os.environ["recipes_includes"] = os.path.abspath("recipes/includes/")
+
     # for GitHub
     job_summary = """| Recipe | Status | Duration |
 | ------ | ------ | -------- |
@@ -370,6 +374,9 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
             except Exception as err:  # noqa
                 logger.exception("Error getting recipe name")
                 continue
+
+        if os.path.exists(f"{recipe.recipe}.recipe"):
+            os.environ["newsrack_title_dt_format"] = recipe.title_date_format
 
         recipe.is_enabled()
         job_status = ""
@@ -782,10 +789,20 @@ def run(publish_site, source_url, commit_hash, verbose_mode):
     with open(os.path.join(meta_folder, job_log_filename), "w", encoding="utf-8") as f:
         json.dump(job_log, f, indent=0)
 
+    site_css = "static/site.css"
+    if os.path.exists("static/custom.css"):
+        site_css = "static/custom.css"
+    site_js = "static/site.js"
+    if os.path.exists("static/custom.js"):
+        site_js = "static/custom.js"
+    site_html = "static/index.html"
+    if os.path.exists("static/custom.html"):
+        site_html = "static/custom.html"
+
     with (
-        open("static/site.css", "r", encoding="utf-8") as f_site_css,
-        open("static/site.js", "r", encoding="utf-8") as f_site_js,
-        open("static/index.html", "r", encoding="utf-8") as f_in,
+        open(site_css, "r", encoding="utf-8") as f_site_css,
+        open(site_js, "r", encoding="utf-8") as f_site_js,
+        open(site_html, "r", encoding="utf-8") as f_in,
         open(
             os.path.join(publish_folder, "index.html"), "w", encoding="utf-8"
         ) as f_out,

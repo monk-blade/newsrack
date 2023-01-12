@@ -2,6 +2,13 @@
 nautil.us
 """
 # Original from https://github.com/kovidgoyal/calibre/blob/946ae082e1291f61d88638ff3f3723df591da835/recipes/nautilus.recipe
+import os
+import sys
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import format_title
+
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 
 _name = "Nautilus"
@@ -83,7 +90,7 @@ class Nautilus(BasicNewsRecipe):
     def populate_article_metadata(self, article, __, _):
         if (not self.pub_date) or article.utctime > self.pub_date:
             self.pub_date = article.utctime
-            self.title = f"{_name}: {article.utctime:%-d %b, %Y}"
+            self.title = format_title(_name, article.utctime)
 
     # def get_cover_url(self):
     #     soup = self.index_to_soup("https://www.presspassnow.com/nautilus/issues/")

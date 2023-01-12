@@ -4,11 +4,17 @@
 # https://opensource.org/licenses/GPL-3.0
 
 import json
+import os
 import shutil
+import sys
 import time
 from datetime import datetime, timedelta, timezone
 from html import unescape
 from urllib.parse import urlencode
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import format_title
 
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from calibre.ptempfile import PersistentTemporaryDirectory, PersistentTemporaryFile
@@ -225,7 +231,7 @@ class ThirdPole(BasicNewsRecipe):
                 post_date = datetime.strptime(p["date"], "%Y-%m-%dT%H:%M:%S")
                 if not latest_post_date or post_date > latest_post_date:
                     latest_post_date = post_date
-                    self.title = f"{feed_name}: {post_date:%-d %b, %Y}"
+                    self.title = format_title(feed_name, post_date)
 
                 section_name = f"{post_date:%-d %B, %Y}"
                 if len(self.get_feeds()) > 1:

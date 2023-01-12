@@ -2,6 +2,12 @@
 #
 # This software is released under the GNU General Public License v3.0
 # https://opensource.org/licenses/GPL-3.0
+import os
+import sys
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import format_title
 
 from calibre.utils.date import parse_date
 from calibre.web.feeds.news import BasicNewsRecipe
@@ -69,7 +75,7 @@ class MITPressReader(BasicNewsRecipe):
         post_date = parse_date(time_ele["datetime"])
         if (not self.pub_date) or post_date > self.pub_date:
             self.pub_date = post_date
-            self.title = f"{_name}: {post_date:%-d %b, %Y}"
+            self.title = format_title(_name, post_date)
         athor_ele = soup.find(class_="ma-top-shares-left")
         if athor_ele:
             post_date_ele = soup.new_tag("div")

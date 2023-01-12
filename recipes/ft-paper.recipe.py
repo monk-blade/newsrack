@@ -4,9 +4,15 @@ ft.com
 # Original from https://github.com/kovidgoyal/calibre/blob/902e80ec173bc40037efb164031043994044ec6c/recipes/financial_times_print_edition.recipe
 
 import json
+import os
 import re
+import sys
 from datetime import datetime, timezone
 from urllib.parse import quote_plus, urljoin
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import format_title
 
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from calibre.web.feeds.news import BasicNewsRecipe, classes
@@ -127,7 +133,7 @@ class FinancialTimesPrint(BasicNewsRecipe):
             ).replace(tzinfo=timezone.utc)
             if (not self.pub_date) or date_published > self.pub_date:
                 self.pub_date = date_published
-                self.title = f"{_name}: {date_published:%-d %b, %Y}"
+                self.title = format_title(_name, date_published)
 
         paragraphs = []
         lede_image_url = article.get("image", {}).get("url")

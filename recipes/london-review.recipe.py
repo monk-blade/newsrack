@@ -7,32 +7,31 @@ import json
 import os
 import sys
 from datetime import datetime, timezone
+from urllib.parse import urljoin
 
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
-from recipes_shared import format_title
+try:
+    from recipes_shared import BasicNewsrackRecipe, format_title
+except ImportError:
+    # just for Pycharm to pick up for auto-complete
+    from includes.recipes_shared import BasicNewsrackRecipe, format_title
 
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 
 
-def absolutize(href):
-    if href.startswith("/"):
-        href = "https://www.lrb.co.uk" + href
-    return href
-
-
+_issue_url = ""  # custom issue url
 _name = "London Review of Books"
 
 
-class LondonReviewOfBooksPayed(BasicNewsRecipe):
+class LondonReviewOfBooks(BasicNewsrackRecipe, BasicNewsRecipe):
     title = _name
     __author__ = "Kovid Goyal"
     description = "Literary review publishing essay-length book reviews and topical articles on politics, literature, history, philosophy, science and the arts by leading writers and thinkers https://www.lrb.co.uk/"  # noqa
     category = "news, literature, UK"
     publisher = "LRB Ltd."
     language = "en_GB"
-    no_stylesheets = True
-    remove_javascript = True
+
     # delay = 1
     encoding = "utf-8"
     INDEX = "https://www.lrb.co.uk"
@@ -40,16 +39,9 @@ class LondonReviewOfBooksPayed(BasicNewsRecipe):
     needs_subscription = False
     requires_version = (3, 0, 0)
 
-    # masthead_url = "https://www.lrb.co.uk/assets/icons/apple-touch-icon.png"
     masthead_url = (
         "https://www.pw.org/files/small_press_images/london_review_of_books.png"
     )
-    compress_news_images = True
-    scale_news_images = (800, 800)
-    scale_news_images_to_device = False  # force img to be resized to scale_news_images
-    timeout = 20
-    timefmt = ""
-    pub_date = None
 
     keep_only_tags = [
         classes(
@@ -70,9 +62,6 @@ class LondonReviewOfBooksPayed(BasicNewsRecipe):
     .article-reviewed-item .article-reviewed-item-title { font-weight: bold; }
     """
 
-    def publication_date(self):
-        return self.pub_date
-
     def get_browser(self, *a, **kw):
         kw[
             "user_agent"
@@ -88,10 +77,6 @@ class LondonReviewOfBooksPayed(BasicNewsRecipe):
         if info_ele:
             info = json.loads(info_ele.contents[0])
             soup.body["data-og-summary"] = info.get("description", "")
-            # example: 2022-08-04T00:00:00+00:00
-            published_date = datetime.strptime(
-                info["datePublished"][:19], "%Y-%m-%dT%H:%M:%S"
-            ).replace(tzinfo=timezone.utc)
             # example: 2022-07-28T12:07:08+00:00
             modified_date = datetime.strptime(
                 info["dateModified"][:19], "%Y-%m-%dT%H:%M:%S"
@@ -99,7 +84,6 @@ class LondonReviewOfBooksPayed(BasicNewsRecipe):
             soup.body["data-og-date"] = f"{modified_date:%Y-%m-%d %H:%M:%S}"
             if not self.pub_date or modified_date > self.pub_date:
                 self.pub_date = modified_date
-                self.title = format_title(_name, published_date)
         else:
             letter_ele = soup.find(attrs={"class": "letters-titles--date"})
             if letter_ele:
@@ -130,16 +114,25 @@ class LondonReviewOfBooksPayed(BasicNewsRecipe):
             article.localtime = modified_date
 
     def parse_index(self):
-        soup = self.index_to_soup(self.INDEX)
-        container = soup.find(attrs={"class": "issue-grid"})
-        img = container.find("img")
-        self.cover_url = img["data-srcset"].split()[-2]
-        a = img.findParent("a")
-        soup = self.index_to_soup(absolutize(a["href"]))
+        if not _issue_url:
+            soup = self.index_to_soup(self.INDEX)
+            container = soup.find(class_="issue-grid")
+            a = container.find("a")
+
+            soup = self.index_to_soup(urljoin(self.INDEX, a["href"]))
+        else:
+            soup = self.index_to_soup(_issue_url)
+        cover_link = soup.find("a", class_="issue-cover-link")
+        if cover_link:
+            self.cover_url = cover_link["href"]
+
+        h1 = soup.find("h1", class_="toc-title")
+        self.title = f"{_name}: {self.tag_to_string(h1)}"
+
         grid = soup.find(attrs={"class": "toc-grid-items"})
         articles = []
         for a in grid.findAll(**classes("toc-item")):
-            url = absolutize(a["href"])
+            url = urljoin(self.INDEX, a["href"])
             h3 = a.find("h3")
             h4 = a.find("h4")
             review_items = h4.find_all(

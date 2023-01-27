@@ -19,24 +19,25 @@ except ImportError:
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from calibre.web.feeds.news import BasicNewsRecipe
 
-_name = "The Third Pole"
+_name = "Fulcrum"
 
 
-class ThirdPole(WordPressNewsrackRecipe, BasicNewsRecipe):
+class FulcrumSg(WordPressNewsrackRecipe, BasicNewsRecipe):
     title = _name
     __author__ = "ping"
     description = (
-        "The Third Pole is a multilingual platform dedicated to promoting "
-        "information and discussion about the Himalayan watershed and the "
-        "rivers that originate there. https://www.thethirdpole.net/"
+        "Fulcrum is published by the ISEAS – Yusof Ishak Institute. "
+        "To showcase, in a readable and accessible fashion, ISEAS’ excellent "
+        "research in socio-political, economic and geostrategic trends in "
+        "Southeast Asia and the wider region. https://fulcrum.sg/"
     )
     language = "en"
     publication_type = "blog"
-    oldest_article = 14  # days
+    masthead_url = "https://i0.wp.com/fulcrum.sg/wp-content/uploads/logo.png"
+
+    oldest_article = 30  # days
     encoding = "utf-8"
-    masthead_url = (
-        "https://www.thethirdpole.net/content/uploads/2020/10/ThirdPoleLogo.svg"
-    )
+    compress_news_images_auto_size = 10
     reverse_article_order = False
 
     remove_tags = [
@@ -53,6 +54,8 @@ class ThirdPole(WordPressNewsrackRecipe, BasicNewsRecipe):
     .article-img .caption, .block--article-image__caption, .wp-caption-text {
         font-size: 0.8rem; display: block; margin-top: 0.2rem;
     }
+    .caption p { margin-top: 0; }
+    .article-excerpt { font-size: 1.25rem; font-style: italic; }
 
     .block--pullout-stat, .block--accordion { margin-left: 0.5rem; font-family: monospace; text-align: left; }
     .block--pullout-stat .block--pullout-stat__title,
@@ -62,13 +65,11 @@ class ThirdPole(WordPressNewsrackRecipe, BasicNewsRecipe):
     .block--accordion .block--accordion__content__inner p
     { margin: 0.2rem 0; }
 
-    .block--pull-quote { text-align: center; }
-    .block--pull-quote blockquote { margin-left: 0; margin-bottom: 0.4rem; font-size: 1.25rem; }
-    .block--pull-quote cite { font-style: italic; font-size: 0.8rem; }
+    blockquote { text-align: center; margin-left: 0; margin-bottom: 0.4rem; font-size: 1.25rem; }
     """
 
     feeds = [
-        (_name, "https://www.thethirdpole.net/wp-json/wp/v2/posts"),
+        (_name, "https://fulcrum.sg/wp-json/wp/v2/posts"),
     ]
 
     def _extract_featured_media(self, post, soup):
@@ -86,6 +87,11 @@ class ThirdPole(WordPressNewsrackRecipe, BasicNewsRecipe):
         if not post.get("featured_media"):
             return post_content
 
+        if post.get("excerpt", {}).get("rendered"):
+            container_ele = soup.new_tag("div", attrs={"class": "article-excerpt"})
+            container_ele.append(BeautifulSoup(post["excerpt"]["rendered"]))
+            post_content = str(container_ele) + post_content
+
         feature_media_css = f"wp-image-{post['featured_media']}"
         if feature_media_css in post_content:
             # check already not embedded
@@ -95,12 +101,12 @@ class ThirdPole(WordPressNewsrackRecipe, BasicNewsRecipe):
             # put feature media at the start of the post
             if feature_info.get("source_url"):
                 # higher-res
-                container_ele = soup.new_tag("p", attrs={"class": "article-img"})
+                container_ele = soup.new_tag("div", attrs={"class": "article-img"})
                 img_ele = soup.new_tag("img", src=feature_info["source_url"])
                 container_ele.append(img_ele)
-                if feature_info.get("title", {}).get("rendered"):
-                    cap_ele = soup.new_tag("span", attrs={"class": "caption"})
-                    cap_ele.append(feature_info["title"]["rendered"])
+                if feature_info.get("caption", {}).get("rendered"):
+                    cap_ele = soup.new_tag("div", attrs={"class": "caption"})
+                    cap_ele.append(BeautifulSoup(feature_info["caption"]["rendered"]))
                     container_ele.append(cap_ele)
                 post_content = str(container_ele) + post_content
             else:
@@ -114,8 +120,12 @@ class ThirdPole(WordPressNewsrackRecipe, BasicNewsRecipe):
         # formulate the api response into html
         post = json.loads(raw_html)
         date_published_loc = datetime.strptime(post["date"], "%Y-%m-%dT%H:%M:%S")
-        post_authors = self.extract_authors(post)
+        if post.get("commentaries_author"):
+            post_authors = [post["commentaries_author"]]
+        else:
+            post_authors = self.extract_authors(post)
         categories = self.extract_categories(post)
+        categories.extend(self.extract_tags(post))
 
         soup = BeautifulSoup(
             f"""<html>
@@ -142,7 +152,10 @@ class ThirdPole(WordPressNewsrackRecipe, BasicNewsRecipe):
         articles = {}
         br = self.get_browser()
         for feed_name, feed_url in self.feeds:
-            custom_params = {"rest_route": None}
+            custom_params = {
+                "rest_route": None,
+                "tags_exclude": 1593,  # Podcasts
+            }
             articles = self.get_articles(
                 articles, feed_name, feed_url, self.oldest_article, custom_params, br
             )

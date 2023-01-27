@@ -12,7 +12,11 @@ from urllib.parse import urlparse
 
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
-from recipes_shared import format_title
+try:
+    from recipes_shared import BasicNewsrackRecipe, format_title
+except ImportError:
+    # just for Pycharm to pick up for auto-complete
+    from includes.recipes_shared import BasicNewsrackRecipe, format_title
 
 from calibre import browser
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
@@ -24,7 +28,7 @@ _name = "Bloomberg News"
 blocked_path_re = re.compile(r"/tosv.*.html")
 
 
-class BloombergNews(BasicNewsRecipe):
+class BloombergNews(BasicNewsrackRecipe, BasicNewsRecipe):
     title = _name
     __author__ = "ping"
     description = (
@@ -36,10 +40,7 @@ class BloombergNews(BasicNewsRecipe):
         "https://upload.wikimedia.org/wikipedia/commons/5/5d/New_Bloomberg_Logo.svg"
     )
     ignore_duplicate_articles = {"url"}
-    no_stylesheets = True
-    remove_javascript = True
     auto_cleanup = False
-    timeout = 20
 
     # NOTES: Bot detection kicks in really easily so either:
     # - limit the number of feeds
@@ -49,12 +50,7 @@ class BloombergNews(BasicNewsRecipe):
     oldest_article = 1
     max_articles_per_feed = 25
 
-    compress_news_images = True
     compress_news_images_auto_size = 8
-    scale_news_images = (800, 800)
-    scale_news_images_to_device = False  # force img to be resized to scale_news_images
-    timefmt = ""  # suppress date output
-    pub_date = None  # custom publication date
     bot_blocked = False
     download_count = 0
 
@@ -90,9 +86,6 @@ class BloombergNews(BasicNewsRecipe):
     feeds = [
         ("News", "https://www.bloomberg.com/feeds/sitemap_news.xml"),
     ]
-
-    def publication_date(self):
-        return self.pub_date
 
     # We send no cookies to avoid triggering bot detection
     def get_browser(self, *args, **kwargs):
@@ -159,7 +152,7 @@ class BloombergNews(BasicNewsRecipe):
         article = article["story"]
         date_published = parse_date(article["publishedAt"], assume_utc=True)
         soup = BeautifulSoup(
-            f"""<html>
+            """<html>
         <head><title></title></head>
         <body>
             <article>

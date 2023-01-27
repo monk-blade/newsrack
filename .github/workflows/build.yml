@@ -43,18 +43,20 @@ jobs:
     # Customise: Total job run time limit
     timeout-minutes: 60
     steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+          fetch-depth: 1
+
       - name: Setup node
         uses: actions/setup-node@v3
         with:
           node-version: 18
 
       - name: Install npm dependencies
-        run: npm install -g sass terser html-minifier-terser
-
-      - uses: actions/checkout@v3
-        with:
-          submodules: true
-          fetch-depth: 1
+        run: |
+          npm install && \
+          npm install -g sass terser html-minifier-terser
 
       - uses: actions/setup-python@v4
         with:
@@ -63,13 +65,14 @@ jobs:
       - name: Install python requirements
         run: pip install -r requirements.txt
 
-      - name: Install calibre dependencies
-        run: sudo apt-fast update -y && sudo apt-fast install --no-install-recommends -y libegl1 libopengl0
+      - name: Install calibre and other dependencies
+        run: sudo apt-fast update -y && sudo apt-fast install --no-install-recommends -y libegl1 libopengl0 imagemagick
 
       - name: Get latest calibre version
         id: calibrelatest
         run: |
-          tag="$(curl -L --retry 2 --silent --fail 'https://api.github.com/repos/kovidgoyal/calibre/releases/latest' | jq -r .tag_name)" && \
+          tag="$(curl -L --retry 3 --silent --fail 'https://api.github.com/repos/kovidgoyal/calibre/releases/latest' | jq -r .tag_name)" && \
+          echo "calibre_ver=${tag#*v}" && \
           echo "calibre_ver=${tag#*v}" >> $GITHUB_ENV
 
       - name: Calibre binaries cache
@@ -106,7 +109,7 @@ jobs:
         run: |
           sh build.sh
           if [[ -f 'job_summary.md' ]]; then cat 'job_summary.md' >> $GITHUB_STEP_SUMMARY; fi
-          echo -e "\n<"'!'"-- Commit ${GITHUB_SHA:0:7} -->" >> public/index.html
+          echo -e "\n<"'!'"-- Commit ${GITHUB_SHA:0:7}, $(ebook-convert --version | head -n1) -->" >> public/index.html
           rm -rf "$CALIBRE_CONFIG_DIRECTORY"
 
       # Ref: https://github.com/actions/starter-workflows/blob/main/pages/static.yml

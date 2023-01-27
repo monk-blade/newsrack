@@ -6,9 +6,19 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import json
+import os
 import re
+import sys
 from collections import OrderedDict
 from datetime import datetime, timezone
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+try:
+    from recipes_shared import BasicNewsrackRecipe
+except ImportError:
+    # just for Pycharm to pick up for auto-complete
+    from includes.recipes_shared import BasicNewsrackRecipe
 
 from calibre import browser
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
@@ -25,7 +35,7 @@ def absurl(x):
 _name = "New Yorker"
 
 
-class NewYorker(BasicNewsRecipe):
+class NewYorker(BasicNewsrackRecipe, BasicNewsRecipe):
 
     title = _name
     description = (
@@ -36,18 +46,10 @@ class NewYorker(BasicNewsRecipe):
     language = "en"
     __author__ = "Kovid Goyal"
     encoding = "utf-8"
-    no_stylesheets = True
-    remove_javascript = True
     remove_empty_feeds = True
     masthead_url = "https://www.newyorker.com/verso/static/the-new-yorker/assets/logo-seo.38af6104b89a736857892504d04dbb9a3a56e570.png"
 
-    compress_news_images = True
     compress_news_images_auto_size = 10
-    scale_news_images = (800, 800)
-    scale_news_images_to_device = False  # force img to be resized to scale_news_images
-    timeout = 20
-    timefmt = ""
-    pub_date = None  # custom publication date
 
     extra_css = """
         [data-testid="message-banner"] { font-size: 0.8rem; }
@@ -86,9 +88,6 @@ class NewYorker(BasicNewsRecipe):
         dict(name=["button"]),
     ]
     remove_attributes = ["style", "sizes", "data-event-click"]
-
-    def publication_date(self):
-        return self.pub_date
 
     def preprocess_raw_html(self, raw_html, url):
         soup = BeautifulSoup(raw_html)
@@ -276,12 +275,8 @@ class NewYorker(BasicNewsRecipe):
             if cover_img is not None:
                 self.cover_url = cover_img.get("src")
                 try:
-                    # the src original resolution w_280 was too low, replace w_280 with w_560
-                    cover_url_width_index = self.cover_url.find("w_")
-                    old_width = self.cover_url[
-                        cover_url_width_index : cover_url_width_index + 5
-                    ]
-                    self.cover_url = self.cover_url.replace(old_width, "w_560")
+                    # the src original resolution w_280 was too low, replace w_280 with w_960
+                    self.cover_url = re.sub(r"\bw_\d+\b", "w_960", self.cover_url)
                 except Exception:
                     self.log.warning(
                         "Failed enlarging cover img, using the original one"

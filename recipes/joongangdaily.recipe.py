@@ -12,7 +12,11 @@ from datetime import timezone, timedelta
 
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
-from recipes_shared import format_title
+try:
+    from recipes_shared import BasicNewsrackRecipe, format_title
+except ImportError:
+    # just for Pycharm to pick up for auto-complete
+    from includes.recipes_shared import BasicNewsrackRecipe, format_title
 
 from calibre.web.feeds import Feed
 from calibre.web.feeds.news import BasicNewsRecipe
@@ -20,28 +24,22 @@ from calibre.web.feeds.news import BasicNewsRecipe
 _name = "JoongAng Daily"
 
 
-class KoreaJoongAngDaily(BasicNewsRecipe):
+class KoreaJoongAngDaily(BasicNewsrackRecipe, BasicNewsRecipe):
     title = _name
     description = "The Korea JoongAng Daily is an English-language daily published by the JoongAng Group, Korea’s leading media group, in association with The New York Times. https://koreajoongangdaily.joins.com/"
     language = "en"
     __author__ = "ping"
     publication_type = "newspaper"
-    oldest_article = 1  # days
-    max_articles_per_feed = 60
-    use_embedded_content = True
-    no_stylesheets = True
-    remove_javascript = True
-    encoding = "utf-8"
-    compress_news_images = True
     masthead_url = (
         "https://koreajoongangdaily.joins.com/resources/images/common/logo.png"
     )
-    scale_news_images = (800, 800)
-    scale_news_images_to_device = False  # force img to be resized to scale_news_images
+    encoding = "utf-8"
+    use_embedded_content = True
     auto_cleanup = True
-    timeout = 60
-    timefmt = ""
-    pub_date = None  # custom publication date
+    compress_news_images_auto_size = 10
+
+    oldest_article = 1  # days
+    max_articles_per_feed = 60
 
     feeds = [
         ("Korea JoongAng Daily", "https://koreajoongangdaily.joins.com/xmls/joins"),
@@ -51,9 +49,6 @@ class KoreaJoongAngDaily(BasicNewsRecipe):
         if (not self.pub_date) or article.utctime > self.pub_date:
             self.pub_date = article.utctime
             self.title = format_title(_name, article.utctime)
-
-    def publication_date(self):
-        return self.pub_date
 
     def parse_feeds(self):
         # convert single parsed feed into date-sectioned feed

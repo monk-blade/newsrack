@@ -33,6 +33,7 @@ https://opensource.org/licenses/GPL-3.0
         second: 1000
     };
 
+    const isKindleBrowser = typeof (Intl) === "undefined";
     let rtf = null;
     if (typeof (Intl) !== "undefined") {
         // the Kindle browser doesn't support Intl
@@ -78,6 +79,14 @@ https://opensource.org/licenses/GPL-3.0
         }
     }
 
+    function isScrolledIntoView(ele) {
+        const rect = ele.getBoundingClientRect();
+        // Only completely visible elements return true:
+        return (rect.top >= 0) && (rect.bottom <= window.innerHeight);
+        // Partially visible elements return true:
+        // return rect.top < window.innerHeight && rect.bottom >= 0;
+    }
+
     const refreshedDateEle = document.getElementById("refreshed_dt");
     const refreshedDate = new Date(parseInt(refreshedDateEle.attributes["data-refreshed-date"].value));
     refreshedDateEle.title = refreshedDate.toLocaleString();
@@ -103,6 +112,17 @@ https://opensource.org/licenses/GPL-3.0
     for (let i = 0; i < accordionBtns.length; i++) {
         const accordion = accordionBtns[i];
         accordion.onclick = function () {
+            if (!isKindleBrowser && !this.classList.contains("is-open")) {
+                // don't do this for the Kindle browser, because scrollIntoView doesn't seem to work
+                // opening periodical
+                const openedPeriodicals = document.querySelectorAll(".pub-date.is-open");
+                for (let j = 0; j < openedPeriodicals.length; j++) {
+                    // close other opened periodicals
+                    const openedPeriodical = openedPeriodicals[j];
+                    openedPeriodical.classList.remove("is-open");
+                    openedPeriodical.nextElementSibling.classList.add("hide");  // content
+                }
+            }
             this.classList.toggle("is-open");
             this.nextElementSibling.classList.toggle("hide");   // content
             const slug = this.parentElement.id;
@@ -114,6 +134,16 @@ https://opensource.org/licenses/GPL-3.0
                         + RECIPE_COVERS[slug]["thumbnail"] + '"></a></p>';
                 }
                 this.nextElementSibling.innerHTML += RECIPE_DESCRIPTIONS[slug];
+            }
+            try {
+                // scroll into element into view in case closing off another
+                // content listing causes current periodical to go off-screen
+                // don't do this for the Kindle browser, because scrollIntoView doesn't seem to work
+                if (!isKindleBrowser && !isScrolledIntoView(this.parentElement)) {
+                    this.parentElement.scrollIntoView();
+                }
+            } catch (e) {
+                console.error(e);
             }
         };
     }
@@ -178,7 +208,9 @@ https://opensource.org/licenses/GPL-3.0
                     const id = periodical["id"];
                     const catName = periodical.dataset["catName"];
                     const title = periodical.querySelector(".title").textContent;
-                    const articlesEles = periodical.querySelectorAll(".contents > ul > li");
+                    const contentTemp = document.createElement("div");
+                    contentTemp.innerHTML = RECIPE_DESCRIPTIONS[id];
+                    const articlesEles = contentTemp.querySelectorAll("ul > li");
                     const articles = [];
                     for (let j = 0; j < articlesEles.length; j++) {
                         const articleEle = articlesEles[j];
@@ -262,7 +294,11 @@ https://opensource.org/licenses/GPL-3.0
                         if (contentsEle) {
                             contentsEle.classList.remove("hide");
                         }
-                        periodical.querySelector(".contents").classList.remove("hide");
+                        contentsEle.classList.remove("hide");
+                        if (contentsEle.innerHTML === "") {
+                            contentsEle.innerHTML = RECIPE_DESCRIPTIONS[id];
+                        }
+
                     } else {
                         pubDateEle.classList.remove("is-open");
                         if (contentsEle) {

@@ -30,7 +30,7 @@ class CoverOptions:
     background_colour: str = "white"
     title_font_path: str = "static/OpenSans-Bold.ttf"
     title_font_size: int = 80
-    datestamp_font_path: str = "static/OpenSans-Bold.ttf"
+    datestamp_font_path: str = "static/OpenSans-Semibold.ttf"
     datestamp_font_size: int = 72
     logo_path_or_url: str = ""  # must be a png/jpg/gif
 
@@ -63,7 +63,7 @@ class Recipe:
         CoverOptions()
     )  # customise script-generated cover, used when overwrite_cover=True
     tags: List[str] = field(default_factory=list)  # used in search
-    title_date_format: str = "%-d %b, %Y"
+    title_date_format: str = "%-d %b, %Y"  # used to format the date in the title
 
     def is_enabled(self) -> bool:
         if callable(self.enable_on):

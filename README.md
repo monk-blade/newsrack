@@ -2,8 +2,17 @@
 
 Generate an online "newsrack" of periodicals for your ereader.
 
+Features:
+- Download anywhere using your device browser
+- Subscribe via OPDS feeds
+
 Uses [calibre](https://calibre-ebook.com/) + [recipes](https://manual.calibre-ebook.com/news_recipe.html), [GitHub Actions](.github/workflows/build.yml), and hosted
 on [GitHub Pages](https://pages.github.com/).
+
+![eInk Kindle Screenshot](https://user-images.githubusercontent.com/104607/221388326-f3f80593-18e9-4f48-9e80-340a00dce10f.png)
+![Mobile Screenshot](https://user-images.githubusercontent.com/104607/221388328-b1fc17f6-2f60-4691-9a8d-177ced28f5a4.jpg)
+
+<a href="https://www.buymeacoffee.com/ping"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=ping&button_colour=FFDD00&font_colour=000000&font_family=Bree&outline_colour=000000&coffee_colour=ffffff" /></a>
 
 ## Running Your Own Instance
 
@@ -13,8 +22,10 @@ on [GitHub Pages](https://pages.github.com/).
 2. Create a new branch, for example `custom`. Using a new branch makes a few things, like contributing fixes for example, easier.
 3. Add your own recipes to the [`recipes_custom/`](recipes_custom) folder and customise [_recipes_custom.py](_recipes_custom.py). Optional.
 4. Customise the cron schedule and job run time in [.github/workflows/build.yml](.github/workflows/build.yml). Optional.
-5. Set the new branch `custom` as default.
-6. Enable Pages in repository settings to deploy from `GitHub Actions`.
+5. Set the new branch `custom` as default
+   - from Settings > Branches > Default branch
+6. Enable Pages in repository settings to deploy from `GitHub Actions`
+   - from Settings > Pages > Build and deployment > Source
 7. If needed, manually trigger the `Build` workflow from Actions to start your first build.
 
 ### What Can Be Customised
@@ -48,6 +59,7 @@ Recipe(
     retry_attempts=1,  # retry attempts on TimeoutExpired, ReadTimeout
     cover_options=CoverOptions(),  # cover options
     tags=["example"],   # used in search
+    title_date_format = "%-d %b, %Y"  # used to format the date in the title
 ),
 ```
 
@@ -230,14 +242,15 @@ In alphabetical order:
 </details>
 
 <details>
-<summary><b>Books</b></summary>
+<summary><b>Arts & Culture</b></summary>
 
 1. [Asian Review of Books](https://asianreviewofbooks.com)
 2. [Five Books](https://fivebooks.com/)
 3. [Literary Hub](https://lithub.com)
 4. [London Review of Books](https://www.lrb.co.uk/)
 5. [The New Yorks Times - Books](https://www.nytimes.com/section/books)
-6. [Poetry](https://www.poetryfoundation.org/poetrymagazine)
+6. [The Paris Review - Daily](https://www.theparisreview.org/blog/)
+7. [Poetry](https://www.poetryfoundation.org/poetrymagazine)
 
 </details>
 

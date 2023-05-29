@@ -49,18 +49,12 @@ meta_folder = Path("meta")
 job_log_filename = "job_log.json"
 catalog_path = "catalog.xml"
 index_json_filename = "index.json"
+lunr_docs_json_filename = "lunr_docs.json"
 default_retry_wait_interval = 2
 
 RecipeOutput = namedtuple(
     "RecipeOutput",
-    [
-        "recipe",
-        "title",
-        "file",
-        "rename_to",
-        "published_dt",
-        "description",
-    ],
+    ["recipe", "title", "file", "rename_to", "published_dt", "description", "articles"],
 )
 
 # sort categories for display
@@ -642,6 +636,7 @@ def run(
                     rename_to=rename_file_name,
                     published_dt=pub_date,
                     description=description,
+                    articles=comments[1:-1],
                 )
             )
 
@@ -718,12 +713,13 @@ def run(
                         stdout=sys.stdout,
                         stderr=sys.stderr,
                     )
-                target_file_path = sorted(
-                    _find_output(publish_folder, recipe.slug, ext)
-                )[-1]
-                target_file_name = Path(target_file_path.name)
 
                 if not exit_code:
+                    target_file_path = sorted(
+                        _find_output(publish_folder, recipe.slug, ext)
+                    )[-1]
+                    target_file_name = Path(target_file_path.name)
+
                     generated[recipe.category][recipe.name].append(
                         RecipeOutput(
                             recipe=recipe,
@@ -732,6 +728,7 @@ def run(
                             rename_to=f"{recipe.slug}-{pub_date:%Y-%m-%d}.{ext}",
                             published_dt=pub_date,
                             description=comments,
+                            articles=comments[1:-1],
                         )
                     )
                     index[recipe.slug].append(
@@ -754,6 +751,7 @@ def run(
 
     static_assets_start_time = timer()
     # generate index.html
+    lunr_documents = []
     listing = ""
     for _, (category, publications) in enumerate(
         sorted(generated.items(), key=sort_category_key)
@@ -763,6 +761,15 @@ def run(
         for recipe_name, books in sorted(
             generated_items, key=lambda item: item[1][0].published_dt, reverse=True
         ):
+            lunr_documents.append(
+                {
+                    "id": books[0].recipe.slug,
+                    "title": books[0].title or recipe_name,
+                    "articles": "<li>" + "</li><li>".join(books[0].articles) + "</li>",
+                    "tags": " ".join(books[0].recipe.tags),
+                    "category": books[0].recipe.category,
+                }
+            )
             book_links = []
             for book in books:
                 # change filename to datestamped name
@@ -844,7 +851,11 @@ def run(
                 book_ext = book_file.suffix
                 reader_link = ""
                 if book_ext == ".epub":
-                    reader_link = f'<a class="reader not-for-kindle" title="Read in browser" href="reader.html?{urlencode({"file": book.rename_to})}"><svg><use href="reader_sprites.svg#icon-book"></use></svg></a>'
+                    reader_link = (
+                        f'<a class="reader not-for-kindle" title="Read in browser" '
+                        f'href="reader.html?{urlencode({"file": book.rename_to, "id": books[0].recipe.slug})}">'
+                        f'<svg><use href="reader_sprites.svg#icon-book"></use></svg></a>'
+                    )
                 book_links.append(
                     f'<div class="book">'
                     f'<a href="{book.rename_to}">{book_ext}<span class="file-size">{humanize.naturalsize(file_size).replace(" ", "")}</span>'
@@ -890,6 +901,11 @@ def run(
         <div class="close-cat-container"><div class="close-cat-shortcut" data-click-target="cat-{slugify(category)}"></div></div>
         </div>
         """
+
+    with publish_folder.joinpath(lunr_docs_json_filename).open(
+        "w", encoding="utf-8"
+    ) as f_lunr_index:
+        json.dump(lunr_documents, f_lunr_index)
 
     with publish_folder.joinpath(index_json_filename).open(
         "w", encoding="utf-8"

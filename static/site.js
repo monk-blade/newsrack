@@ -16,8 +16,25 @@ https://opensource.org/licenses/GPL-3.0
         - `for (const e in elements)` is undefined
 */
 (function () {
+    if (document.body.classList.contains("nonkindle")) {
+        // use "read" param as a shortcut to the latest epub reader
+        const params = URLSearchParams && new URLSearchParams(document.location.search.substring(1));
+        const slug = (params && params.get("read")) ? params.get("read") : undefined;
+        if (slug) {
+            const periodical = document.getElementById(slug);
+            if (periodical) {
+                const readerLink = periodical.querySelector("a.reader");
+                if (readerLink && readerLink["href"]) {
+                    window.location.href = readerLink["href"];
+                } else {
+                    periodical.focus();
+                }
+            }
+        }
+    }
 
     const searchInfo = document.getElementById("search-info");
+    const searchSyntaxLink = searchInfo.querySelector("a")
     const searchTextField = document.getElementById("search-text");
     const searchButton = document.getElementById("search-button");
     searchTextField.disabled = true;
@@ -77,6 +94,43 @@ https://opensource.org/licenses/GPL-3.0
         } else {
             target.innerHTML = "Published " + publishedDate.toLocaleString() + tags;
         }
+    }
+
+    function sortSearchTermsPositions(a, b) {
+        // by position, earlier mark sorts first
+        if (a[0] < b[0]) {
+            return -1;
+        }
+        if (a[0] > b[0]) {
+            return 1;
+        }
+        // same position, longer mark sorts first
+        if (a[1] > b[1]) {
+            return -1;
+        }
+        if (a[1] < b[1]) {
+            return 1;
+        }
+        return 0;
+    }
+
+    function markSearchTerms(positions, originalString) {
+        const padding = originalString.indexOf("<li>");
+        let markedString = "";
+        let cumu_pos = padding > -1 ? padding : 0;
+        if (cumu_pos >= 0) {
+            markedString += originalString.substring(0, cumu_pos);
+        }
+        const offset = padding > -1 ? padding : 0;
+        for (let z = 0; z < positions.length; z++) {
+            const pos = positions[z];
+            markedString += originalString.substring(cumu_pos, pos[0] + offset);
+            cumu_pos += (pos[0] + offset - cumu_pos);
+            markedString += "<mark>" + originalString.substring(cumu_pos, cumu_pos + pos[1]) + "</mark>";
+            cumu_pos += pos[1];
+        }
+        markedString += originalString.substring(cumu_pos);
+        return markedString;
     }
 
     function isScrolledIntoView(ele) {
@@ -178,8 +232,7 @@ https://opensource.org/licenses/GPL-3.0
 
     window.addEventListener("DOMContentLoaded", function() {
         if (typeof(lunr) !== "undefined") {
-            const ogPlaceholderText = searchTextField.placeholder;
-            searchTextField.placeholder = "Indexing search...";
+            const readyPlaceholderText = searchTextField.getAttribute("data-placeholder");
             const periodicalsEles = document.querySelectorAll("ol.books > li");
 
             function resetSearch() {
@@ -197,37 +250,27 @@ https://opensource.org/licenses/GPL-3.0
                 }
             }
 
-            const idx = lunr(function () {
-                this.field("title");
-                this.field("articles");
-                this.field("tags");
-                this.field("category");
-
-                for (let i = 0; i < periodicalsEles.length; i++) {
-                    const periodical = periodicalsEles[i];
-                    const id = periodical["id"];
-                    const catName = periodical.dataset["catName"];
-                    const title = periodical.querySelector(".title").textContent;
-                    const contentTemp = document.createElement("div");
-                    contentTemp.innerHTML = RECIPE_DESCRIPTIONS[id];
-                    const articlesEles = contentTemp.querySelectorAll("ul > li");
-                    const articles = [];
-                    for (let j = 0; j < articlesEles.length; j++) {
-                        const articleEle = articlesEles[j];
-                        articles.push(articleEle.textContent);
+            let idx = null;
+            function handler() {
+                if (this.readyState === XMLHttpRequest.DONE) {
+                    const status = this.status;
+                    if (status === 0 || (status >= 200 && status < 400)) {
+                        idx = lunr.Index.load(JSON.parse(this.responseText));
+                        searchButton.disabled = false;
+                        searchTextField.placeholder = readyPlaceholderText;
+                        searchTextField.disabled = false;
+                        searchTextField.focus();
+                    } else {
+                        searchTextField.placeholder = "Unable to load search index: " + this.statusText;
+                        console.error("Unable to load search index");
+                        console.error(this);
                     }
-                    this.add({
-                        "id": id,
-                        "title": title,
-                        "articles": articles.join(" "),
-                        "tags": periodical.dataset["tags"],
-                        "category": catName
-                    });
                 }
-                searchTextField.placeholder = ogPlaceholderText;
-                searchTextField.disabled = false;
-                searchButton.disabled = false;
-            });
+            }
+            const httpRequest = new XMLHttpRequest();
+            httpRequest.onreadystatechange = handler;
+            httpRequest.open("GET", "lunr.json", true);
+            httpRequest.send();
 
             // unhide everything when search field is cleared
             document.getElementById("search-text").onchange = function(e) {
@@ -235,6 +278,7 @@ https://opensource.org/licenses/GPL-3.0
                     return;
                 }
                 searchInfo.innerText = "";
+                searchInfo.appendChild(searchSyntaxLink);
                 resetSearch();
             };
 
@@ -244,68 +288,105 @@ https://opensource.org/licenses/GPL-3.0
                 searchInfo.innerText = "";
                 const searchText = document.getElementById("search-text").value.trim();
                 if (searchText.length < 3) {
-                    searchInfo.innerText = "Search text must be at least 3 characters long.";
+                    // this makes it work in the Kindle browser
+                    searchInfo.appendChild(searchSyntaxLink);
+                    searchInfo.innerHTML += "Search text must be at least 3 characters long.";
                     return;
                 }
 
-                const results = idx.search(searchText);
-                if (results.length <= 0) {
-                    searchInfo.innerText = "No results.";
-                    resetSearch();
-                    return;
-                }
-
-                const bookIds = [];
-                const resultsSumm = {};
-                for (let i = 0; i < results.length; i++) {
-                    bookIds.push(results[i].ref);
-                    const fields = [];
-                    const metadata = results[i].matchData.metadata;
-                    for (const key in metadata) {
-                        for (const kkey in metadata[key]) {
-                            fields.push(kkey);
-                        }
+                try {
+                    const results = idx.search(searchText);
+                    if (results.length <= 0) {
+                        searchInfo.appendChild(searchSyntaxLink);
+                        searchInfo.innerHTML += "No results.";
+                        resetSearch();
+                        return;
                     }
-                    resultsSumm[results[i].ref] = fields;
+                    searchInfo.appendChild(searchSyntaxLink);
+                    const bookIds = [];
+                    const resultsSumm = {};
+                    for (let i = 0; i < results.length; i++) {
+                        bookIds.push(results[i].ref);
+                        const fields = [];
+                        const metadata = results[i].matchData.metadata;
+                        let resultPositions = {};
+                        for (const key in metadata) {   // term
+                            for (const kkey in metadata[key]) {     // field
+                                if (!resultPositions[kkey]) {
+                                    resultPositions[kkey] = [];
+                                }
+                                const positions = metadata[key][kkey]["position"] || [];
+                                for (let z = 0; z < positions.length; z++) {
+                                    resultPositions[kkey].push(positions[z]);
+                                }
+                                // sort enables multi-terms search to be properly marked
+                                resultPositions[kkey].sort(sortSearchTermsPositions);
+                            }
+                        }
+                        resultsSumm[results[i].ref] = resultPositions;
 
-                }
-                for (let i = 0; i < periodicalsEles.length; i++) {
-                    const periodical = periodicalsEles[i];
-                    const id = periodical["id"];
+                    }
+                    for (let i = 0; i < periodicalsEles.length; i++) {
+                        const periodical = periodicalsEles[i];
+                        const id = periodical["id"];
+                        const contentsEle = periodical.querySelector(".contents");
+                        const titleEle = periodical.querySelector(".title");
 
-                    if (bookIds.indexOf(id) < 0) {
-                        periodical.classList.add("hide");
-                        continue;
-                    }
-                    periodical.classList.remove("hide");
-                    const cat = document.getElementById(periodical.dataset["catId"]);
-                    if (cat) {
-                        if (!cat.classList.contains("is-open")) {
-                            cat.classList.add("is-open");
-                        }
-                        if (cat.nextElementSibling.classList.contains("hide")) {
-                            cat.nextElementSibling.classList.remove("hide");
-                        }
-                    }
-                    const pubDateEle = periodical.querySelector(".pub-date");
-                    const contentsEle = periodical.querySelector(".contents");
-                    if (resultsSumm[id].indexOf("articles") >= 0) {
-                        pubDateEle.classList.add("is-open");
-                        if (contentsEle) {
-                            contentsEle.classList.remove("hide");
-                        }
-                        contentsEle.classList.remove("hide");
-                        if (contentsEle.innerHTML === "") {
+                        if (contentsEle && contentsEle.innerHTML !== "") {
                             contentsEle.innerHTML = RECIPE_DESCRIPTIONS[id];
                         }
+                        if (titleEle) {
+                            if (!titleEle.dataset["original"]) {
+                                titleEle.dataset["original"] = titleEle.innerHTML;
+                            }
+                            // reset title ele
+                            if (titleEle.innerHTML !== titleEle.dataset["original"]) {
+                                titleEle.innerHTML = titleEle.dataset["original"];
+                            }
+                        }
 
-                    } else {
-                        pubDateEle.classList.remove("is-open");
-                        if (contentsEle) {
-                            contentsEle.classList.add("hide");
+                        if (bookIds.indexOf(id) < 0) {
+                            periodical.classList.add("hide");
+                            continue;
+                        }
+                        periodical.classList.remove("hide");
+                        const cat = document.getElementById(periodical.dataset["catId"]);
+                        if (cat) {
+                            if (!cat.classList.contains("is-open")) {
+                                cat.classList.add("is-open");
+                            }
+                            if (cat.nextElementSibling.classList.contains("hide")) {
+                                cat.nextElementSibling.classList.remove("hide");
+                            }
+                        }
+                        const pubDateEle = periodical.querySelector(".pub-date");
+
+                        if (resultsSumm[id]["articles"]) {
+                            pubDateEle.classList.add("is-open");
+                            if (contentsEle) {
+                                contentsEle.classList.remove("hide");
+                                const positions = resultsSumm[id]["articles"];
+                                contentsEle.innerHTML = markSearchTerms(positions, RECIPE_DESCRIPTIONS[id]);
+                            }
+                        }
+                        if (resultsSumm[id]["title"]) {
+                            if (!resultsSumm[id]["articles"]) {
+                                pubDateEle.classList.remove("is-open");
+                                if (contentsEle) {
+                                    contentsEle.classList.add("hide");
+                                }
+                            }
+                            if (titleEle) {
+                                const positions = resultsSumm[id]["title"] || [];
+                                titleEle.innerHTML = markSearchTerms(positions, titleEle.innerHTML);
+                            }
                         }
                     }
+                } catch (e) {
+                    searchInfo.appendChild(searchSyntaxLink);
+                    searchInfo.innerHTML += e.name + ": " + e.message;
                 }
+
             };
         }
     });

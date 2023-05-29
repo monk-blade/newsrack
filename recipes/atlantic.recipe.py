@@ -142,6 +142,7 @@ class TheAtlantic(BasicNewsrackRecipe, BasicNewsRecipe):
     use_embedded_content = False
     masthead_url = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/The_Atlantic_Logo_11.2019.svg/1200px-The_Atlantic_Logo_11.2019.svg.png"
 
+    compress_news_images_auto_size = 12
     remove_empty_feeds = True
 
     remove_attributes = ["style", "width", "height"]
@@ -149,13 +150,7 @@ class TheAtlantic(BasicNewsrackRecipe, BasicNewsRecipe):
     remove_tags_after = [dict(name=["main"])]
     remove_tags = [
         dict(id=["interview-related", "buyfive"]),
-        dict(
-            class_=[
-                "hints",
-                "social-icons",
-                "read-more",
-            ]
-        ),
+        dict(class_=["hints", "social-icons", "read-more", "related-content"]),
         dict(name=["script", "noscript", "style"]),
     ]
 

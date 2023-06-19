@@ -8,21 +8,19 @@ __copyright__ = "2014, Darko Miletic <darko.miletic at gmail.com>"
 import os
 import sys
 
-from datetime import datetime
 from urllib.parse import urljoin
 
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
-from recipes_shared import BasicNewsrackRecipe, format_title
+from recipes_shared import BasicCookielessNewsrackRecipe, format_title
 
-from calibre import browser
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 
 _name = "Wired Magazine"
 
 
-class WiredMagazine(BasicNewsrackRecipe, BasicNewsRecipe):
+class WiredMagazine(BasicCookielessNewsrackRecipe, BasicNewsRecipe):
     title = _name
     __author__ = (
         "Darko Miletic, update by Howard Cornett, Zach Lapidus, Michael Marotta"
@@ -84,7 +82,8 @@ class WiredMagazine(BasicNewsrackRecipe, BasicNewsRecipe):
         pub_date_meta = soup.find(
             name="meta", attrs={"property": "article:published_time"}
         )
-        post_date = datetime.strptime(pub_date_meta["content"], "%Y-%m-%dT%H:%M:%S.%fZ")
+        # "%Y-%m-%dT%H:%M:%S.%fZ"
+        post_date = self.parse_date(pub_date_meta["content"])
         if not self.pub_date or post_date > self.pub_date:
             self.pub_date = post_date
             self.title = format_title(_name, post_date)
@@ -96,7 +95,7 @@ class WiredMagazine(BasicNewsrackRecipe, BasicNewsRecipe):
         category_div = soup.new_tag("div", attrs={"class": "category"})
         category_div.append(category)
         pub_div = soup.new_tag("div", attrs={"class": "published-dt"})
-        pub_div.append(f"{post_date:%B %d, %Y %H:%H %p}")
+        pub_div.append(f"{post_date:%B %d, %Y %H:%M %p}")
         meta_div = soup.new_tag("div", attrs={"class": "article-meta"})
         meta_div.append(authors_div)
         meta_div.append(pub_div)
@@ -153,17 +152,3 @@ class WiredMagazine(BasicNewsrackRecipe, BasicNewsRecipe):
                 )
             )
         return [(_name, articles)]
-
-    # Wired changes the content it delivers based on cookies, so the
-    # following ensures that we send no cookies
-    def get_browser(self, *args, **kwargs):
-        return self
-
-    def clone_browser(self, *args, **kwargs):
-        return self.get_browser()
-
-    def open_novisit(self, *args, **kwargs):
-        br = browser()
-        return br.open_novisit(*args, **kwargs)
-
-    open = open_novisit

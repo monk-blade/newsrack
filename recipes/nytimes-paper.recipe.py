@@ -15,12 +15,11 @@ from urllib.parse import urlparse
 
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
-from recipes_shared import BasicNewsrackRecipe, format_title
+from recipes_shared import BasicNewsrackRecipe, format_title, get_date_format
 
 from calibre import browser
 from calibre import strftime
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
-from calibre.utils.date import strptime
 from calibre.web.feeds.news import BasicNewsRecipe
 
 _name = "New York Times (Print)"
@@ -35,8 +34,7 @@ class NewYorkTimesPrint(BasicNewsrackRecipe, BasicNewsRecipe):
     publication_type = "newspaper"
     masthead_url = "https://mwcm.nyt.com/.resources/mkt-wcm/dist/libs/assets/img/logo-nyt-header.svg"
     ignore_duplicate_articles = {"title", "url"}
-
-    compress_news_images_auto_size = 5
+    compress_news_images_auto_size = 10
 
     INDEX = "https://www.nytimes.com/section/todayspaper"
 
@@ -153,13 +151,10 @@ class NewYorkTimesPrint(BasicNewsrackRecipe, BasicNewsRecipe):
                     subheadline = new_soup.find("div", class_="sub-headline")
                     subheadline.string = summary_text
                 if c.get("timestampBlock"):
-                    # Example 2022-04-12T09:00:05.000Z
-                    post_date = datetime.datetime.strptime(
-                        c["timestampBlock"]["timestamp"],
-                        "%Y-%m-%dT%H:%M:%S.%fZ",
-                    )
+                    # Example 2022-04-12T09:00:05.000Z "%Y-%m-%dT%H:%M:%S.%fZ"
+                    post_date = self.parse_date(c["timestampBlock"]["timestamp"])
                     pub_dt_ele = new_soup.find("span", class_="published-dt")
-                    pub_dt_ele.string = f"{post_date:%-d %B, %Y}"
+                    pub_dt_ele.string = f"{post_date:{get_date_format()}}"
                 if c.get("ledeMedia"):
                     image_block = c["ledeMedia"]["media"]
                     container_ele = new_soup.new_tag(
@@ -433,15 +428,14 @@ class NewYorkTimesPrint(BasicNewsrackRecipe, BasicNewsRecipe):
                     subheadline = new_soup.find("div", class_="sub-headline")
                     subheadline.string = summary_text
                 if header_block.get("timestampBlock"):
-                    # Example 2022-04-12T09:00:05.000Z
-                    post_date = datetime.datetime.strptime(
+                    # Example 2022-04-12T09:00:05.000Z "%Y-%m-%dT%H:%M:%S.%fZ"
+                    post_date = self.parse_date(
                         content_service[header_block["timestampBlock"]["id"]][
                             "timestamp"
-                        ],
-                        "%Y-%m-%dT%H:%M:%S.%fZ",
+                        ]
                     )
                     pub_dt_ele = new_soup.find("span", class_="published-dt")
-                    pub_dt_ele.string = f"{post_date:%-d %B, %Y}"
+                    pub_dt_ele.string = f"{post_date:{get_date_format()}}"
                 if header_block.get("ledeMedia"):
                     image_block = content_service.get(
                         content_service[header_block["ledeMedia"]["id"]]["media"]["id"]
@@ -675,26 +669,8 @@ class NewYorkTimesPrint(BasicNewsrackRecipe, BasicNewsRecipe):
         return str(new_soup)
 
     def preprocess_raw_html(self, raw_html, url):
-        info = None
         soup = BeautifulSoup(raw_html)
-
-        for script in soup.find_all("script"):
-            if not script.contents:
-                continue
-            if not script.contents[0].strip().startswith("window.__preloadedData"):
-                continue
-            article_js = re.sub(
-                r"window.__preloadedData\s*=\s*", "", script.contents[0].strip()
-            )
-            if article_js.endswith(";"):
-                article_js = article_js[:-1]
-            article_js = article_js.replace(":undefined", ":null")
-            try:
-                info = json.loads(article_js)
-                break
-            except json.JSONDecodeError:
-                self.log.exception("Unable to parse preloadedData")
-
+        info = self.get_script_json(soup, r"window.__preloadedData\s*=\s*")
         if not info:
             self.log(f"Unable to find article from script in {url}")
             return raw_html
@@ -752,7 +728,7 @@ class NewYorkTimesPrint(BasicNewsrackRecipe, BasicNewsRecipe):
     def read_nyt_metadata(self):
         soup = self.read_todays_paper()
         pdate = soup.find("meta", attrs={"name": "pdate", "content": True})["content"]
-        date = strptime(pdate, "%Y%m%d", assume_utc=False, as_utc=False)
+        date = self.parse_date(pdate)
         self.cover_url = (
             "https://static01.nyt.com/images/{}/nytfrontpage/scan.jpg".format(
                 date.strftime("%Y/%m/%d")

@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # vim:fileencoding=utf-8
 # License: GPLv3 Copyright: 2015, Kovid Goyal <kovid at kovidgoyal.net>
+
+# Original at https://github.com/kovidgoyal/calibre/blob/ce8b82f8dc70e9edca4309abc523e08605254604/recipes/atlantic.recipe
 from __future__ import unicode_literals
 
 import json
@@ -11,7 +13,7 @@ from datetime import datetime, timezone
 
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
-from recipes_shared import BasicNewsrackRecipe
+from recipes_shared import BasicNewsrackRecipe, get_datetime_format, parse_date
 
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from calibre.web.feeds.news import BasicNewsRecipe
@@ -31,9 +33,7 @@ def embed_image(soup, block):
     return container
 
 
-def json_to_html(raw):
-    data = json.loads(raw)
-
+def json_to_html(data):
     # open('/t/p.json', 'w').write(json.dumps(data, indent=2))
     data = sorted(
         (v["data"] for v in data["props"]["pageProps"]["urqlState"].values()), key=len
@@ -62,21 +62,18 @@ def json_to_html(raw):
     author_ele.append(", ".join(authors))
     meta.append(author_ele)
 
-    # Example: 2022-04-04T10:00:00Z
-    published_date = datetime.strptime(
-        article["datePublished"], "%Y-%m-%dT%H:%M:%SZ"
-    ).replace(tzinfo=timezone.utc)
+    # Example: 2022-04-04T10:00:00Z "%Y-%m-%dT%H:%M:%SZ"
+    published_date = parse_date(article["datePublished"])
     pub_ele = new_soup.new_tag("span", attrs={"class": "published-dt"})
     pub_ele["data-published"] = f"{published_date:%Y-%m-%dT%H:%M:%SZ}"
-    pub_ele.append(f"{published_date:%-I:%M%p, %-d %B, %Y}")
+    pub_ele.append(f"{published_date:{get_datetime_format()}}")
     meta.append(pub_ele)
     if article.get("dateModified"):
-        modified_date = datetime.strptime(
-            article["dateModified"], "%Y-%m-%dT%H:%M:%SZ"
-        ).replace(tzinfo=timezone.utc)
+        # "%Y-%m-%dT%H:%M:%SZ"
+        modified_date = parse_date(article["dateModified"])
         upd_ele = new_soup.new_tag("span", attrs={"class": "modified-dt"})
         upd_ele["data-modified"] = f"{modified_date:%Y-%m-%dT%H:%M:%SZ}"
-        upd_ele.append(f"Updated {modified_date:%-I.%M%p, %-d %B, %Y}")
+        upd_ele.append(f"Updated {modified_date:{get_datetime_format()}}")
         meta.append(upd_ele)
 
     new_soup.main.append(meta)
@@ -124,15 +121,8 @@ class NoJSON(ValueError):
     pass
 
 
-def extract_html(soup):
-    script = soup.findAll("script", id="__NEXT_DATA__")
-    if not script:
-        raise NoJSON("No script tag with JSON data found")
-    raw = script[0].contents[0]
-    return json_to_html(raw)
-
-
 _name = "The Atlantic Magazine"
+_issue_url = ""
 
 
 class TheAtlanticMagazine(BasicNewsrackRecipe, BasicNewsRecipe):
@@ -168,6 +158,14 @@ class TheAtlanticMagazine(BasicNewsrackRecipe, BasicNewsRecipe):
     div.related-content { margin-left: 0.5rem; color: #444; font-style: italic; }
     """
 
+    def extract_html(self, soup):
+        data = self.get_script_json(
+            soup, "", attrs={"id": "__NEXT_DATA__", "src": False}
+        )
+        if not data:
+            raise NoJSON("No script tag with JSON data found")
+        return json_to_html(data)
+
     def get_browser(self):
         br = BasicNewsRecipe.get_browser(self)
         br.set_cookie("inEuropeanUnion", "0", ".theatlantic.com")
@@ -175,7 +173,7 @@ class TheAtlanticMagazine(BasicNewsrackRecipe, BasicNewsRecipe):
 
     def preprocess_raw_html(self, raw_html, url):
         try:
-            return extract_html(self.index_to_soup(raw_html))
+            return self.extract_html(self.index_to_soup(raw_html))
         except NoJSON:
             self.log.warn("No JSON found in: {} falling back to HTML".format(url))
         except Exception:
@@ -201,37 +199,33 @@ class TheAtlanticMagazine(BasicNewsrackRecipe, BasicNewsRecipe):
             # reset the title because the title in the rss feed can contain tags, e.g. <em>
             article.title = headline.text
 
-        # modified = soup.find(attrs={"data-modified": True})
-        # if modified:
-        #     modified_date = datetime.strptime(
-        #         modified["data-modified"], "%Y-%m-%dT%H:%M:%SZ"
-        #     ).replace(tzinfo=timezone.utc)
-        #     if (not self.pub_date) or modified_date > self.pub_date:
-        #         self.pub_date = modified_date
-
         published = soup.find(attrs={"data-published": True})
         if published:
-            published_date = datetime.strptime(
-                published["data-published"], "%Y-%m-%dT%H:%M:%SZ"
-            ).replace(tzinfo=timezone.utc)
+            # "%Y-%m-%dT%H:%M:%SZ"
+            published_date = self.parse_date(published["data-published"])
             article.utctime = published_date
             if (not self.pub_date) or published_date > self.pub_date:
                 self.pub_date = published_date
 
     def parse_index(self):
-        soup = self.index_to_soup(self.INDEX)
-        script = soup.findAll("script", id="__NEXT_DATA__")
-        if not script:
+        soup = self.index_to_soup(_issue_url if _issue_url else self.INDEX)
+        data = self.get_script_json(
+            soup, "", attrs={"id": "__NEXT_DATA__", "src": False}
+        )
+        if not data:
             raise NoJSON("No script tag with JSON data found")
-        data = json.loads(script[0].contents[0])
         issue = None
         for t in (
             data.get("props", {}).get("pageProps", {}).get("urqlState", {}).values()
         ):
             d = json.loads(t["data"])
-            if not d.get("latestMagazineIssue"):
+            if not (
+                d.get("latestMagazineIssue")
+                or d.get("magazineIssue", {}).get("toc", {}).get("sections", [])
+            ):
                 continue
-            issue = d["latestMagazineIssue"]
+            issue = d.get("latestMagazineIssue") or d.get("magazineIssue")
+
         self.title = f'{_name}: {issue["displayName"]}'
         self.cover_url = (
             issue["cover"]["srcSet"].split(",")[-1].strip().split(" ")[0].strip()

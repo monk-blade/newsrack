@@ -1,23 +1,73 @@
 import json
 import os
+import re
 import shutil
 import time
+import warnings
 from datetime import datetime, timedelta, timezone
 from html import unescape
-from typing import Optional, Dict, List
+from typing import Optional, Dict, List, Callable
 from urllib.parse import urlencode
 
+from calibre import browser
+from calibre.constants import iswindows
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from calibre.ptempfile import PersistentTemporaryDirectory, PersistentTemporaryFile
 from calibre.utils.browser import Browser
+from calibre.web.feeds import Feed
 
 
 def get_date_format() -> str:
     try:
         var_value = os.environ["newsrack_title_dt_format"]
     except:  # noqa
-        var_value = "%-d %b, %Y"
+        # %-d is not available on Windoows
+        var_value = "%d %b, %Y" if iswindows else "%-d %b, %Y"
     return var_value
+
+
+def get_datetime_format() -> str:
+    try:
+        var_value = os.environ["newsrack_title_dts_format"]
+    except:  # noqa
+        var_value = "%I:%M%p, %-d %b, %Y" if iswindows else "%-I:%M%p, %-d %b, %Y"
+    return var_value
+
+
+def parse_date(
+    date_string: str,
+    tz_info: Optional[timezone] = timezone.utc,
+    as_utc: bool = True,
+    **kwargs,
+):
+    """
+
+    :param date_string:
+    :param tz_info: Sets the parsed date to this timezone if it does not have a tz
+    :param as_utc: Returns value as a UTC datetime if True
+    :param kwargs: Other kwargs passed to parse()
+    :return:
+    """
+    # Inspired by: https://github.com/kovidgoyal/calibre/blob/ec9e64437cbd378c50dc0fc9f8261a958781ef8e/src/calibre/utils/date.py#L88C29-L116
+
+    # Difference:
+    # - defaults to day 1
+    # - allows custom tz
+
+    from dateutil.parser import parse  # provided by calibre
+
+    if not date_string:
+        return None
+    if "default" not in kwargs:
+        kwargs["default"] = datetime.now(tz_info).replace(
+            day=1, hour=0, minute=0, second=0, microsecond=0
+        )
+    dt = parse(date_string, **kwargs)
+    if tz_info and dt.tzinfo is None:
+        dt = dt.replace(tzinfo=tz_info)
+    if as_utc:
+        return dt.astimezone(timezone.utc)
+    return dt
 
 
 def format_title(feed_name: str, post_date: datetime) -> str:
@@ -44,10 +94,185 @@ class BasicNewsrackRecipe(object):
     def publication_date(self) -> Optional[datetime]:
         return self.pub_date
 
+    def parse_date(
+        self,
+        date_string: str,
+        tz_info: Optional[timezone] = timezone.utc,
+        as_utc: bool = True,
+        **kwargs,
+    ):
+        """
+
+        :param date_string:
+        :param tz_info: Sets the parsed date to this timezone if it does not have a tz
+        :param as_utc: Returns value as a UTC datetime if True
+        :param kwargs: Other kwargs passed to parse()
+        :return:
+        """
+        return parse_date(date_string, tz_info, as_utc, **kwargs)
+
     def cleanup(self) -> None:
         if self.temp_dir:
             self.log("Deleting temp files...")  # type: ignore[attr-defined]
             shutil.rmtree(self.temp_dir)
+
+    def get_ld_json(self, soup: BeautifulSoup, filter_fn: Callable, attrs=None) -> Dict:
+        """
+        Get the script element containing the LD-JSON content
+
+        :param soup:
+        :param filter_fn:
+        :param attrs:
+        :return:
+        """
+        if attrs is None:
+            attrs = {"type": "application/ld+json"}
+        for script_json in soup.find_all("script", attrs=attrs):
+            if not script_json.contents:
+                continue
+            data = json.loads(script_json.contents[0])
+            if filter_fn(data):
+                return data
+        return {}
+
+    def get_script_json(
+        self, soup: BeautifulSoup, prefix_expr: str, attrs=None
+    ) -> Dict:
+        """
+        Converts a script element's json content into a dict object
+
+        :param soup:
+        :param prefix_expr:
+        :param attrs:
+        :return:
+        """
+        if attrs is None:
+            attrs = {"src": False}
+        prefix_expr_re = re.compile(prefix_expr) if prefix_expr else None
+        for script in soup.find_all("script", attrs):
+            if not script.contents:
+                continue
+            script_js = script.contents[0].strip()
+            if prefix_expr and not prefix_expr_re.match(script_js):
+                continue
+            if prefix_expr:
+                script_js = prefix_expr_re.sub("", script_js)
+            if script_js.endswith(";"):
+                script_js = script_js[:-1]
+            script_js = script_js.replace(":undefined", ":null")
+            try:
+                return json.loads(script_js)
+            except json.JSONDecodeError:
+                # sometimes this borks because of a stray '\n', e.g. scmp
+                try:
+                    return json.loads(script_js.replace("\n", " "))
+                except json.JSONDecodeError:
+                    self.log.exception("Unable to parse script as json")
+                    self.log.debug(script.contents[0])
+        return {}
+
+    def generate_debug_index(self, urls):
+        """
+        Helper function to debug articles. To be used in parse_index().
+
+        :param urls:
+        :return:
+        """
+        return [
+            (
+                "Tests",
+                [
+                    {"title": f"Test {n}", "url": url}
+                    for n, url in enumerate(urls, start=1)
+                ],
+            )
+        ]
+
+    def group_feeds_by_date(
+        self, timezone_offset_hours: int = 0, filter_article: Optional[Callable] = None
+    ):
+        """
+        Group feed articles by date
+
+        :param timezone_offset_hours:
+        :param filter_article:
+        :return:
+        """
+        parsed_feeds = super().parse_feeds()
+        if len(parsed_feeds or []) != 1:
+            return parsed_feeds
+
+        articles = []
+        for feed in parsed_feeds:
+            if filter_article:
+                articles.extend([a for a in feed.articles if filter_article(a)])
+            else:
+                articles.extend(feed.articles)
+        articles = sorted(articles, key=lambda a: a.utctime, reverse=True)
+        new_feeds = []
+        curr_feed = None
+        parsed_feed = parsed_feeds[0]
+
+        for i, a in enumerate(articles, start=1):
+            date_published = a.utctime.replace(tzinfo=timezone.utc)
+            date_published_loc = date_published.astimezone(
+                timezone(offset=timedelta(hours=timezone_offset_hours))
+            )
+            article_index = f"{date_published_loc:{get_date_format()}}"
+            if i == 1:
+                curr_feed = Feed(log=parsed_feed.logger)
+                curr_feed.title = article_index
+                curr_feed.description = parsed_feed.description
+                curr_feed.image_url = parsed_feed.image_url
+                curr_feed.image_height = parsed_feed.image_height
+                curr_feed.image_alt = parsed_feed.image_alt
+                curr_feed.oldest_article = parsed_feed.oldest_article
+                curr_feed.articles = []
+            if curr_feed.title == article_index:
+                curr_feed.articles.append(a)
+            else:
+                new_feeds.append(curr_feed)
+                curr_feed = Feed(log=parsed_feed.logger)
+                curr_feed.title = article_index
+                curr_feed.description = parsed_feed.description
+                curr_feed.image_url = parsed_feed.image_url
+                curr_feed.image_height = parsed_feed.image_height
+                curr_feed.image_alt = parsed_feed.image_alt
+                curr_feed.oldest_article = parsed_feed.oldest_article
+                curr_feed.articles = []
+                curr_feed.articles.append(a)
+            if i == len(articles):
+                # last article
+                new_feeds.append(curr_feed)
+
+        return new_feeds
+
+
+class BasicCookielessNewsrackRecipe(BasicNewsrackRecipe):
+    """
+    The basic recipe extended to not send cookies. This is meant for news
+    sources that change the content it delivers based on cookies.
+    """
+
+    request_as_gbot = False  # flag to toggle gbot emulation
+
+    def get_browser(self, *args, **kwargs):
+        return self
+
+    def clone_browser(self, *args, **kwargs):
+        return self.get_browser()
+
+    def open_novisit(self, *args, **kwargs):
+        if self.request_as_gbot:
+            br = browser(
+                user_agent="Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
+            )
+            br.addheaders = [("referer", "https://www.google.com/")]
+        else:
+            br = browser()
+        return br.open_novisit(*args, **kwargs)
+
+    open = open_novisit
 
 
 class WordPressNewsrackRecipe(BasicNewsrackRecipe):
@@ -57,10 +282,20 @@ class WordPressNewsrackRecipe(BasicNewsrackRecipe):
 
     @staticmethod
     def parse_datetime(date_string, wordpresscom=False) -> datetime:
-        # Can't use is_wordpresscom because I made this a staticmethod -_-
-        return datetime.strptime(
-            date_string, "%Y-%m-%dT%H:%M:%S%z" if wordpresscom else "%Y-%m-%dT%H:%M:%S"
-        )
+        """
+        Deprecated in favour of parse_date(date_string, tz_info=None, as_utc=False).
+
+        :param date_string:
+        :param wordpresscom:
+        :return:
+        """
+        # Can't use self.is_wordpresscom because I made this a staticmethod -_-
+        warnings.warn(
+            "WordPressNewsrackRecipe.parse_datetime() is deprecated in favour of "
+            "self.parse_date(date_string, tz_info=None, as_utc=False)",
+            DeprecationWarning,
+        )  # 2023.06.19 - remove in 6 mths
+        return parse_date(date_string, tz_info=None, as_utc=False)
 
     def extract_authors(self, post: Dict) -> List:
         if self.is_wordpresscom:
@@ -229,15 +464,15 @@ class WordPressNewsrackRecipe(BasicNewsrackRecipe):
         for p in posts:
             if self.is_wordpresscom:
                 # Example: 2023-04-04T10:09:05+06:00
-                post_update_dt = self.parse_datetime(
-                    p["modified"], self.is_wordpresscom
+                post_update_dt = self.parse_date(
+                    p["modified"], tz_info=None, as_utc=False
                 )
-                post_date = self.parse_datetime(p["date"], self.is_wordpresscom)
+                post_date = self.parse_date(p["date"], tz_info=None, as_utc=False)
             else:
-                post_update_dt = self.parse_datetime(p["modified_gmt"]).replace(
-                    tzinfo=timezone.utc
+                post_update_dt = self.parse_date(
+                    p["modified_gmt"], tz_info=timezone.utc
                 )
-                post_date = self.parse_datetime(p["date"])
+                post_date = self.parse_date(p["date"], tz_info=None, as_utc=False)
 
             if not self.pub_date or post_update_dt > self.pub_date:
                 self.pub_date = post_update_dt
@@ -265,7 +500,7 @@ class WordPressNewsrackRecipe(BasicNewsrackRecipe):
                         ).get_text()
                         or "Untitled",
                         "url": "file://" + f.name,
-                        "date": f"{post_date:%-d %B, %Y}",
+                        "date": f"{post_date:{get_date_format()}}",
                         "description": unescape(
                             p["excerpt"]
                             if self.is_wordpresscom

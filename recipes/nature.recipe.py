@@ -3,7 +3,6 @@ import os
 import re
 import sys
 from collections import OrderedDict
-from datetime import datetime, timezone
 
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
@@ -27,6 +26,7 @@ def check_words(words):
 
 
 _name = "Nature"
+_issue_url = ""
 
 
 class Nature(BasicNewsrackRecipe, BasicNewsRecipe):
@@ -87,13 +87,11 @@ class Nature(BasicNewsrackRecipe, BasicNewsRecipe):
             t = i.find(name="time")
             if not t:
                 continue
-            pub_date_utc = datetime.strptime(t.text, "%d %B %Y").replace(
-                tzinfo=timezone.utc
-            )
+            # "%d %B %Y"
+            pub_date_utc = self.parse_date(t.text)
             article.utctime = pub_date_utc
             if not self.pub_date or pub_date_utc > self.pub_date:
                 self.pub_date = pub_date_utc
-                # self.title = f"{_name}: {pub_date_utc:%-d %b, %Y}"
 
     def preprocess_html(self, soup):
         if soup.find(name="h2", id="access-options"):
@@ -133,7 +131,9 @@ class Nature(BasicNewsrackRecipe, BasicNewsRecipe):
         return soup
 
     def parse_index(self):
-        soup = self.index_to_soup(BASE + "/nature/current-issue")
+        soup = self.index_to_soup(
+            _issue_url if _issue_url else f"{BASE}/nature/current-issue"
+        )
         self.cover_url = (
             "https:"
             + soup.find("img", attrs={"data-test": check_words("issue-cover-image")})[
@@ -158,7 +158,8 @@ class Nature(BasicNewsrackRecipe, BasicNewsRecipe):
                 re.IGNORECASE,
             )
             if mobj:
-                issue_date = datetime.strptime(mobj.group("issue_date"), "%d %B %Y")
+                # "%d %B %Y"
+                issue_date = self.parse_date(mobj.group("issue_date"))
                 self.title = format_title(_name, issue_date)
 
         sectioned_feeds = OrderedDict()

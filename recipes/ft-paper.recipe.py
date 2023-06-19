@@ -3,7 +3,6 @@ ft.com
 """
 # Original from https://github.com/kovidgoyal/calibre/blob/902e80ec173bc40037efb164031043994044ec6c/recipes/financial_times_print_edition.recipe
 
-import json
 import os
 import re
 import sys
@@ -12,16 +11,15 @@ from urllib.parse import quote_plus, urljoin
 
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
-from recipes_shared import BasicNewsrackRecipe, format_title
+from recipes_shared import BasicCookielessNewsrackRecipe, format_title, get_date_format
 
-from calibre import browser
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 
 _name = "Financial Times (Print)"
 
 
-class FinancialTimesPrint(BasicNewsrackRecipe, BasicNewsRecipe):
+class FinancialTimesPrint(BasicCookielessNewsrackRecipe, BasicNewsRecipe):
     title = _name
     __author__ = "ping"
     description = (
@@ -39,6 +37,7 @@ class FinancialTimesPrint(BasicNewsrackRecipe, BasicNewsRecipe):
     ignore_duplicate_articles = {"url"}
 
     compress_news_images_auto_size = 6
+    request_as_gbot = True
 
     extra_css = """
     .headline { font-size: 1.8rem; margin-bottom: 0.5rem; }
@@ -100,13 +99,8 @@ class FinancialTimesPrint(BasicNewsrackRecipe, BasicNewsRecipe):
         return feeds
 
     def preprocess_raw_html(self, raw_html, url):
-        article = None
         soup = BeautifulSoup(raw_html)
-        for script in soup.find_all("script", attrs={"type": "application/ld+json"}):
-            article = json.loads(script.contents[0])
-            if not (article.get("@type") and article["@type"] == "NewsArticle"):
-                continue
-            break
+        article = self.get_ld_json(soup, lambda d: d.get("@type", "") == "NewsArticle")
         if not (article and article.get("articleBody")):
             err_msg = f"Unable to find article: {url}"
             self.log.warn(err_msg)
@@ -119,10 +113,8 @@ class FinancialTimesPrint(BasicNewsrackRecipe, BasicNewsRecipe):
 
         date_published = article.get("datePublished", None)
         if date_published:
-            # Example: 2022-03-29T04:00:05.154Z
-            date_published = datetime.strptime(
-                date_published, "%Y-%m-%dT%H:%M:%S.%fZ"
-            ).replace(tzinfo=timezone.utc)
+            # Example: 2022-03-29T04:00:05.154Z "%Y-%m-%dT%H:%M:%S.%fZ"
+            date_published = self.parse_date(date_published)
             if (not self.pub_date) or date_published > self.pub_date:
                 self.pub_date = date_published
                 self.title = format_title(_name, date_published)
@@ -166,27 +158,10 @@ class FinancialTimesPrint(BasicNewsrackRecipe, BasicNewsRecipe):
             {"" if not article.get("description") else '<div class="sub-headline">' + article.get("description", "") + '</div>'}
             <div class="article-meta">
                 <span class="author">{author}</span>
-                <span class="published-dt">{date_published:%-d %B, %Y}</span>
+                <span class="published-dt">{date_published:{get_date_format()}}</span>
             </div>
             {article_body}
             </article>
         </body></html>
         """
         return html_output
-
-    # FT changes the content it delivers based on cookies, so the
-    # following ensures that we send no cookies
-    def get_browser(self, *args, **kwargs):
-        return self
-
-    def clone_browser(self, *args, **kwargs):
-        return self.get_browser()
-
-    def open_novisit(self, *args, **kwargs):
-        br = browser(
-            user_agent="Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
-        )
-        br.addheaders = [("referer", "https://www.google.com/")]
-        return br.open_novisit(*args, **kwargs)
-
-    open = open_novisit

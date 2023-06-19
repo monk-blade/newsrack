@@ -1,14 +1,12 @@
 import os
 import sys
 from collections import OrderedDict
-from datetime import datetime, timezone
 from urllib.parse import urljoin
 
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
-from recipes_shared import BasicNewsrackRecipe
+from recipes_shared import BasicCookielessNewsrackRecipe, get_date_format
 
-from calibre import browser
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 
@@ -18,7 +16,7 @@ _name = "Harvard Business Review"
 _issue_url = ""
 
 
-class HBR(BasicNewsrackRecipe, BasicNewsRecipe):
+class HBR(BasicCookielessNewsrackRecipe, BasicNewsRecipe):
     title = _name
     __author__ = "unkn0wn"
     description = (
@@ -78,14 +76,14 @@ class HBR(BasicNewsrackRecipe, BasicNewsRecipe):
         # set article date
         pub_datetime = soup.find("meta", attrs={"property": "article:published_time"})
         mod_datetime = soup.find("meta", attrs={"property": "article:modified_time"})
-        # Example 2022-06-21T17:35:44Z
-        post_date = datetime.strptime(pub_datetime["content"], "%Y-%m-%dT%H:%M:%SZ")
+        # Example 2022-06-21T17:35:44Z "%Y-%m-%dT%H:%M:%SZ"
+        post_date = self.parse_date(pub_datetime["content"])
         pub_date_ele = soup.find("div", class_="pub-date")
         pub_date_ele["data-pub-date"] = pub_datetime["content"]
         pub_date_ele["data-mod-date"] = mod_datetime["content"]
         post_date_ele = soup.new_tag("span")
         post_date_ele["class"] = "article-pub-date"
-        post_date_ele.append(f"{post_date:%-d %B, %Y}")
+        post_date_ele.append(f"{post_date:{get_date_format()}}")
         # pub_date_ele.append(post_date_ele)    # set this below together with the byline logic
 
         # break author byline out of list
@@ -109,9 +107,7 @@ class HBR(BasicNewsrackRecipe, BasicNewsRecipe):
 
     def populate_article_metadata(self, article, soup, _):
         mod_date_ele = soup.find(attrs={"data-mod-date": True})
-        post_date = datetime.strptime(
-            mod_date_ele["data-mod-date"], "%Y-%m-%dT%H:%M:%SZ"
-        ).replace(tzinfo=timezone.utc)
+        post_date = self.parse_date(mod_date_ele["data-mod-date"])
         if (not self.pub_date) or post_date > self.pub_date:
             self.pub_date = post_date
 
@@ -174,17 +170,3 @@ class HBR(BasicNewsrackRecipe, BasicNewsRecipe):
                 feeds[section_title] += articles
         ans = [(key, val) for key, val in feeds.items()]
         return ans
-
-    # HBR changes the content it delivers based on cookies, so the
-    # following ensures that we send no cookies
-    def get_browser(self, *args, **kwargs):
-        return self
-
-    def clone_browser(self, *args, **kwargs):
-        return self.get_browser()
-
-    def open_novisit(self, *args, **kwargs):
-        br = browser()
-        return br.open_novisit(*args, **kwargs)
-
-    open = open_novisit

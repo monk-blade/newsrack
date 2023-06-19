@@ -3,20 +3,16 @@
 # This software is released under the GNU General Public License v3.0
 # https://opensource.org/licenses/GPL-3.0
 
-import datetime
 import json
 import os
-import re
 import sys
 from urllib.parse import urlparse
 
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
-from recipes_shared import BasicNewsrackRecipe, format_title
+from recipes_shared import BasicNewsrackRecipe, format_title, get_date_format
 
-from calibre import browser
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
-from calibre.web.feeds import Feed
 from calibre.web.feeds.news import BasicNewsRecipe
 
 _name = "New York Times Books"
@@ -132,13 +128,10 @@ class NYTimesBooks(BasicNewsrackRecipe, BasicNewsRecipe):
                     subheadline = new_soup.find("div", class_="sub-headline")
                     subheadline.string = summary_text
                 if c.get("timestampBlock"):
-                    # Example 2022-04-12T09:00:05.000Z
-                    post_date = datetime.datetime.strptime(
-                        c["timestampBlock"]["timestamp"],
-                        "%Y-%m-%dT%H:%M:%S.%fZ",
-                    )
+                    # Example 2022-04-12T09:00:05.000Z "%Y-%m-%dT%H:%M:%S.%fZ"
+                    post_date = self.parse_date(c["timestampBlock"]["timestamp"])
                     pub_dt_ele = new_soup.find("span", class_="published-dt")
-                    pub_dt_ele.string = f"{post_date:%-d %B, %Y}"
+                    pub_dt_ele.string = f"{post_date:{get_date_format()}}"
                 if c.get("ledeMedia"):
                     image_block = c["ledeMedia"]["media"]
                     container_ele = new_soup.new_tag(
@@ -412,15 +405,14 @@ class NYTimesBooks(BasicNewsrackRecipe, BasicNewsRecipe):
                     subheadline = new_soup.find("div", class_="sub-headline")
                     subheadline.string = summary_text
                 if header_block.get("timestampBlock"):
-                    # Example 2022-04-12T09:00:05.000Z
-                    post_date = datetime.datetime.strptime(
+                    # Example 2022-04-12T09:00:05.000Z "%Y-%m-%dT%H:%M:%S.%fZ"
+                    post_date = self.parse_date(
                         content_service[header_block["timestampBlock"]["id"]][
                             "timestamp"
-                        ],
-                        "%Y-%m-%dT%H:%M:%S.%fZ",
+                        ]
                     )
                     pub_dt_ele = new_soup.find("span", class_="published-dt")
-                    pub_dt_ele.string = f"{post_date:%-d %B, %Y}"
+                    pub_dt_ele.string = f"{post_date:{get_date_format()}}"
                 if header_block.get("ledeMedia"):
                     image_block = content_service.get(
                         content_service[header_block["ledeMedia"]["id"]]["media"]["id"]
@@ -654,26 +646,8 @@ class NYTimesBooks(BasicNewsrackRecipe, BasicNewsRecipe):
         return str(new_soup)
 
     def preprocess_raw_html(self, raw_html, url):
-        info = None
         soup = BeautifulSoup(raw_html)
-
-        for script in soup.find_all("script"):
-            if not script.contents:
-                continue
-            if not script.contents[0].strip().startswith("window.__preloadedData"):
-                continue
-            article_js = re.sub(
-                r"window.__preloadedData\s*=\s*", "", script.contents[0].strip()
-            )
-            if article_js.endswith(";"):
-                article_js = article_js[:-1]
-            article_js = article_js.replace(":undefined", ":null")
-            try:
-                info = json.loads(article_js)
-                break
-            except json.JSONDecodeError:
-                self.log.exception("Unable to parse preloadedData")
-
+        info = self.get_script_json(soup, r"window.__preloadedData\s*=\s*")
         if not info:
             if os.environ.get("recipe_debug_folder", ""):
                 recipe_folder = os.path.join(
@@ -718,110 +692,4 @@ class NYTimesBooks(BasicNewsrackRecipe, BasicNewsRecipe):
         return raw_html
 
     def parse_feeds(self):
-        # convert single parsed feed into date-sectioned feed
-        # use this only if there is just 1 feed
-        parsed_feeds = super().parse_feeds()
-        if len(parsed_feeds or []) != 1:
-            return parsed_feeds
-
-        articles = []
-        for feed in parsed_feeds:
-            articles.extend(feed.articles)
-        articles = sorted(articles, key=lambda a: a.utctime, reverse=True)
-        new_feeds = []
-        curr_feed = None
-        parsed_feed = parsed_feeds[0]
-        for i, a in enumerate(articles, start=1):
-            date_published = a.utctime.replace(tzinfo=datetime.timezone.utc)
-            article_index = f"{date_published:%-d %B, %Y}"
-            if i == 1:
-                curr_feed = Feed(log=parsed_feed.logger)
-                curr_feed.title = article_index
-                curr_feed.description = parsed_feed.description
-                curr_feed.image_url = parsed_feed.image_url
-                curr_feed.image_height = parsed_feed.image_height
-                curr_feed.image_alt = parsed_feed.image_alt
-                curr_feed.oldest_article = parsed_feed.oldest_article
-                curr_feed.articles = []
-                curr_feed.articles.append(a)
-                continue
-            if curr_feed.title == article_index:
-                curr_feed.articles.append(a)
-            else:
-                new_feeds.append(curr_feed)
-                curr_feed = Feed(log=parsed_feed.logger)
-                curr_feed.title = article_index
-                curr_feed.description = parsed_feed.description
-                curr_feed.image_url = parsed_feed.image_url
-                curr_feed.image_height = parsed_feed.image_height
-                curr_feed.image_alt = parsed_feed.image_alt
-                curr_feed.oldest_article = parsed_feed.oldest_article
-                curr_feed.articles = []
-                curr_feed.articles.append(a)
-            if i == len(articles):
-                # last article
-                new_feeds.append(curr_feed)
-
-        return new_feeds
-
-    # The NYT occassionally returns bogus articles for some reason just in case
-    # it is because of cookies, dont store cookies
-    def get_browser(self, *args, **kwargs):
-        return self
-
-    def clone_browser(self, *args, **kwargs):
-        return self.get_browser()
-
-    def open_from_wayback(self, url, br=None):
-        """
-        Fallback to wayback cache from calibre.
-        Modified from `download_url()` from https://github.com/kovidgoyal/calibre/blob/d2977ebec40a66af568adff7976cfd16f99ccbe5/src/calibre/web/site_parsers/nytimes.py
-        :param url:
-        :param br:
-        :return:
-        """
-        from mechanize import Request
-
-        rq = Request(
-            "https://wayback1.calibre-ebook.com/nytimes",
-            data=json.dumps({"url": url}),
-            headers={"User-Agent": "calibre", "Content-Type": "application/json"},
-        )
-        if br is None:
-            br = browser()
-        br.set_handle_gzip(True)
-        return br.open_novisit(rq, timeout=3 * 60)
-
-    def open_novisit(self, *args, **kwargs):
-        target_url = args[0]
-        is_wayback_cached = urlparse(target_url).netloc == "www.nytimes.com"
-
-        if is_wayback_cached and self.bot_blocked:
-            # don't use wayback for static assets because these are not blocked currently
-            # and the wayback cache does not support them anyway
-            self.log.warn(f"Block detected. Fetching from wayback cache: {target_url}")
-            return self.open_from_wayback(target_url)
-
-        br = browser(
-            user_agent="Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)"
-        )
-        try:
-            return br.open_novisit(*args, **kwargs)
-        except Exception as e:
-            if hasattr(e, "code") and e.code == 403:
-                self.bot_blocked = True
-                self.delay = 0  # I don't think this makes a difference but oh well
-                if is_wayback_cached:
-                    self.log.warn(
-                        f"Blocked by bot detection. Fetching from wayback cache: {target_url}"
-                    )
-                    return self.open_from_wayback(target_url)
-
-                # if static asset is also blocked, give up
-                err_msg = f"Blocked by bot detection: {target_url}"
-                self.log.warn(err_msg)
-                self.abort_recipe_processing(err_msg)
-                self.abort_article(err_msg)
-            raise
-
-    open = open_novisit
+        return self.group_feeds_by_date()

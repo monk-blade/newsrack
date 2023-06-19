@@ -6,12 +6,10 @@
 """
 fivebooks.com
 """
-import json
 import os
 import re
 import sys
 from datetime import datetime
-from datetime import timezone
 
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
@@ -88,9 +86,8 @@ class FiveBooks(BasicNewsrackRecipe, BasicNewsRecipe):
             if dated_tag:
                 post_date = datetime.fromisoformat(dated_tag["data-post-modified-date"])
         else:
-            post_date = datetime.strptime(dt.text, "%B %d, %Y").replace(
-                tzinfo=timezone.utc
-            )
+            # "%B %d, %Y"
+            post_date = self.parse_date(dt.text)
         if post_date:
             if not self.pub_date or post_date > self.pub_date:
                 self.pub_date = post_date
@@ -104,10 +101,10 @@ class FiveBooks(BasicNewsrackRecipe, BasicNewsRecipe):
     def preprocess_raw_html(self, raw_html, url):
         soup = BeautifulSoup(raw_html)
         content = soup.find(class_="main-content")
-        script = soup.find("script", attrs={"type": "application/ld+json"})
-        if not (script and script.get_text()):
+        data = self.get_ld_json(soup, lambda d: d.get("@graph", []))
+        if not data:
             return raw_html
-        graph = json.loads(script.get_text()).get("@graph", [])
+        graph = data.get("@graph", [])
         if not graph:
             return raw_html
         for g in graph:

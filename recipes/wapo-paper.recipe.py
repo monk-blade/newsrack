@@ -6,12 +6,12 @@
 import json
 import os
 import sys
-from datetime import datetime
-from urllib.parse import urljoin
+from datetime import datetime, timezone
+from urllib.parse import urljoin, urlencode
 
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
-from recipes_shared import BasicNewsrackRecipe
+from recipes_shared import BasicNewsrackRecipe, get_datetime_format
 
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from calibre.web.feeds.news import BasicNewsRecipe
@@ -36,7 +36,7 @@ class TheWashingtonPostPrint(BasicNewsrackRecipe, BasicNewsRecipe):
     encoding = "utf-8"
     language = "en"
     simultaneous_downloads = 8
-    compress_news_images_auto_size = 8
+    compress_news_images_auto_size = 12
 
     oldest_article = 1
     max_articles_per_feed = 25
@@ -57,6 +57,12 @@ class TheWashingtonPostPrint(BasicNewsrackRecipe, BasicNewsRecipe):
     .video .caption { margin-top: 0.2rem; }
     .keyupdates li { margin-bottom: 0.5rem; }
     """
+
+    def image_url_processor(self, article_url, image_url):
+        image_processor = "https://www.washingtonpost.com/wp-apps/imrs.php"
+        if image_url.startswith(image_processor):
+            return image_url
+        return f'{image_processor}?{urlencode({"src": image_url, "w": 1200})}'
 
     def _extract_child_nodes(self, nodes, parent_element, soup, url):
         if not nodes:
@@ -160,14 +166,12 @@ class TheWashingtonPostPrint(BasicNewsrackRecipe, BasicNewsRecipe):
                 )
                 container_ele.append(header_ele)
 
-                # Example 2022-04-13T14:04:03.051Z
-                post_date = datetime.strptime(
-                    c["display_date"], "%Y-%m-%dT%H:%M:%S.%fZ"
-                )
+                # Example 2022-04-13T14:04:03.051Z "%Y-%m-%dT%H:%M:%S.%fZ"
+                post_date = self.parse_date(c["display_date"])
                 meta_ele = BeautifulSoup(
                     f"""<div class="article-meta">
                         <span class="author"></span>
-                        <span class="published-dt">{post_date:%-I:%M%p %-d %B, %Y}</span>
+                        <span class="published-dt">{post_date:{get_datetime_format()}}</span>
                     </div>""",
                     features="html.parser",
                 )
@@ -190,28 +194,19 @@ class TheWashingtonPostPrint(BasicNewsrackRecipe, BasicNewsRecipe):
 
     def preprocess_raw_html(self, raw_html, url):
         soup = BeautifulSoup(raw_html)
-        script = soup.find_all("script", id="__NEXT_DATA__")
-        data = {}
-        try:
-            data = json.loads(script[0].contents[0])
-        except IndexError:
-            self.log.exception("Unable to get script contents")
-        except json.decoder.JSONDecodeError:
-            # self.log.error(script[0].contents[0])
-            self.log.exception("Unable to decode script json")
+        data = self.get_script_json(soup, "", {"id": "__NEXT_DATA__", "src": False})
         content = data.get("props", {}).get("pageProps", {}).get("globalContent", {})
         if not content:
             # E.g. interactive articles
             # https://www.washingtonpost.com/world/interactive/2022/china-shanghai-covid-lockdown-food-shortage/
             self.abort_article(f"Unable to get content from script: {url}")
 
-        # Example 2022-04-13T14:04:03.051Z
-        post_date = datetime.strptime(content["display_date"], "%Y-%m-%dT%H:%M:%S.%fZ")
-        if post_date > datetime.today():  # it happens
+        # Example 2022-04-13T14:04:03.051Z "%Y-%m-%dT%H:%M:%S.%fZ"
+        post_date = self.parse_date(content["display_date"])
+        if post_date > datetime.utcnow().replace(tzinfo=timezone.utc):  # it happens
             try:
-                post_date = datetime.strptime(
-                    content["publish_date"][:-5], "%Y-%m-%dT%H:%M:%S"
-                )
+                # "%Y-%m-%dT%H:%M:%S"
+                post_date = self.parse_date(content["publish_date"][:-5])
             except:  # noqa
                 # do nothing
                 pass
@@ -228,7 +223,7 @@ class TheWashingtonPostPrint(BasicNewsrackRecipe, BasicNewsRecipe):
                 <div class="sub-headline"></div>
                 <div class="article-meta">
                     <span class="author"></span>
-                    <span class="published-dt">{post_date:%-I:%M%p %-d %B, %Y}</span>
+                    <span class="published-dt">{post_date:{get_datetime_format()}}</span>
                 </div>
             </article>
         </body></html>"""

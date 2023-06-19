@@ -9,7 +9,7 @@ import sys
 
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
-from recipes_shared import WordPressNewsrackRecipe
+from recipes_shared import WordPressNewsrackRecipe, get_datetime_format
 
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from calibre.web.feeds.news import BasicNewsRecipe
@@ -42,6 +42,8 @@ class FulcrumSg(WordPressNewsrackRecipe, BasicNewsRecipe):
 
     extra_css = """
     .headline { font-size: 1.8rem; margin-bottom: 0.4rem; }
+    .sub-headline { font-size: 1.2rem; font-style: italic; margin-bottom: 1rem; }
+    .sub-headline p { margin: 0; }
     .article-meta {  margin-top: 1rem; margin-bottom: 1rem; }
     .article-meta .author { font-weight: bold; color: #444; margin-right: 0.5rem; }
     .article-section { display: block; font-weight: bold; color: #444; }
@@ -50,7 +52,6 @@ class FulcrumSg(WordPressNewsrackRecipe, BasicNewsRecipe):
         font-size: 0.8rem; display: block; margin-top: 0.2rem;
     }
     .caption p { margin-top: 0; }
-    .article-excerpt { font-size: 1.25rem; font-style: italic; }
 
     .block--pullout-stat, .block--accordion { margin-left: 0.5rem; font-family: monospace; text-align: left; }
     .block--pullout-stat .block--pullout-stat__title,
@@ -82,11 +83,6 @@ class FulcrumSg(WordPressNewsrackRecipe, BasicNewsRecipe):
         if not post.get("featured_media"):
             return post_content
 
-        if post.get("excerpt", {}).get("rendered"):
-            container_ele = soup.new_tag("div", attrs={"class": "article-excerpt"})
-            container_ele.append(BeautifulSoup(post["excerpt"]["rendered"]))
-            post_content = str(container_ele) + post_content
-
         feature_media_css = f"wp-image-{post['featured_media']}"
         if feature_media_css in post_content:
             # check already not embedded
@@ -114,7 +110,7 @@ class FulcrumSg(WordPressNewsrackRecipe, BasicNewsRecipe):
     def preprocess_raw_html(self, raw_html, url):
         # formulate the api response into html
         post = json.loads(raw_html)
-        date_published_loc = self.parse_datetime(post["date"])
+        date_published_loc = self.parse_date(post["date"], tz_info=None, as_utc=False)
         if post.get("commentaries_author"):
             post_authors = [post["commentaries_author"]]
         else:
@@ -129,15 +125,24 @@ class FulcrumSg(WordPressNewsrackRecipe, BasicNewsRecipe):
             <article data-og-link="{post["link"]}">
             {f'<span class="article-section">{" / ".join(categories)}</span>' if categories else ''}
             <h1 class="headline">{post["title"]["rendered"]}</h1>
+            <h2 class="sub-headline"></h2>
             <div class="article-meta">
                 {f'<span class="author">{", ".join(post_authors)}</span>' if post_authors else ''}
                 <span class="published-dt">
-                    {date_published_loc:%-I:%M%p, %-d %b, %Y}
+                    {date_published_loc:{get_datetime_format()}}
                 </span>
             </div>
             </article>
         </body></html>"""
         )
+        sub_headline = soup.find("h2", class_="sub-headline")
+        if post.get("excerpt", {}).get("rendered"):
+            sub_headline.append(
+                BeautifulSoup(post["excerpt"]["rendered"], "html.parser")
+            )
+        else:
+            sub_headline.decompose()
+
         soup.body.article.append(
             BeautifulSoup(self._extract_featured_media(post, soup))
         )

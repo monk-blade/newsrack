@@ -16,7 +16,7 @@ from datetime import timezone
 
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
-from recipes_shared import WordPressNewsrackRecipe
+from recipes_shared import WordPressNewsrackRecipe, get_date_format
 
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from calibre.web.feeds.news import BasicNewsRecipe
@@ -31,6 +31,7 @@ def absurl(x):
 
 
 _name = "MIT Technology Review Magazine"
+_issue_url = ""
 
 
 class MitTechnologyReviewMagazine(WordPressNewsrackRecipe, BasicNewsRecipe):
@@ -46,7 +47,7 @@ class MitTechnologyReviewMagazine(WordPressNewsrackRecipe, BasicNewsRecipe):
     remove_empty_feeds = True
     masthead_url = "https://wp-preprod.technologyreview.com/wp-content/uploads/2021/08/Screen-Shot-2021-08-20-at-11.11.12-AM-e1629473232355.png"
 
-    compress_news_images = False
+    compress_news_images_auto_size = 10
 
     remove_attributes = ["height", "width", "style", "padding", "padding-top"]
 
@@ -101,13 +102,11 @@ class MitTechnologyReviewMagazine(WordPressNewsrackRecipe, BasicNewsRecipe):
     def preprocess_raw_html(self, raw_html, url):
         # formulate the api response into html
         post = json.loads(raw_html)
-        post_update_dt = self.parse_datetime(post["modified_gmt"]).replace(
-            tzinfo=timezone.utc
-        )
+        post_update_dt = self.parse_date(post["modified_gmt"], tz_info=timezone.utc)
         if not self.pub_date or post_update_dt > self.pub_date:
             self.pub_date = post_update_dt
 
-        date_published_loc = self.parse_datetime(post["date"])
+        date_published_loc = self.parse_date(post["date"], tz_info=None, as_utc=False)
         post_authors = self.extract_authors(post)
         categories = self.extract_categories(post)
 
@@ -121,7 +120,7 @@ class MitTechnologyReviewMagazine(WordPressNewsrackRecipe, BasicNewsRecipe):
             <div class="article-meta">
                 {f'<span class="author">{", ".join(post_authors)}</span>' if post_authors else ''}
                 <span class="published-dt">
-                    {date_published_loc:%-d %b, %Y}
+                    {date_published_loc:{get_date_format()}}
                 </span>
             </div>
             {self._extract_featured_media(post)}
@@ -139,7 +138,7 @@ class MitTechnologyReviewMagazine(WordPressNewsrackRecipe, BasicNewsRecipe):
         return str(soup)
 
     def parse_index(self):
-        soup = self.index_to_soup(self.INDEX)
+        soup = self.index_to_soup(_issue_url if _issue_url else self.INDEX)
         index = {}
         for script in soup.find_all(name="script"):
             if not script.contents:
@@ -192,9 +191,7 @@ class MitTechnologyReviewMagazine(WordPressNewsrackRecipe, BasicNewsRecipe):
                                 continue
                             post_config = post["config"]
                             topic = post_config.get("topic", "Articles")
-                            if topic not in feeds:
-                                feeds[topic] = []
-                            feeds[topic].append(
+                            feeds.setdefault(topic, []).append(
                                 {
                                     "title": post_config["title"],
                                     "description": post_config["excerpt"],
@@ -202,4 +199,4 @@ class MitTechnologyReviewMagazine(WordPressNewsrackRecipe, BasicNewsRecipe):
                                 }
                             )
 
-        return [(key, val) for key, val in feeds.items()]
+        return feeds.items()

@@ -27,7 +27,7 @@ import requests  # type: ignore
 from bleach import linkify
 
 from _opds import init_feed, simple_tag, extension_contenttype_map
-from _recipe_utils import sort_category, Recipe
+from _recipe_utils import sort_category, Recipe, is_windows
 from _recipes import (
     recipes as default_recipes,
     categories_sort as default_categories_sort,
@@ -165,7 +165,10 @@ def _write_opds(generated_output: Dict, recipe_covers: Dict, publish_site: str) 
                     simple_tag(
                         doc,
                         "summary",
-                        f"{books[0].title or recipe_name} published at {books[0].published_dt:%Y-%m-%d %H:%M%p}.",
+                        (
+                            f"{books[0].title or recipe_name} published at "
+                            f'{books[0].published_dt:{"%Y-%m-%d %I:%M%p %Z" if is_windows else "%Y-%m-%d %-I:%M%p %Z"}}'
+                        ),
                     )
                 )
                 entry.appendChild(
@@ -246,9 +249,19 @@ def _write_opds(generated_output: Dict, recipe_covers: Dict, publish_site: str) 
                     )
                 feed.appendChild(entry)
 
+        cat_style = main_doc.createProcessingInstruction(
+            "xml-stylesheet", 'type="text/xsl" href="opds.xsl"'
+        )
+        cat_doc.insertBefore(cat_style, cat_feed)
+
         opds_xml_path = publish_folder.joinpath(f"{slugify(category, True)}.xml")
         with opds_xml_path.open("wb") as f:  # type: ignore
             f.write(cat_doc.toprettyxml(encoding="utf-8", indent=""))
+
+    main_style = main_doc.createProcessingInstruction(
+        "xml-stylesheet", 'type="text/xsl" href="opds.xsl"'
+    )
+    main_doc.insertBefore(main_style, main_feed)
 
     opds_xml_path = publish_folder.joinpath(catalog_path)
     with opds_xml_path.open("wb") as f:  # type: ignore
@@ -876,8 +889,8 @@ def run(
             tags_html = (
                 ""
                 if not books[0].recipe.tags
-                else '<div class="tags"><span title="Search with this tag" class="tag">#'
-                + '</span><span title="Search with this tag" class="tag">#'.join(
+                else '<div class="tags"><span tabindex="0" title="Search with this tag" class="tag">#'
+                + '</span><span tabindex="0" title="Search with this tag" class="tag">#'.join(
                     books[0].recipe.tags
                 )
                 + "</span></div>"
@@ -888,7 +901,7 @@ def run(
             <span class="title">{books[0].title or recipe_name}</span>
             {" ".join(book_links)}
             <div class="meta" data-pub-id="{books[0].recipe.slug}">
-            <div class="pub-date" data-pub-date="{int(books[0].published_dt.timestamp() * 1000)}">
+            <div tabindex="0" class="pub-date" data-pub-date="{int(books[0].published_dt.timestamp() * 1000)}">
                 Published at {books[0].published_dt:%Y-%m-%d %-I:%M%p %z}
             </div>
             {tags_html}
@@ -916,10 +929,10 @@ def run(
                 </div></li>"""
             )
 
-        listing += f"""<div class="category-container is-open"><h2 id="cat-{slugify(category, True)}" class="category is-open">{category}
+        listing += f"""<div class="category-container is-open"><h2 tabindex="0" id="cat-{slugify(category, True)}" class="category is-open">{category}
         <a class="opds" title="OPDS for {category.title()}" href="{slugify(category, True)}.xml">OPDS</a></h2>
         <ol class="books">{"".join(publication_listing)}</ol>
-        <div class="close-cat-container"><div class="close-cat-shortcut" title="Collapse category" data-click-target="cat-{slugify(category)}"></div></div>
+        <div class="close-cat-container"><div tabindex="0" class="close-cat-shortcut" title="Collapse category" data-click-target="cat-{slugify(category)}"></div></div>
         </div>
         """
 
@@ -950,10 +963,12 @@ def run(
     site_html = "static/index.html"
     if os.path.exists("static/custom.html"):
         site_html = "static/custom.html"
+    theme_js = "static/theme.compiled.js"
 
     with (
         open(site_css, "r", encoding="utf-8") as f_site_css,
         open(site_js, "r", encoding="utf-8") as f_site_js,
+        open(theme_js, "r", encoding="utf-8") as f_theme_js,
         open(site_html, "r", encoding="utf-8") as f_in,
         Path(publish_folder, "index.html").open("w", encoding="utf-8") as f_out,
     ):
@@ -966,6 +981,7 @@ def run(
             refreshed_ts=int(time.time() * 1000),
             refreshed_dt=datetime.now(tz=timezone.utc),
             js=site_js,
+            theme_js=f_theme_js.read(),
             publish_site=publish_site,
             elapsed=humanize.naturaldelta(elapsed_time, minimum_unit="seconds"),
             catalog=catalog_path,
@@ -979,13 +995,16 @@ def run(
         reader_js = "static/reader_custom.js"
     with (
         open(reader_js, "r", encoding="utf-8") as f_reader_js,
+        open(theme_js, "r", encoding="utf-8") as f_theme_js,
         open("static/reader.css", "r", encoding="utf-8") as f_reader_css,
         open("static/reader.html", "r", encoding="utf-8") as f_in,
         open(
             os.path.join(publish_folder, "reader.html"), "w", encoding="utf-8"
         ) as f_out,
     ):
-        html_output = f_in.read().format(css=f_reader_css.read(), js=f_reader_js.read())
+        html_output = f_in.read().format(
+            css=f_reader_css.read(), js=f_reader_js.read(), theme_js=f_theme_js.read()
+        )
         f_out.write(html_output)
 
     _write_opds(generated, recipe_covers, publish_site)

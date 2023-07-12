@@ -111,6 +111,10 @@ https://opensource.org/licenses/GPL-3.0
             if ((e.keyCode || e.which) === 40) {
                 gotoNextChapter();
             }
+            // "t" key
+            if ((e.keyCode || e.which) === 84) {
+                document.getElementById("toc").focus();
+            }
         };
         rendition.on("keyup", keyListener);
         document.addEventListener("keyup", keyListener, false);
@@ -152,6 +156,7 @@ https://opensource.org/licenses/GPL-3.0
 
     book.loaded.metadata.then(function (meta) {
         document.title = meta.title;
+        document.getElementById("epub-title").innerText = meta.title;
     });
 
     rendition.on("relocated", function (location) {
@@ -210,7 +215,11 @@ https://opensource.org/licenses/GPL-3.0
         Cookies.set(cookieKey, JSON.stringify(progress), { path: "", expires: 30 });
     });
 
-    rendition.themes.register("viewer-theme", "viewer-theme.css");
+    rendition.themes.register(
+        "viewer-theme",
+        document.documentElement.getAttribute('data-theme') === "light" ?
+            "viewer-theme-light.css" : "viewer-theme-dark.css"
+    );
     rendition.themes.select("viewer-theme");
 
     window.book = book;

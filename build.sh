@@ -21,10 +21,13 @@ done
 
 mkdir -p public meta \
 && cp -p static/*.svg public/ \
+&& cp -p static/opds.xsl public/ \
 && npx babel static/site.js --out-file static/site.compiled.js \
 && npx babel static/reader.js --out-file static/reader.compiled.js \
-&& npx sass -s compressed --no-source-map static/site.scss:static/site.css static/reader.scss:static/reader.css static/viewer-theme.scss:public/viewer-theme.css \
+&& npx babel static/theme.js --out-file static/theme.compiled.js \
+&& cp -p static/theme.compiled.js public/theme.min.js \
+&& npx sass -s compressed --no-source-map static/site.scss:static/site.css static/reader.scss:static/reader.css static/viewer-theme-light.scss:public/viewer-theme-light.css static/viewer-theme-dark.scss:public/viewer-theme-dark.css static/opds.scss:public/opds.css \
 && python3 _generate.py "$CI_PAGES_URL" "$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/" "$GITHUB_SHA" \
 && node build-index.js < public/lunr_docs.json > public/lunr.json \
 && npx html-minifier-terser --input-dir public/ --output-dir public/ --collapse-whitespace --file-ext html \
-&& rm -f *.recipe static/site.compiled.js static/reader.compiled.js public/lunr_docs.json
+&& rm -f *.recipe static/*.compiled.js public/lunr_docs.json

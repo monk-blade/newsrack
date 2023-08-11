@@ -23,11 +23,8 @@ class HarpersMagazine(BasicCookielessNewsrackRecipe, BasicNewsRecipe):
         "as the iconic Harper’s Index. https://harpers.org/issues/"
     )
     language = "en"
-    encoding = "utf-8"
     masthead_url = "https://harpers.org/wp-content/themes/timber/assets/img/logo.svg"
     publication_type = "magazine"
-    use_embedded_content = False
-    auto_cleanup = False
     base_url = "https://harpers.org"
     compress_news_images_auto_size = 8
 
@@ -65,7 +62,7 @@ class HarpersMagazine(BasicCookielessNewsrackRecipe, BasicNewsRecipe):
     h1.article-title { font-size: 1.8rem; margin-bottom: 0.4rem; }
     .subheading, .post-subtitle { font-size: 1.2rem; font-style: italic; margin-bottom: 1rem; }
     .byline { margin-bottom: 1rem; color: #444; }
-    .article-hero-img img, .flex-section-image img, .wp-caption img {
+    .article-hero-img img, .flex-section-image img, .wp-caption img, .article-hero img {
         display: block; margin-bottom: 0.3rem; max-width: 100%; height: auto;
         box-sizing: border-box;
     }

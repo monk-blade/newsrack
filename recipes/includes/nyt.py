@@ -4,10 +4,10 @@ import random
 import time
 from urllib.parse import urlparse
 
-from recipes_shared import BasicNewsrackRecipe, get_date_format
-
 from calibre import browser
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
+
+from recipes_shared import BasicNewsrackRecipe, get_date_format
 
 
 class NYTRecipe(BasicNewsrackRecipe):
@@ -60,6 +60,8 @@ class NYTRecipe(BasicNewsrackRecipe):
             return self.open_from_wayback(target_url)
 
         if urlparse(target_url).hostname not in ("static01.nyt.com", "mwcm.nyt.com"):
+            # we could have used the new get_url_specific_delay() but
+            # wayback requests don't need to be delayed
             sleep_interval = random.choice(self.delay_range)
             self.log.debug(f"Sleeping {sleep_interval}s before fetching {target_url}")
             time.sleep(sleep_interval)

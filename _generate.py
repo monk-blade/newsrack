@@ -717,6 +717,7 @@ def run(
 
                 cmd = [
                     "ebook-convert",
+                    "--change-justification justify",
                     str(source_file_path),
                     str(target_file_path),
                     f"--series={recipe.name}",

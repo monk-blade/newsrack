@@ -460,6 +460,7 @@ def run(
         source_file_path = publish_folder.joinpath(source_file_name)
         cmd = [
             "ebook-convert",
+            "--change-justification justify",
             str(recipe_path),
             str(source_file_path),
         ]

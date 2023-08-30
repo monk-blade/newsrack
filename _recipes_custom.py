@@ -256,8 +256,8 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="Intl Magazines",
- #       enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5])
-        and onlyat_hours(list(range(9, 19))),
+#       enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5])
+#       and onlyat_hours(list(range(9, 19))),
         tags=["technology"],
     ),
     Recipe(

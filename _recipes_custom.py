@@ -96,7 +96,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="Indian Magazines",
-        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
+#        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
     ),
     Recipe(
         recipe="outlook_india",
@@ -104,7 +104,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="Indian Magazines",
-        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
+#        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
     ),
     Recipe(
         recipe="india_today",
@@ -112,7 +112,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="Indian Magazines",
-        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
+#        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
     ),
     Recipe(
         recipe="epw",
@@ -120,7 +120,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="Indian Magazines",
-        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
+#       enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
     ),
     Recipe(
         recipe="dte",
@@ -128,7 +128,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="Indian Magazines",
-        enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
+#        enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
     ),
     Recipe(
         recipe="open",
@@ -138,7 +138,7 @@ recipes: List[Recipe] = [
         timeout=180,
         overwrite_cover=True,
         category="Indian Magazines",
-        enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
+#        enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
     ),
     Recipe(
         recipe="atlantic-magazine",
@@ -148,7 +148,7 @@ recipes: List[Recipe] = [
         overwrite_cover=False,
         category="Intl Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4)
-        and onlyon_days(list(range(32 - 14, 32)), -4),
+#        and onlyon_days(list(range(32 - 14, 32)), -4),
     ),
     Recipe(
         recipe="thediplomat",
@@ -157,7 +157,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="Intl Magazines",
-        enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
+ #       enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
     ),
     Recipe(
         recipe="economist",
@@ -167,7 +167,7 @@ recipes: List[Recipe] = [
         overwrite_cover=False,
         category="Intl Magazines",
         timeout=240,
-        enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
+ #       enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
     ),
     Recipe(
         recipe="thirdpole",
@@ -175,7 +175,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="Intl Magazines",
-        enable_on=onlyat_hours(list(range(5, 20)), 5.5),
+ #       enable_on=onlyat_hours(list(range(5, 20)), 5.5),
         tags=["asia", "climate"],
     ),
     Recipe(
@@ -195,7 +195,7 @@ recipes: List[Recipe] = [
         overwrite_cover=False,
         category="Intl Magazines",
         enable_on=onlyon_days(list(range(1, 1 + 7)) + list(range(32 - 7, 32)), -4)
-        and onlyat_hours(list(range(8, 22)), -4),
+#        and onlyat_hours(list(range(8, 22)), -4),
     ),
     Recipe(
         recipe="harvard-intl-review",
@@ -211,7 +211,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="Intl Magazines",
-        enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4),
+#        enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4),
     ),
     Recipe(
         recipe="mit-tech-review",
@@ -219,7 +219,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="Intl Magazines",
-        enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], -4),
+ #       enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], -4),
         tags=["technology"],
     ),
     Recipe(
@@ -229,7 +229,7 @@ recipes: List[Recipe] = [
         target_ext=[],
         category="Intl Magazines",
         overwrite_cover=False,
-        enable_on=onlyon_days(list(range(1, 1 + 7)) + list(range(32 - 7, 32)), -5),
+ #       enable_on=onlyon_days(list(range(1, 1 + 7)) + list(range(32 - 7, 32)), -5),
         tags=["technology"],
     ),
     Recipe(
@@ -239,7 +239,7 @@ recipes: List[Recipe] = [
         target_ext=[],
         category="Intl Magazines",
         overwrite_cover=False,
-        enable_on=onlyon_weekdays([2, 3, 4], 0),
+#        enable_on=onlyon_weekdays([2, 3, 4], 0),
     ),
     Recipe(
         recipe="scientific-american",
@@ -248,7 +248,7 @@ recipes: List[Recipe] = [
         target_ext=[],
         category="Intl Magazines",
         overwrite_cover=False,
-        enable_on=onlyon_days(list(range(15, 31)), -5),  # middle of the month?
+#        enable_on=onlyon_days(list(range(15, 31)), -5),  # middle of the month?
     ),
     Recipe(
         recipe="restofworld",
@@ -256,7 +256,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=[],
         category="Intl Magazines",
-        enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5])
+ #       enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5])
         and onlyat_hours(list(range(9, 19))),
         tags=["technology"],
     ),
@@ -267,7 +267,7 @@ recipes: List[Recipe] = [
         target_ext=[],
         overwrite_cover=True,
         category="Intl Magazines",
-        enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
+#        enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
     ),
     Recipe(
         recipe="knowable-magazine",

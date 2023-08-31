@@ -462,7 +462,7 @@ def run(
             "ebook-convert",
             str(recipe_path),
             str(source_file_path),
-            f"--change-justification justify",
+            '"--change-justification justify"',
         ]
         try:
             recipe_account = accounts_info.get(recipe.slug, {})
@@ -722,7 +722,7 @@ def run(
                     f"--series={recipe.name}",
                     f"--series-index={pseudo_series_index}",
                     f"--publisher={publish_site}",
-                    f"--change-justification justify",
+                    '"--change-justification justify"',
                 ]
                 if recipe.conv_options and recipe.conv_options.get(ext):
                     cmd.extend(recipe.conv_options[ext])

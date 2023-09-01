@@ -27,7 +27,9 @@ class outlook(BasicNewsRecipe):
             'social_sharing_article left_trending left-sticky __tag_links next_prev_stories	downarrow uparrow more_from_author_links next prev relatedCategory downarrow __related_stories_thumbs'
         )
     ]
-
+    extra_css = """
+    p{text-align: justify; font-size: 100%}
+    """
     def parse_index(self):
         soup = self.index_to_soup('https://www.outlookindia.com/magazine')
         div = soup.find('div', attrs={'class':'wrapper'})

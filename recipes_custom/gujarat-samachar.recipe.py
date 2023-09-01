@@ -22,7 +22,9 @@ class GujaratSamachar(BasicNewsRecipe):
     keep_only_tags = [
         classes('detail-news article-detail-news'),
     ]
-
+    extra_css = """
+            p{text-align: justify; font-size: 100%}
+    """
     remove_tags = [
         classes('logo main-menu logo_date_time footer news-tags single-box social multiple citydrop react-share__ShareButton mx-1'),
     #     dict(name='div', attrs={'id':'subs-popup-banner'}),

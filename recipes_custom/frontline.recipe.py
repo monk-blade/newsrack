@@ -46,6 +46,7 @@ class Frontline(BasicNewsRecipe):
 
     extra_css = """
     .lead-img-caption { font-size: 0.8rem; color: #c7c7c7; }
+    p{text-align: justify; font-size: 100%}
     """
 
 

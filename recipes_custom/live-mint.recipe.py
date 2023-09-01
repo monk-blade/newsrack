@@ -32,6 +32,7 @@ class LiveMint(BasicNewsRecipe):
         #auth-info {font-size:small; text-align:center;}
         .summary{font-style:italic; color:#404040;}
         .articleInfo{display: inline-block; padding:0.4em; color:gray; font-size:small;}
+        p{text-align: justify; font-size: 100%}
     """
     if is_saturday:
         keep_only_tags = [

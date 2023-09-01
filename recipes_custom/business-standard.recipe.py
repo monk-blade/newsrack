@@ -52,6 +52,7 @@ class BusinessStandard(BasicNewsRecipe):
             h2 { font-size: medium; font-weight: bold;}
             .pubDate {font-size: small; color: gray;}
             .full-img {float: left; clear: both; font-style:italic; padding: 10px 10px 10px 0px;}
+            p{text-align: justify; font-size: 100%}
     """
 
     feeds = [

@@ -29,7 +29,9 @@ class epw(BasicNewsRecipe):
     remove_tags = [
         classes('premium-message node-readmore tag_container mobile_article_info')
     ]
-
+    extra_css = """
+    p{text-align: justify; font-size: 100%}
+    """
     def parse_index(self):
         soup = self.index_to_soup('https://www.epw.in/journal/epw-archive')
         div = soup.find('div', **classes('fieldset-wrapper'))

@@ -20,7 +20,9 @@ class dainikbhaskar(BasicNewsRecipe):
     compress_news_images = True
     compress_news_images_auto_size = 10
     scale_news_images = (800, 800)
-    
+    extra_css = """
+            p{text-align: justify; font-size: 100%}
+    """
     def get_cover_url(self):
         soup = self.index_to_soup('https://epaper.bhaskar.com/')
         tag = soup.find(attrs={'class': 'scaleDiv'})

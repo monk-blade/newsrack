@@ -30,7 +30,9 @@ class Sandesh(BasicNewsRecipe):
     #     dict(name='section', attrs={'class':'glry-cnt mostvdtm main-wdgt glry-bg'}),
     #  ]
     # remove_tags_after = [ classes('stry-bdy')]
-
+    extra_css = """
+            p{text-align: justify; font-size: 100%}
+    """
     feeds = [
         ('Gujarat' ,'https://sandesh.com/rss/gujarat.xml'),        
         ('National', 'https://sandesh.com/rss/india.xml'),

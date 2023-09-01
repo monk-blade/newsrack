@@ -23,6 +23,9 @@ class Finshots(BasicNewsRecipe):
     # keep_only_tags = [
     #     classes('page-hdng stry-shrt-head img-hgt-blk athr-info tm-stmp stry-bdy'),
     # ]
+    extra_css = """
+            p{text-align: justify; font-size: 100%}
+    """
 
     remove_tags = [
         classes('social-links site-nav-logo container c-search__form subscribe-main site-foot read-next-feed floating-header-share floating-header'),

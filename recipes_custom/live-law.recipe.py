@@ -24,12 +24,14 @@ class livelaw(BasicNewsRecipe):
     max_articles_per_feed = 40
     remove_empty_feeds = True
     ignore_duplicate_articles = {'title', 'url'}
-    extra_css = '[data-datestring]{font-size:smaller;}'  
-     
+    extra_css = """
+    [data-datestring]{font-size:smaller;}
+    p{text-align: justify; font-size: 100%}
+    """ 
     keep_only_tags = [
         classes('trending_heading author-on-detail details-date-time detail_img_cover details-content-story')
     ]
-    
+
     remove_tags = [
         classes('in-image-ad-wrap'),
         dict(name = 'div', attrs = {'id' : lambda x: x and x.startswith('inside_post_content_ad')}),    

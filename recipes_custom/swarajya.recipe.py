@@ -20,6 +20,10 @@ class SwarajyaMag(BasicNewsRecipe):
     remove_tags = [
         classes('_JscD _2r17a'),
     ]
+    extra_css = """
+            p{text-align: justify; font-size: 100%}
+    """
+
 
     def preprocess_html(self, soup):
         for img in soup.findAll('img', attrs={'data-src': True}):

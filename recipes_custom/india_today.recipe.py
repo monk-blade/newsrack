@@ -25,6 +25,7 @@ class IndiaToday(BasicNewsRecipe):
         .body_caption{font-size:small;}
         .image-alt{font-size:small;}
         [itemprop^="description"] {font-size: small; font-style: italic;}
+        
     '''
 
     def get_cover_url(self):

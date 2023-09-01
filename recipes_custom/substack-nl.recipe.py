@@ -20,6 +20,10 @@ class Newsletters(BasicNewsRecipe):
     compress_news_images = True
     compress_news_images_auto_size = 10
     scale_news_images = (800, 800)
+    extra_css = """
+            p{text-align: justify; font-size: 100%}
+    """
+
     feeds = [
         ('The Signal', 'https://daily.thesignal.co/feed'),
         ('Public Policy' ,'https://publicpolicy.substack.com/feed'),

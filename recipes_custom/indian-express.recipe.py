@@ -31,6 +31,7 @@ class IndianExpress(BasicNewsRecipe):
         em{font-style:italic; color:#808080;}
         #sub-d{color:#202020; font-style:italic;}
         .editor{font-size:small;color:gray;}
+        p{text-align: justify; font-size: 100%}
     '''
     resolve_internal_links = True
     remove_empty_feeds = True

@@ -370,7 +370,13 @@ def _linkify_attrs(attrs, _=False):
 
 
 def run(
-    publish_site: str, source_url: str, commit_hash: str, verbose_mode: bool
+    publish_site: str,
+    source_url: str,
+    commit_hash: str,
+    commit_url: str,
+    run_id: str,
+    run_url: str,
+    verbose_mode: bool,
 ) -> None:
     # set path to recipe includes in os environ so that recipes can pick it up
     os.environ["recipes_includes"] = str(Path("recipes/includes/").absolute())
@@ -988,7 +994,10 @@ def run(
             publish_site=publish_site,
             elapsed=humanize.naturaldelta(elapsed_time, minimum_unit="seconds"),
             catalog=catalog_path,
-            source_link=f'<a class="git" title="Source" href="{source_url}">{commit_hash[0:7]}</a>',
+            source_link=(
+                f'<a class="git" title="Source" href="{commit_url}">{commit_hash[0:7]}</a>'
+                f'<a class="ci-run" title="Build Run" href="{run_url}">{run_id}</a>'
+            ),
         )
         f_out.write(html_output)
 
@@ -1025,6 +1034,9 @@ if __name__ == "__main__":
     parser.add_argument("publish_site", type=str, help="Deployment site url")
     parser.add_argument("repo_url", type=str, help="Source repo url")
     parser.add_argument("commit_hash", type=str, help="Commit hash")
+    parser.add_argument("commit_url", type=str, help="URL for the commit")
+    parser.add_argument("run_id", type=str, help="Run ID")
+    parser.add_argument("run_url", type=str, help="URL for the job run")
     parser.add_argument(
         "-v",
         "--verbose",
@@ -1043,4 +1055,12 @@ if __name__ == "__main__":
     if verbose:
         logger.setLevel(logging.DEBUG)
 
-    run(args.publish_site, args.repo_url, args.commit_hash, verbose)
+    run(
+        args.publish_site,
+        args.repo_url,
+        args.commit_hash,
+        args.commit_url,
+        args.run_id,
+        args.run_url,
+        verbose,
+    )

@@ -5,6 +5,8 @@ import re
 import sys
 from datetime import datetime
 
+from calibre.ebooks.BeautifulSoup import BeautifulSoup
+
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
 from recipes_shared import BasicNewsrackRecipe
@@ -63,7 +65,7 @@ def get_issue_data(br, log, node_id="1126213", year="2020", volnum="99", issue_v
     feeds = []
 
     def as_article(source):
-        title = self.soup(source["title"][0]).get_text()
+        title = BeautifulSoup(source["title"][0]).get_text()
         desc = ""
         fs = source.get("field_subtitle")
         if fs:
@@ -135,7 +137,9 @@ class ForeignAffairsRecipe(BasicNewsrackRecipe, BasicNewsRecipe):
         classes("article-header article-body article-lead-image article-body-text"),
     ]
     remove_tags = [
-        classes("loading-indicator paywall article-footer article-tools "),
+        classes(
+            "loading-indicator paywall article-footer article-tools d-none review--rail-title"
+        ),
         dict(attrs={"data-buylink-isbn": True}),
         dict(name=["svg", "button"]),
     ]
@@ -148,6 +152,8 @@ class ForeignAffairsRecipe(BasicNewsrackRecipe, BasicNewsRecipe):
         display: block; margin-bottom: 0.3rem; max-width: 100%; height: auto;
         box-sizing: border-box;
     }
+    .article-byline h3 { font-weight: normal; font-size: 1rem; margin-bottom: 0; }
+    .article-header--metadata-date { margin-right: 0.5rem; font-weight: bold; color: gray; }
     .article-inline-img-block--figcaption { font-size: 0.8rem; }
     blockquote.internal-blockquote { font-size: 1.25rem; margin-left: 0; text-align: center; }
     """
@@ -187,14 +193,19 @@ class ForeignAffairsRecipe(BasicNewsrackRecipe, BasicNewsRecipe):
             modified_dt = datetime.fromisoformat(modified_meta["content"])
             if not self.pub_date or modified_dt > self.pub_date:
                 self.pub_date = modified_dt
-        for attr in ("ng-src", "data-blazy", "data-src", "srcset"):
-            for img in soup.findAll("img", attrs={attr: True}):
-                img["src"] = self.extract_from_img_srcset(img[attr], max_width=800)
+        for img in soup.find_all("img", attrs={"srcset": True}):
+            img["src"] = self.extract_from_img_srcset(img["srcset"], max_width=800)
         author_info = soup.find(id="author-info")
         if author_info:
             author_info.name = "div"
             for li in author_info.find_all("li"):
                 li.name = "p"
+        for unwrap_target in (
+            "a.article-byline-author",
+            ".article-header--metadata-date a",
+        ):
+            for a in soup.select(unwrap_target):
+                a.unwrap()
         return soup
 
     def get_browser(self):

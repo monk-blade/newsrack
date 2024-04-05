@@ -54,12 +54,12 @@ class IndianExpress(BasicNewsRecipe):
     ]
     
     feeds = [
+        ('Explained', 'https://indianexpress.com/section/explained/feed/'),
+        ('Op-Ed', 'http://indianexpress.com/section/opinion/feed/'),
         ('Front Page', 'https://indianexpress.com/print/front-page/feed/'),
         ('India', 'https://indianexpress.com/section/india/feed/'),
         ('Express Network', 'https://indianexpress.com/print/express-network/feed/'),
         ('Delhi Confidential', 'https://indianexpress.com/section/delhi-confidential/feed/'),
-        ('Op-Ed', 'http://indianexpress.com/section/opinion/feed/'),
-        ('Explained', 'https://indianexpress.com/section/explained/feed/'),
         ('UPSC-CSE Key','https://indianexpress.com/section/upsc-current-affairs/feed/'),
         ('Research', 'https://indianexpress.com/section/research/feed/'),
         ('Economy', 'https://indianexpress.com/print/economy/feed/'),

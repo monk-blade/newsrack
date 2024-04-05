@@ -40,10 +40,10 @@ class Sandesh(BasicNewsRecipe):
         ('Editorial', 'https://sandesh.com/rss/opinion.xml'),
         ('Science & Technology', 'https://sandesh.com/rss/tech.xml'),
         ('Business', 'https://sandesh.com/rss/business.xml'),
-        ('Sports', 'https://sandesh.com/rss/sports.xml'),
-        ('Health', 'https://sandesh.com/rss/health.xml'),
-        ('Lifestyle & Fashion', 'https://sandesh.com/rss/lifestyle.xml'),
-        ('Entertainment', 'https://sandesh.com/rss/entertainment.xml'),
+#        ('Sports', 'https://sandesh.com/rss/sports.xml'),
+#        ('Health', 'https://sandesh.com/rss/health.xml'),
+#        ('Lifestyle & Fashion', 'https://sandesh.com/rss/lifestyle.xml'),
+#        ('Entertainment', 'https://sandesh.com/rss/entertainment.xml'),
         ]
 
     def get_cover_url(self):

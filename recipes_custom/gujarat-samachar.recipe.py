@@ -39,10 +39,10 @@ class GujaratSamachar(BasicNewsRecipe):
         ('Editorial', 'https://www.gujaratsamachar.com/rss/category/editorial'),
         ('Science & Technology', 'https://www.gujaratsamachar.com/rss/category/science-technology'),
         ('Business', 'https://www.gujaratsamachar.com/rss/category/business'),
-        ('Sports', 'https://www.gujaratsamachar.com/rss/category/sports'),
-        ('Health', 'https://www.gujaratsamachar.com/rss/category/health'),
-        ('Lifestyle & Fashion', 'https://www.gujaratsamachar.com/rss/category/lifestyle-fashion'),
-        ('Entertainment', 'https://www.gujaratsamachar.com/rss/category/entertainment'),
+ #       ('Sports', 'https://www.gujaratsamachar.com/rss/category/sports'),
+ #       ('Health', 'https://www.gujaratsamachar.com/rss/category/health'),
+#        ('Lifestyle & Fashion', 'https://www.gujaratsamachar.com/rss/category/lifestyle-fashion'),
+#        ('Entertainment', 'https://www.gujaratsamachar.com/rss/category/entertainment'),
         ]
 
     # def get_cover_url(self):

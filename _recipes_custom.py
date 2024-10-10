@@ -20,7 +20,7 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="indian-express",
         slug="indian-express",
-        src_ext="mobi",
+        src_ext="epub",
         target_ext=["epub"],
         category="News",
 #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
@@ -28,7 +28,7 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="live-mint",
         slug="live-mint",
-        src_ext="mobi",
+        src_ext="epub",
         target_ext=["epub"],
         category="News",
 #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
@@ -36,7 +36,7 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="daily-current",
         slug="daily-current",
-        src_ext="mobi",
+        src_ext="epub",
         target_ext=["epub"],
         category="UPSC",
 #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
@@ -52,7 +52,7 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="gujarat-samachar",
         slug="gujarat-samachar",
-        src_ext="mobi",
+        src_ext="epub",
         target_ext=["epub"],
         category="Gujarati Newspapers",
 #        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
@@ -69,7 +69,7 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="sandesh",
         slug="sandesh",
-        src_ext="mobi",
+        src_ext="epub",
         target_ext=["epub"],
         category="Gujarati Newspapers",
 #        enable_on=onlyat_hours(list(range(6, 12)), +5.5),

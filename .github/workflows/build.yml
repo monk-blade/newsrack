@@ -142,6 +142,6 @@ jobs:
           SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
           SMTP_PORT: ${{ secrets.SMTP_PORT }}
         run: |
-          for epub in $(find . -name "*.epub"); do
+          for epub in $(find ./public -name "*.epub"); do
             calibre-smtp --attachment "$epub" --relay "$SMTP_SERVER" --port "$SMTP_PORT" --username "$SMTP_USER" --password "$SMTP_PASSWORD" --encryption-method TLS "$SMTP_USER" "$EMAIL" ""
           done

@@ -145,6 +145,6 @@ jobs:
             echo "Listing all files and subdirectories:"
             find . -type f -print
             find . -type d -print
-          # for epub in $(find ./public -name "*.epub"); do
-          #   calibre-smtp --attachment "$epub" --relay "$SMTP_SERVER" --port "$SMTP_PORT" --username "$SMTP_USER" --password "$SMTP_PASSWORD" --encryption-method TLS "$SMTP_USER" "$EMAIL" ""
-          # done
+            for epub in $(find ./public -name "*.epub"); do
+              calibre-smtp --attachment "$epub" --relay "$SMTP_SERVER" --port "$SMTP_PORT" --username "$SMTP_USER" --password "$SMTP_PASSWORD" --encryption-method TLS "$SMTP_USER" "$EMAIL" ""
+            done

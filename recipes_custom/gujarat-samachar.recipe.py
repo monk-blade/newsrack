@@ -2,7 +2,9 @@
 from datetime import date  # Correct import
 from calibre.web.feeds.news import BasicNewsRecipe,classes
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
-#from mechanize import Request
+from calibre.ebooks.oeb.base import OEBBook
+from calibre.utils.logging import default_log
+from lxml import etree
 
 _name = 'Gujarat Samachar'
 class GujaratSamachar(BasicNewsRecipe):

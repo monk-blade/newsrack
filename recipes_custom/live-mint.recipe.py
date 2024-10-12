@@ -5,7 +5,9 @@ import re
 from datetime import date
 
 from calibre.web.feeds.news import BasicNewsRecipe, classes
-
+from calibre.ebooks.oeb.base import OEBBook
+from calibre.utils.logging import default_log
+from lxml import etree
 is_saturday = date.today().weekday() == 5
 
 class LiveMint(BasicNewsRecipe):

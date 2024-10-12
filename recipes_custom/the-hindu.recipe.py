@@ -6,7 +6,9 @@ from collections import defaultdict
 from datetime import date
 
 from calibre.web.feeds.news import BasicNewsRecipe, classes
-
+from calibre.ebooks.oeb.base import OEBBook
+from calibre.utils.logging import default_log
+from lxml import etree
 
 def absurl(url):
     if url.startswith('/'):

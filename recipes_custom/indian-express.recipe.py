@@ -4,7 +4,9 @@ from datetime import datetime, timedelta
 
 from calibre.utils.date import parse_date
 from calibre.web.feeds.news import BasicNewsRecipe, classes
-
+from calibre.ebooks.oeb.base import OEBBook
+from calibre.utils.logging import default_log
+from lxml import etree
 
 class IndianExpress(BasicNewsRecipe):
     title = u'Indian Express'

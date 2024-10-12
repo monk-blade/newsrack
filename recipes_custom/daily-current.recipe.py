@@ -6,7 +6,9 @@ from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
 import io
 import mechanize
-
+from calibre.ebooks.oeb.base import OEBBook
+from calibre.utils.logging import default_log
+from lxml import etree
 _name = 'UPSCDaily'
 
 class UPSCDaily(BasicNewsRecipe):

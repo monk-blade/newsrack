@@ -10,7 +10,7 @@ from calibre.ebooks.oeb.base import OEBBook
 from calibre.utils.logging import default_log
 from lxml import etree
 _name = 'UPSCDaily'
-
+calibre_most_common_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'
 class UPSCDaily(BasicNewsRecipe):
     title = u'UPSC Daily'
     description = 'UPSC Daily is a daily news source for UPSC aspirants.'
@@ -200,4 +200,3 @@ class UPSCDaily(BasicNewsRecipe):
                     item.data = soup
                 else:
                     log.error("The soup object is not an lxml element.")
-calibre_most_common_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'

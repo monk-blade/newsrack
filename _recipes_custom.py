@@ -22,6 +22,7 @@ recipes: List[Recipe] = [
         slug="indian-express",
         src_ext="epub",
         category="News",
+        overwrite_cover=False,
 #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
     ),
     Recipe(
@@ -29,6 +30,7 @@ recipes: List[Recipe] = [
         slug="live-mint",
         src_ext="epub",
         category="News",
+        overwrite_cover=False,
 #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
     ),
     Recipe(
@@ -36,6 +38,7 @@ recipes: List[Recipe] = [
         slug="daily-current",
         src_ext="epub",
         category="UPSC",
+        overwrite_cover=False,
 #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
     ), 
 #     Recipe(
@@ -51,6 +54,7 @@ recipes: List[Recipe] = [
         slug="gujarat-samachar",
         src_ext="epub",
         category="Gujarati Newspapers",
+        overwrite_cover=False,
 #        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
     ),
 #     Recipe(
@@ -67,6 +71,7 @@ recipes: List[Recipe] = [
         slug="sandesh",
         src_ext="epub",
         category="Gujarati Newspapers",
+        overwrite_cover=False,
 #        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
     ),
 #     Recipe(

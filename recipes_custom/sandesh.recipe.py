@@ -107,38 +107,55 @@ class Sandesh(BasicNewsRecipe):
     def postprocess_book(self, oeb, opts, log):
         # Iterate over each item in the manifest
         for item in oeb.manifest.items:
+            log.info(f"File Name: {item.href}")
             if item.media_type == 'text/html':
                 # Access the content of the item
                 soup = item.data
                 # Ensure soup is an lxml element
                 if isinstance(soup, etree._Element):
-                    # Find the h2 tag and the div with class calibre_navbar1
-                    h2_tag = soup.find('.//xhtml:h2', namespaces={'xhtml': 'http://www.w3.org/1999/xhtml'})
-                    div_tag = soup.find('.//xhtml:div[@class="calibre_navbar"]', namespaces={'xhtml': 'http://www.w3.org/1999/xhtml'})
+                    # Convert the lxml element to a string for processing
+                    html_content = etree.tostring(soup, pretty_print=True, encoding='unicode')
+                    # Parse the HTML content with lxml
+                    parser = etree.HTMLParser()
+                    tree = etree.fromstring(html_content, parser)
                     
-                    if h2_tag is not None and div_tag is not None:
+                    # Find all <p> tags using XPath
+                    p_tags = tree.xpath('//p')
+                    
+                    # Iterate through the <p> tags
+                    for p in p_tags:
+                        # Check if the <p> tag contains the specified string
+                        if "This article was downloaded by" in ''.join(p.xpath('.//text()')):
+                            # Remove the <p> tag from the HTML content
+                            p.getparent().remove(p)
+                    
+                    # Find the h2 tag and the div with class calibre_navbar1 using XPath
+                    h2_tag = tree.xpath('//h2')
+                    div_tag = tree.xpath('//div[@class="calibre_navbar"]')
+                    
+                    if h2_tag and div_tag:
+                        h2_tag = h2_tag[0]
+                        div_tag = div_tag[0]
                         # Get the parent of both tags
                         parent = h2_tag.getparent()
                         # Ensure both elements have the same parent
                         if parent == div_tag.getparent():
-                            # Interchange their positions
+                            # Remove both tags from the parent
                             parent.remove(h2_tag)
                             parent.remove(div_tag)
+                            # Reinsert the tags in the desired order
                             parent.insert(0, h2_tag)
                             parent.insert(1, div_tag)
                     
-                    # Convert the lxml element to a string
-                    html_content = etree.tostring(soup, pretty_print=True, encoding='unicode')
-                    #print(html_content)
+                    # Convert the modified tree back to a string
+                    modified_html = etree.tostring(tree, pretty_print=True, encoding='unicode')
+                    # Parse the modified HTML back to an lxml element
+                    soup = etree.fromstring(modified_html)
+                    
+                    # Update the item data with the modified HTML content
+                    item.data = soup
                 else:
-                    print("The soup object is not an lxml element.")
-        for item in oeb.manifest.items:
-            if item.media_type == 'text/css':
-                # Access the content of the stylesheet file
-                print("CSS Media Type Found: " + item.media_type)
-                stylesheet_content = item.data.decode('utf-8')
-                # Print the content of the stylesheet file
-                print("CSS Content:\n" + stylesheet_content)
+                    log.error("The soup object is not an lxml element.")
 
     def parse_feeds(self):
         self.log(('Sandesh Feeds overrode parse_feeds()'))

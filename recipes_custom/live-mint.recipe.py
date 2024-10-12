@@ -226,7 +226,7 @@ class LiveMint(BasicNewsRecipe):
                             p.getparent().remove(p)
                     
                     # Find the h2 tag and the div with class calibre_navbar1 using XPath
-                    h2_tag = tree.xpath('//h2')
+                    h2_tag = tree.xpath('//h1')
                     div_tag = tree.xpath('//div[@class="calibre_navbar"]')
                     
                     if h2_tag and div_tag:

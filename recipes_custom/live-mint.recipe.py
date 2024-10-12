@@ -1,100 +1,151 @@
-#!/usr/bin/env  python
+#!/usr/bin/env python
+# vim:fileencoding=utf-8
 import json
 import re
-from calibre.web.feeds.news import BasicNewsRecipe, classes
 from datetime import date
 
-_name = "Live Mint"
+from calibre.web.feeds.news import BasicNewsRecipe, classes
 
 is_saturday = date.today().weekday() == 5
 
-
 class LiveMint(BasicNewsRecipe):
-    title = u'Live Mint'
+    title = 'Live Mint'
     description = 'Financial News from India.'
     language = 'en_IN'
-    __author__ = 'Krittika Goyal'
-    oldest_article = 1  # days
+    __author__ = 'Krittika Goyal, revised by unkn0wn'
+    oldest_article = 1.15  # days
     max_articles_per_feed = 50
     encoding = 'utf-8'
     use_embedded_content = False
     no_stylesheets = True
-    compress_news_images = True
-    compress_news_images_auto_size = 10
-    scale_news_images = (800, 800)
     remove_attributes = ['style', 'height', 'width']
+    masthead_url = 'https://images.livemint.com/static/livemint-logo-v1.svg'
+
+    recipe_specific_options = {
+        'days': {
+            'short': 'Oldest article to download from this news source. In days ',
+            'long': 'For example, 0.5, gives you articles from the past 12 hours',
+            'default': str(oldest_article)
+        }
+    }
     remove_empty_feeds =  True
-    extra_css = """
-        .highlights{font-style: italic; font-size: medium; font-weight: bold; margin: 0;background: #eee; padding: 1em; border-radius: 0.5em; list-style:none}
-        picture+div{font-size: small;display: block;font-weight: bold;margin:0.4em;}
-        span.author::before{content: " - ";}
-        #img-cap {font-size:small; text-align:center;}
-        #auth-info {font-size:small; text-align:center;}
-        .summary{font-style:italic; color:#404040;}
-        .articleInfo{display: inline-block; padding:0.4em; color:gray; font-size:small;}
-        p{text-align: justify; font-size: 100%}
-    """
+    resolve_internal_links = True
+
+
+    def __init__(self, *args, **kwargs):
+        BasicNewsRecipe.__init__(self, *args, **kwargs)
+        d = self.recipe_specific_options.get('days')
+        if d and isinstance(d, str):
+            self.oldest_article = float(d)
+
+    def get_cover_url(self):
+        today = date.today().strftime('%d/%m/%Y')
+        today = today.replace('/', '%2F')
+        raw = self.index_to_soup(
+            'https://epaper.livemint.com/Home/GetAllpages?editionid=1&editiondate=' + today, raw=True
+        )
+        for cov in json.loads(raw):
+            if cov['NewsProPageTitle'].lower().startswith(('front', 'cover')):
+                return cov['HighResolution']
+
     if is_saturday:
+        title = 'Mint Lounge'
+        masthead_url = 'https://lifestyle.livemint.com/mintlounge/static-images/lounge-logo.svg'
+
+        oldest_article = 6.5 # days
+
+        extra_css = '''
+            #story-summary-0 {font-style:italic; color:#202020;}
+            .innerBanner, .storyImgSec {text-align:center; font-size:small;}
+            .author {font-size:small;}
+        '''
+
         keep_only_tags = [
-            dict(name='h1'),
-            dict(name='h2', attrs={'id':'story-summary-0'}),
-            dict(name='picture'),
-            dict(name='div', attrs={'class':'innerBanCaption'}),
-            dict(name='div', attrs={'id':'date-display-before-content'}),
-            dict(name='div', attrs={'class':'storyContent'}),
+            classes('storyPageHeading storyContent innerBanner author')
         ]
         remove_tags = [
-            classes(
-                'trendingSimilarHeight moreNews mobAppDownload label msgError msgOk exclusive disclamerText outsideSso disqus-comment-count moreAbout'
-            ),
-            dict(name='p', attrs={'class':'summary'})
+            dict(name=['meta', 'link', 'svg', 'button', 'iframe']),
+            classes('hidden-article-url sidebarAdv similarStoriesClass moreFromSecClass linkStories publishDetail'),
+            dict(attrs={'id':['hidden-article-id-0', 'hidden-article-type-0']})
         ]
+
         feeds = [
-            ('News', 'https://lifestyle.livemint.com/rss/news'),
-            ('Food','https://lifestyle.livemint.com/rss/food'),
-            ('Fashion','https://lifestyle.livemint.com/rss/fashion'),
-            ('How to Lounge','https://lifestyle.livemint.com/rss/how-to-lounge'),
-            ('Smart Living','https://lifestyle.livemint.com/rss/smart-living'),
+            ('Lounge News', 'https://lifestyle.livemint.com/rss/news'),
+            ('Food', 'https://lifestyle.livemint.com/rss/food'),
+            ('Fashion', 'https://lifestyle.livemint.com/rss/fashion'),
+            ('How to Lounge', 'https://lifestyle.livemint.com/rss/how-to-lounge'),
+            ('Smart Living', 'https://lifestyle.livemint.com/rss/smart-living'),
+            ('Health', 'https://lifestyle.livemint.com/rss/health'),
+            ('Relationships', 'https://lifestyle.livemint.com//rss/relationships')
         ]
 
         def preprocess_html(self, soup):
+            if h2 := soup.find('h2'):
+                h2.name = 'p'
+            for also in soup.findAll('h2'):
+                if self.tag_to_string(also).strip().startswith('Also'):
+                    also.extract()
             for img in soup.findAll('img', attrs={'data-img': True}):
                 img['src'] = img['data-img']
             return soup
     else:
+
+        extra_css = '''
+            img {margin:0 auto;}
+            .psTopLogoItem img, .ecologoStory { width:100; }
+            #img-cap {font-size:small; text-align:center;}
+            .summary, .highlights, .synopsis {
+                font-weight:normal !important; font-style:italic; color:#202020;
+            }
+            em, blockquote {color:#202020;}
+            .moreAbout, .articleInfo, .metaData, .psTopicsHeading, .topicsTag, .auth {font-size:small;}
+        '''
+
         keep_only_tags = [
-            dict(name='h1'),
-            dict(name='picture'),
-            dict(name='figcaption'),
-            dict(name='figure', attrs={'data-vars-mediatype':'image'}),
-            classes('articleInfo FirstEle summary highlights paywall'),
+            dict(name='article', attrs={'id':lambda x: x and x.startswith(('article_', 'box_'))}),
+            dict(attrs={'class':lambda x: x and x.startswith('storyPage_storyBox__')}),
+            classes('contentSec')
         ]
         remove_tags = [
+            dict(name=['meta', 'link', 'svg', 'button', 'iframe']),
+            dict(attrs={'class':lambda x: x and x.startswith(
+                ('storyPage_alsoRead__', 'storyPage_firstPublishDate__', 'storyPage_bcrumb__')
+            )}),
+            dict(attrs={'id':['faqSection', 'seoText', 'ellipsisId']}),
             classes(
-                'trendingSimilarHeight moreNews mobAppDownload label msgError msgOk exclusive disclamerText outsideSso disqus-comment-count moreAbout'
-                ' socialHolder imgbig disclamerText disqus-comment-count taboolaHeight'
-            ),
-            dict(name='p', attrs={'class':'summary'})
+                'trendingSimilarHeight moreNews mobAppDownload label msgError msgOk taboolaHeight gadgetSlider ninSec'
+                ' socialHolder imgbig disclamerText disqus-comment-count openinApp2 lastAdSlot bs_logo author-widget'
+                ' datePublish sepStory premiumSlider moreStory Joinus moreAbout milestone benefitText checkCibilBtn trade'
+            )
         ]
 
         feeds = [
-            ('Economy', 'https://www.livemint.com/rss/economy/'),
-            ('Politics', 'https://www.livemint.com/rss/politics'),
-            ('Science', 'https://www.livemint.com/rss/science'),
+            ('Companies', 'https://www.livemint.com/rss/companies'),
             ('Opinion', 'https://www.livemint.com/rss/opinion'),
             ('Money', 'https://www.livemint.com/rss/money'),
-            ('News', 'https://www.livemint.com/rss/news'),
-            ('Markets', 'https://www.livemint.com/rss/markets'),
-            ('Companies', 'https://www.livemint.com/rss/companies'),
+            ('Economy', 'https://www.livemint.com/rss/economy'),
+            ('Politics', 'https://www.livemint.com/rss/politics'),
+            ('Science', 'https://www.livemint.com/rss/science'),
             ('Industry', 'https://www.livemint.com/rss/industry'),
             ('Education', 'https://www.livemint.com/rss/education'),
             ('Sports', 'https://www.livemint.com/rss/sports'),
             ('Technology', 'https://www.livemint.com/rss/technology'),
+            ('News', 'https://www.livemint.com/rss/news'),
+            ('Mutual Funds', 'https://www.livemint.com/rss/Mutual Funds'),
+            ('Markets', 'https://www.livemint.com/rss/markets'),
+            ('AI', 'https://www.livemint.com/rss/AI'),
             ('Insurance', 'https://www.livemint.com/rss/insurance'),
             ('Budget', 'https://www.livemint.com/rss/budget'),
-            ('Elections', 'https://www.livemint.com/rss/elections'),
+            # ('Elections', 'https://www.livemint.com/rss/elections'),
         ]
+
         def preprocess_raw_html(self, raw, *a):
+            # remove empty p tags
+            raw = re.sub(
+                r'(<p>\s*)(<[^(\/|a|i|b|em|strong)])', '\g<2>', re.sub(
+                    r'(<p>\s*&nbsp;\s*<\/p>)|(<p>\s*<\/p>)|(<p\s*\S+>&nbsp;\s*<\/p>)', '', raw
+                )
+            )
             if '<script>var wsjFlag=true;</script>' in raw:
                 m = re.search(r'type="application/ld\+json">[^<]+?"@type": "NewsArticle"', raw)
                 raw1 = raw[m.start():]
@@ -104,21 +155,44 @@ class LiveMint(BasicNewsRecipe):
                 body = data['articleBody'] + '</p> <p>'\
                         + re.sub(r'(([a-z]|[^A-Z])\.|\.”)([A-Z]|“[A-Z])', r'\1 <p> \3', value)
                 body = '<div class="FirstEle"> <p>' +  body  + '</p> </div>'
-                raw = re.sub(r'<div class="FirstEle">([^}]*)</div>', body, raw)
-                return raw
-            else:
-                return raw
+                raw2 = re.sub(r'<div class="FirstEle">([^}]*)</div>', body, raw)
+                return raw2
+            return raw
 
         def preprocess_html(self, soup):
+            for h2 in soup.findAll('h2'):
+                h2.name = 'h4'
+            auth = soup.find(attrs={'class':lambda x: x and x.startswith(('storyPage_authorInfo__', 'storyPage_authorSocial__'))})
+            if auth:
+                auth['class'] = 'auth'
+            summ = soup.find(attrs={'class':lambda x: x and x.startswith('storyPage_summary__')})
+            if summ:
+                summ['class'] = 'summary'
+            for strong in soup.findAll('strong'):
+                if strong.find('p'):
+                    strong.name = 'div'
+            for embed in soup.findAll('div', attrs={'class':'embed'}):
+                nos = embed.find('noscript')
+                if nos:
+                    nos.name = 'span'
             for span in soup.findAll('figcaption'):
                 span['id'] = 'img-cap'
-            for auth in soup.findAll('span', attrs={'class':['articleInfo pubtime','articleInfo author']}):
-                auth['id'] = 'auth-info'
+            for auth in soup.findAll('span', attrs={'class':lambda x: x and 'articleInfo' in x.split()}):
                 auth.name = 'div'
-            for span in soup.findAll('span', attrs={'class':'exclusive'}):
-                span.extract()
             for img in soup.findAll('img', attrs={'data-src': True}):
                 img['src'] = img['data-src']
+            for span in soup.findAll('span', attrs={'class':'exclusive'}):
+                span.extract()
+            for al in soup.findAll('a', attrs={'class':'manualbacklink'}):
+                pa = al.findParent(['p', 'h2', 'h3', 'h4'])
+                if pa:
+                    pa.extract()
+            wa = soup.find(**classes('autobacklink-topic'))
+            if wa:
+                p = wa.findParent('p')
+                if p:
+                    p.extract()
             return soup
 
-calibre_most_common_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'
+        def populate_article_metadata(self, article, soup, first):
+            article.title = article.title.replace('<span class="webrupee">₹</span>','₹')

@@ -90,7 +90,7 @@ jobs:
 
       - name: Download meta artifacts
         id: download-meta-artifact
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v8
         timeout-minutes: 1
         with:
           name: meta-artifacts

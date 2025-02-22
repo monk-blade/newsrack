@@ -1,3 +1,4 @@
+@use "sass:color";
 @import 'colours';
 
 body {
@@ -24,7 +25,7 @@ a {
 }
 
 .notice {
-  border-left: 4px solid lighten($link-color, 20%);
+  border-left: 4px solid color.adjust($link-color, $lightness: 20%);
   background-color: $link-color;
   padding: 1rem;
   color: $base-bg-color;
@@ -102,7 +103,7 @@ ul.entries {
 
   .notice {
     background-color: $dark-link-color;
-    border-left-color: darken($dark-link-color, 20%);
+    border-left-color: color.adjust($dark-link-color, $lightness: -20%);
     color: $dark-base-bg-color;
 
     a {

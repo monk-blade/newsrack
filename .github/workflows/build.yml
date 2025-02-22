@@ -133,14 +133,14 @@ jobs:
           path: meta
           if-no-files-found: warn
 
-      - name: Send EPUB to Kindle
-        env:
-          EMAIL: ${{ secrets.KINDLE_EMAIL }}
-          SMTP_USER: ${{ secrets.SMTP_USER }}
-          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-          SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
-        run: |
-            for epub in $(find ./public -name "*.epub"); do
-              calibre-smtp --attachment "$epub" --relay "$SMTP_SERVER" --port "$SMTP_PORT" --username "$SMTP_USER" --password "$SMTP_PASSWORD" --encryption-method TLS "$SMTP_USER" "$EMAIL" ""
-            done
+      # - name: Send EPUB to Kindle
+      #   env:
+      #     EMAIL: ${{ secrets.KINDLE_EMAIL }}
+      #     SMTP_USER: ${{ secrets.SMTP_USER }}
+      #     SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+      #     SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
+      #     SMTP_PORT: ${{ secrets.SMTP_PORT }}
+      #   run: |
+      #       for epub in $(find ./public -name "*.epub"); do
+      #         calibre-smtp --attachment "$epub" --relay "$SMTP_SERVER" --port "$SMTP_PORT" --username "$SMTP_USER" --password "$SMTP_PASSWORD" --encryption-method TLS "$SMTP_USER" "$EMAIL" ""
+      #       done

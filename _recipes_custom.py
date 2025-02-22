@@ -12,7 +12,7 @@ recipes: List[Recipe] = [
 #     Recipe(
 #         recipe="the-hindu",
 #         slug="the-hindu",
-#         src_ext="mobi",
+#         src_ext="epub",
 #         target_ext=[],
 #         category="News",
 # #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),  # from 6am-11.59am daily, for the timezone UTC-5
@@ -44,7 +44,7 @@ recipes: List[Recipe] = [
 #     Recipe(
 #         recipe="business-standard",
 #         slug="business-standard",
-#         src_ext="mobi",
+#         src_ext="epub",
 #         target_ext=[],
 #         category="News",
 # #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
@@ -60,7 +60,7 @@ recipes: List[Recipe] = [
 #     Recipe(
 #         recipe="divyabhaskar",
 #         slug="divyabhaskar",
-#         src_ext="mobi",
+#         src_ext="epub",
 #         target_ext=[],
 #         category="Gujarati Newspapers",
 # #        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
@@ -77,15 +77,14 @@ recipes: List[Recipe] = [
 #     Recipe(
 #         recipe="substack-nl",
 #         slug="substack-nl",
-#         src_ext="mobi",
-#         target_ext=["epub"],
+#         src_ext="epub",
 #         category="Newsletters",
 # #        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
 #     ),
 #     Recipe(
 #         recipe="finshots",
 #         slug="finshots",
-#         src_ext="mobi",
+#         src_ext="epub",
 #         target_ext=[],
 #         category="Newsletters",
 # #        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
@@ -93,31 +92,28 @@ recipes: List[Recipe] = [
 #     Recipe(
 #         recipe="frontline",
 #         slug="frontline",
-#         src_ext="mobi",
-#         target_ext=["epub"],
+#         src_ext="epub",
 #         category="Indian Magazines",
 # #        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
 #     ),
 #     Recipe(
 #         recipe="outlook_india",
 #         slug="outlook_india",
-#         src_ext="mobi",
-#         target_ext=["epub"],
+#         src_ext="epub",
 #         category="Indian Magazines",
 # #        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
 #     ),
 #     Recipe(
 #         recipe="india_today",
 #         slug="india_today",
-#         src_ext="mobi",
-#         target_ext=["epub"],
+#         src_ext="epub",
 #         category="Indian Magazines",
 # #        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
 #     ),
 #     Recipe(
 #         recipe="epw",
 #         slug="epw",
-#         src_ext="mobi",
+#         src_ext="epub",
 #         target_ext=[],
 #         category="Indian Magazines",
 # #       enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
@@ -125,7 +121,7 @@ recipes: List[Recipe] = [
 #     Recipe(
 #         recipe="dte",
 #         slug="dte",
-#         src_ext="mobi",
+#         src_ext="epub",
 #         target_ext=[],
 #         category="Indian Magazines",
 # #        enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
@@ -133,7 +129,7 @@ recipes: List[Recipe] = [
 #     Recipe(
 #         recipe="open",
 #         slug="open",
-#         src_ext="mobi",
+#         src_ext="epub",
 #         target_ext=[],
 #         timeout=180,
 #         overwrite_cover=True,
@@ -143,7 +139,7 @@ recipes: List[Recipe] = [
 #     Recipe(
 #         recipe="atlantic-magazine",
 #         slug="atlantic-magazine",
-#         src_ext="mobi",
+#         src_ext="epub",
 #         target_ext=[],
 #         overwrite_cover=False,
 #         category="Intl Magazines",
@@ -154,7 +150,7 @@ recipes: List[Recipe] = [
         recipe="thediplomat",
         name="The Diplomat",
         slug="the-diplomat",
-        src_ext="mobi",
+        src_ext="epub",
         target_ext=[],
         category="Intl Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
@@ -162,7 +158,7 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="economist",
         slug="economist",
-        src_ext="mobi",
+        src_ext="epub",
         target_ext=[],
         overwrite_cover=False,
         category="Intl Magazines",
@@ -172,7 +168,7 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="thirdpole",
         slug="thirdpole",
-        src_ext="mobi",
+        src_ext="epub",
         target_ext=[],
         category="Intl Magazines",
         enable_on=onlyat_hours(list(range(5, 20)), 5.5),
@@ -181,7 +177,7 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="hbr",
         slug="hbr",
-        src_ext="mobi",
+        src_ext="epub",
         target_ext=[],
         overwrite_cover=False,
         category="Intl Magazines",
@@ -190,7 +186,7 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="foreign-affairs",
         slug="foreign-affairs",
-        src_ext="mobi",
+        src_ext="epub",
         target_ext=[],
         overwrite_cover=False,
         category="Intl Magazines",
@@ -200,7 +196,7 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="harvard-intl-review",
         slug="harvard-intl-review",
-        src_ext="mobi",
+        src_ext="epub",
         target_ext=[],
         category="Intl Magazines",
         enable_on=onlyat_hours(list(range(11, 15))),
@@ -208,7 +204,7 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="mit-press-reader",
         slug="mit-press-reader",
-        src_ext="mobi",
+        src_ext="epub",
         target_ext=[],
         category="Intl Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4),
@@ -216,7 +212,7 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="mit-tech-review",
         slug="mit-tech-review-feed",
-        src_ext="mobi",
+        src_ext="epub",
         target_ext=[],
         category="Intl Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], -4),
@@ -225,7 +221,7 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="mit-tech-review-magazine",
         slug="mit-tech-review-magazine",
-        src_ext="mobi",
+        src_ext="epub",
         target_ext=[],
         category="Intl Magazines",
         overwrite_cover=False,
@@ -235,7 +231,7 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="nature",
         slug="nature",
-        src_ext="mobi",
+        src_ext="epub",
         target_ext=[],
         category="Intl Magazines",
         overwrite_cover=False,
@@ -244,7 +240,7 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="scientific-american",
         slug="scientific-american",
-        src_ext="mobi",
+        src_ext="epub",
         target_ext=[],
         category="Intl Magazines",
         overwrite_cover=False,
@@ -253,7 +249,7 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="restofworld",
         slug="restofworld",
-        src_ext="mobi",
+        src_ext="epub",
         target_ext=[],
         category="Intl Magazines",
        enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5])
@@ -263,7 +259,7 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="wired",
         slug="wired",
-        src_ext="mobi",
+        src_ext="epub",
         target_ext=[],
         overwrite_cover=True,
         category="Intl Magazines",
@@ -272,7 +268,7 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="knowable-magazine",
         slug="knowable-magazine",
-        src_ext="mobi",
+        src_ext="epub",
         target_ext=[],
         category="Intl Magazines",
         tags=["science"],

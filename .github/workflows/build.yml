@@ -90,7 +90,7 @@ jobs:
 
       - name: Download meta artifacts
         id: download-meta-artifact
-        uses: dawidd6/action-download-artifact@v2
+        uses: dawidd6/action-download-artifact@v4
         timeout-minutes: 1
         with:
           name: meta-artifacts
@@ -118,7 +118,7 @@ jobs:
           rm -rf "$CALIBRE_CONFIG_DIRECTORY"
 
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v2
+        uses: actions/upload-pages-artifact@v4
         with:
           path: ./public
 

@@ -439,7 +439,7 @@ footer {
   #search-text, #search-button {
     color: $dark-base-color;
     background-color: $dark-base-bg-color;
-    border: 1px solid darken($dark-base-disabled-color, 20%);
+    border: 1px solid color.adjust($dark-base-disabled-color, $lightness: -20%);
 
     &:disabled {
       background-color: $dark-book-bg-color;
@@ -473,7 +473,7 @@ footer {
 
   .category-container {
     background-color: $dark-base-bg-color;
-    border-color: darken($dark-base-disabled-color, 20%);
+    border-color: color.adjust($dark-base-disabled-color, $lightness: -20%);
 
     .close-cat-container {
       .close-cat-shortcut {
@@ -656,7 +656,7 @@ body.nonkindle {
 
 [data-theme="dark"] {
   body.nonkindle {
-    background-color: lighten($dark-base-bg-color, 3%);
+    background-color: color.adjust($dark-base-bg-color, $lightness: 3%);
 
     .category-container {
       background-color: $dark-base-bg-color;

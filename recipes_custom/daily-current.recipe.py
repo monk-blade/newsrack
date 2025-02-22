@@ -42,8 +42,8 @@ class UPSCDaily(BasicNewsRecipe):
     # remove_tags_after = [ classes('stry-bdy')]
 
     feeds = [
-        ('CivilsDaily' ,'https://rss-bridge.org/bridge01/?action=display&bridge=CssSelectorBridge&home_page=https%3A%2F%2Fwww.civilsdaily.com&url_selector=.entry-title+a&url_pattern=%2Fnews%2F.*&content_selector=article&content_cleanup=h1.entry-title%2Ca%5Bhref%3D%22https%3A%2F%2Fbit.ly%2FCivilsdailywebinar%22%5D&title_cleanup=&discard_thumbnail=on&limit=15&format=Atom'),   
-        ('DrishtiIAS Hindi CA', 'https://rss-bridge.org/bridge01/?action=display&bridge=CssSelectorBridge&home_page=https%3A%2F%2Fwww.drishtiias.com%2Fhindi%2Fcurrent-affairs-news-analysis-editorials%2F&url_selector=body+%3E+section.article-list+%3E+div.wrapper+%3E+div+%3E+article+%3E+div.row+%3E+div%3Anth-child%281%29+%3E+div+%3E+div+%3E+ul+%3E+li+%3E+a&url_pattern=&content_selector=article&content_cleanup=script%2Ciframe%2C.next-post%2C.tags-new%2C.float-sm%2C%23formcontainer%2C.mobile-ad-banner%2C.btn-group%2C.desktop-ad-banner&title_cleanup=&discard_thumbnail=on&limit=3&format=Mrss'),
+        ('CivilsDaily' ,'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=493f596d8391aa0893413b695b1f564f&f=rss'),   
+        ('DrishtiIAS Hindi CA', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=1f811be00e94cbb77e7ebed5b70c97c2&f=rss'),
         # ('Money', 'https://finshots.in/tag/money/rss/'),
         # ('Civilsdaily','https://monk-blade.github.io/reader-scripts/rss.xml'),
         # ('Insights', 'https://www.insightsonindia.com/category/current-affairs-2/feed/'),

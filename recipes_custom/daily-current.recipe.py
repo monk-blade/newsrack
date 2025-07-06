@@ -44,6 +44,7 @@ class UPSCDaily(BasicNewsRecipe):
     feeds = [
         ('Finshots-AI','https://monk-blade.github.io/scripts-rss/processed-Q_Fin.xml'),
         ('IE Explained-AI','https://monk-blade.github.io/scripts-rss/processed-Q_IE_Exp.xml'),
+        ('Mint OpED-AI','https://monk-blade.github.io/scripts-rss/processed-Q_mint_oped.xml'),
         ('CivilsDaily' ,'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=493f596d8391aa0893413b695b1f564f&f=rss'),   
         ('DrishtiIAS Hindi CA', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=1f811be00e94cbb77e7ebed5b70c97c2&f=rss'),
         # ('Money', 'https://finshots.in/tag/money/rss/'),

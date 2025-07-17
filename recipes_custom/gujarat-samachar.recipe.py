@@ -8,8 +8,8 @@ from lxml import etree
 
 _name = 'Gujarat Samachar'
 class GujaratSamachar(BasicNewsRecipe):
-    title = u'Gujarat Samachar'
-    description = 'Gujarat Samachar is a Gujarati language daily newspaper in India.'
+    title = u'News of Gujarat- ' + datetime.now().strftime('%d.%m.%Y')
+    description = 'News of Gujarat is compilation of various feeds of Gujarati Paper'
     language = 'gu'
     __author__ = 'Arpan'
     oldest_article = 2  # days

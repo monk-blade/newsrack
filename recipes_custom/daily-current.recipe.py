@@ -12,7 +12,7 @@ from lxml import etree
 _name = 'UPSCDaily'
 calibre_most_common_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'
 class UPSCDaily(BasicNewsRecipe):
-    title = u'UPSC Daily' + datetime.now().strftime('%d.%m.%Y')
+    title = u'UPSC Daily- ' + datetime.now().strftime('%d.%m.%Y')
     description = 'UPSC Daily is a daily news source for UPSC aspirants.'
     language = 'en_IN'
     __author__ = 'Arpan'

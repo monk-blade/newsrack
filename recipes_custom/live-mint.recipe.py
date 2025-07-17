@@ -11,7 +11,7 @@ from lxml import etree
 is_saturday = date.today().weekday() == 5
 calibre_most_common_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'
 class LiveMint(BasicNewsRecipe):
-    title = 'Live Mint'
+    title = 'Live Mint- ' + datetime.now().strftime('%d.%m.%Y')
     description = 'Financial News from India.'
     language = 'en_IN'
     __author__ = 'Krittika Goyal, revised by unkn0wn'

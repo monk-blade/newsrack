@@ -16,7 +16,7 @@ from recipes_shared import BasicCookielessNewsrackRecipe, format_title
 
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 
-_name = "Wired Magazine"
+_name = "Wired Magazine- " + datetime.now().strftime('%d.%m.%Y')
 
 
 class WiredMagazine(BasicCookielessNewsrackRecipe, BasicNewsRecipe):

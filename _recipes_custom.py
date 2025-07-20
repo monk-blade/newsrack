@@ -30,10 +30,8 @@ recipes: List[Recipe] = [
         slug="live-mint",
         src_ext="epub",
         category="News",
-        overwrite_cover=False,
         enable_on=True,
         retry_attempts=1,
-        title_date_format = "%d-%m-%Y"  # used to format the date in the title
 #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
     ),
     Recipe(
@@ -41,10 +39,8 @@ recipes: List[Recipe] = [
         slug="daily-current",
         src_ext="epub",
         category="UPSC",
-        overwrite_cover=True,
         enable_on=True,
         retry_attempts=1,
-        title_date_format = "%d-%m-%Y"  # used to format the date in the title
 #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
 #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
     ), 

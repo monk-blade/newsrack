@@ -13,7 +13,7 @@ from lxml import etree
 calibre_most_common_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'
 
 class LiveMint(BasicNewsRecipe):
-    title = 'Live Mint- ' + datetime.now().strftime('%d.%m.%Y')
+    title = 'Live Mint - ' + datetime.now().strftime('%d.%m.%Y')
     description = 'Financial News from India.'
     language = 'en_IN'
     __author__ = 'Krittika Goyal, revised by unkn0wn'
@@ -35,7 +35,7 @@ class LiveMint(BasicNewsRecipe):
     remove_empty_feeds = True
     resolve_internal_links = True
     is_saturday = date.today().weekday() == 5
-    
+
     def __init__(self, *args, **kwargs):
         BasicNewsRecipe.__init__(self, *args, **kwargs)
         d = self.recipe_specific_options.get('days')

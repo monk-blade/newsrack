@@ -1,5 +1,6 @@
 #!/usr/bin/env  python
 from datetime import date  # Correct import
+from datetime import datetime
 from calibre.web.feeds.news import BasicNewsRecipe,classes
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from calibre.ebooks.oeb.base import OEBBook
@@ -8,7 +9,7 @@ from lxml import etree
 
 _name = 'Gujarat Samachar'
 class GujaratSamachar(BasicNewsRecipe):
-    title = u'News of Gujarat- ' + datetime.now().strftime('%d.%m.%Y')
+    title = u'News of Gujarat - ' + datetime.now().strftime('%d.%m.%Y')
     description = 'News of Gujarat is compilation of various feeds of Gujarati Paper'
     language = 'gu'
     __author__ = 'Arpan'

@@ -3,19 +3,21 @@
 import json
 import re
 from datetime import date
+from datetime import datetime  # Correct import
 
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 from calibre.ebooks.oeb.base import OEBBook
 from calibre.utils.logging import default_log
 from lxml import etree
-is_saturday = date.today().weekday() == 5
+
 calibre_most_common_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'
+
 class LiveMint(BasicNewsRecipe):
     title = 'Live Mint- ' + datetime.now().strftime('%d.%m.%Y')
     description = 'Financial News from India.'
     language = 'en_IN'
     __author__ = 'Krittika Goyal, revised by unkn0wn'
-    oldest_article = 1.15  # days
+    oldest_article = 1  # days
     max_articles_per_feed = 50
     encoding = 'utf-8'
     use_embedded_content = False
@@ -30,10 +32,10 @@ class LiveMint(BasicNewsRecipe):
             'default': str(oldest_article)
         }
     }
-    remove_empty_feeds =  True
+    remove_empty_feeds = True
     resolve_internal_links = True
-
-
+    is_saturday = date.today().weekday() == 5
+    
     def __init__(self, *args, **kwargs):
         BasicNewsRecipe.__init__(self, *args, **kwargs)
         d = self.recipe_specific_options.get('days')

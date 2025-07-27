@@ -55,16 +55,21 @@ class HBR(BasicNewsRecipe):
     keep_only_tags = [
         classes(
             'headline-container article-dek-group pub-date hero-image-content '
-            'article-body standard-content'
+            'article-body standard-content content'
         ),
+        dict(name=['article'], class_=['hbr-article-body']),
+        dict(name=['div'], class_=['article-content']),
+        dict(name=['main']),
     ]
 
     remove_tags = [
         classes(
             'left-rail--container translate-message follow-topic '
-            'newsletter-container by-prefix related-topics--common'
+            'newsletter-container by-prefix related-topics--common '
+            'related-content subscription-banner paywall'
         ),
-        dict(name=['article-sidebar']),
+        dict(name=['article-sidebar', 'aside']),
+        dict(name=['div'], class_=['paywall', 'subscription-required']),
     ]
 
     def preprocess_raw_html(self, raw_html, article_url):
@@ -84,7 +89,7 @@ class HBR(BasicNewsRecipe):
             )
             byline_list.decompose()
 
-        # Extract full article content
+        # Try to extract full article content via API
         content_ele = soup.find(
             'content',
             attrs={
@@ -95,40 +100,56 @@ class HBR(BasicNewsRecipe):
                 'data-page-slug': True,
             },
         )
-        endpoint_url = 'https://hbr.org/api/article/piano/content?' + urlencode(
-            {
-                'year': content_ele['data-page-year'],
-                'month': content_ele['data-page-month'],
-                'seotitle': content_ele['data-page-seo-title'],
-            }
-        )
-        data = {
-            'contentKey': content_ele['data-index'],
-            'pageSlug': content_ele['data-page-slug'],
-        }
-        headers = {
-            'User-Agent': random_user_agent(),
-            'Pragma': 'no-cache',
-            'Cache-Control': 'no-cache',
-            'Content-Type': 'application/json',
-            'Referer': article_url,
-        }
-        br = browser()
-        req = Request(
-            endpoint_url,
-            headers=headers,
-            data=json.dumps(data),
-            method='POST',
-            timeout=self.timeout,
-        )
-        res = br.open(req)
-        article = json.loads(res.read())
-        new_soup = self.soup(article['content'])
-        # clear out existing partial content
-        for c in list(content_ele.children):
-            c.extract()  # use extract() instead of decompose() because of strings
-        content_ele.append(new_soup.body)
+        
+        if content_ele:
+            try:
+                endpoint_url = 'https://hbr.org/api/article/piano/content?' + urlencode(
+                    {
+                        'year': content_ele['data-page-year'],
+                        'month': content_ele['data-page-month'],
+                        'seotitle': content_ele['data-page-seo-title'],
+                    }
+                )
+                data = {
+                    'contentKey': content_ele['data-index'],
+                    'pageSlug': content_ele['data-page-slug'],
+                }
+                headers = {
+                    'User-Agent': random_user_agent(),
+                    'Pragma': 'no-cache',
+                    'Cache-Control': 'no-cache',
+                    'Content-Type': 'application/json',
+                    'Referer': article_url,
+                }
+                br = browser()
+                req = Request(
+                    endpoint_url,
+                    headers=headers,
+                    data=json.dumps(data),
+                    method='POST',
+                    timeout=self.timeout,
+                )
+                res = br.open(req)
+                article = json.loads(res.read())
+                new_soup = self.soup(article['content'])
+                # clear out existing partial content
+                for c in list(content_ele.children):
+                    c.extract()  # use extract() instead of decompose() because of strings
+                content_ele.append(new_soup.body)
+                self.log('Successfully fetched full article content via API')
+            except Exception as e:
+                self.log('Failed to fetch full article content via API:', str(e))
+                self.log('Falling back to existing content')
+        else:
+            self.log('Content element with required data attributes not found, using existing content')
+        
         return str(soup)
+
+    def get_browser(self):
+        br = BasicNewsRecipe.get_browser(self)
+        br.set_handle_robots(False)
+        br.set_handle_refresh(False)
+        return br
 
     recipe_specific_options = {
         'issue': {

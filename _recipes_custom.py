@@ -106,13 +106,13 @@ recipes: List[Recipe] = [
 #         category="Indian Magazines",
 # #        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
 #     ),
-#     Recipe(
-#         recipe="india_today",
-#         slug="india_today",
-#         src_ext="epub",
-#         category="Indian Magazines",
-# #        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
-#     ),
+    Recipe(
+        recipe="india_today",
+        slug="india_today",
+        src_ext="epub",
+        category="Indian Magazines",
+       enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
+    ),
 #     Recipe(
 #         recipe="epw",
 #         slug="epw",
@@ -129,16 +129,16 @@ recipes: List[Recipe] = [
 #         category="Indian Magazines",
 # #        enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
 #     ),
-#     Recipe(
-#         recipe="open",
-#         slug="open",
-#         src_ext="epub",
-#         target_ext=[],
-#         timeout=180,
-#         overwrite_cover=True,
-#         category="Indian Magazines",
-# #        enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
-#     ),
+    Recipe(
+        recipe="open",
+        slug="open",
+        src_ext="epub",
+        target_ext=[],
+        timeout=180,
+        overwrite_cover=True,
+        category="Indian Magazines",
+       enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
+    ),
 #     Recipe(
 #         recipe="atlantic-magazine",
 #         slug="atlantic-magazine",

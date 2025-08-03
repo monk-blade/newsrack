@@ -7,7 +7,7 @@ from calibre.ebooks.oeb.base import OEBBook
 from calibre.utils.logging import default_log
 from lxml import etree
 
-_name = 'Gujarat Samachar'
+_name = 'News of Gujarat'
 class GujaratSamachar(BasicNewsRecipe):
     title = u'News of Gujarat - ' + datetime.now().strftime('%d.%m.%Y')
     description = 'News of Gujarat is compilation of various feeds of Gujarati Paper'
@@ -31,7 +31,9 @@ class GujaratSamachar(BasicNewsRecipe):
     """
 
     feeds = [
-        ('Gujarati OpEd', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=f812f5337e58e666b5b0b4050475ba44&f=rss'),
+        ('Sandesh | Opinion', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=a2abf353cf0a8c508fb6c10f36856ad9&f=rss'),
+        ('GS | Editorials', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=93efd7f00ba0514c11e60494b70edd44&f=rss'),
+        ('ઓરિજનલ | દિવ્યભાસ્કર', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=7a0609bc4ecc4fbadaf1c9c831ac62a1&f=rss'),
         ('ગુજરાતી પૂર્તિઓ' ,'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=6d573adee7f766e07d3cbd8b8d4fee40&f=rss'),
         # ('Multitudes' ,'https://shantanukishwar.substack.com/feed'),
         # ('India Wants to Know', 'https://iwtkquiz.substack.com/feed'),

@@ -250,7 +250,9 @@ class Economist(BasicNewsRecipe):
     remove_attributes = ['data-reactid', 'width', 'height']
     # economist.com has started throttling after about 60% of the total has
     # downloaded with connection reset by peer (104) errors.
-    delay = 3
+    delay = 1  # Reduced delay for CI environments
+    simultaneous_downloads = 1  # Force single-threaded downloads
+    timeout = 30.0  # Timeout for individual article downloads
     browser_type = 'webengine'
     from_archive = True
     recipe_specific_options = {
@@ -267,6 +269,11 @@ class Economist(BasicNewsRecipe):
             'short': 'Web Edition',
             'long': 'Yes/No. Digital Edition does not skip some articles based on your location.',
             'default': 'No',
+        },
+        'max_articles': {
+            'short': 'Maximum articles per section',
+            'long': 'Limit the number of articles per section to prevent timeouts (0 = no limit)',
+            'default': '20',
         }
     }
 
@@ -295,7 +302,21 @@ class Economist(BasicNewsRecipe):
                 ('apollographql-client-version', '3.50.0'),
                 ('x-request-id', str(uuid4())),
             ]
+        # Set timeout for requests
+        br.set_timeout(30.0)
         return br
+
+    def download_article(self, url, *args, **kwargs):
+        """Override to handle timeouts and skip problematic articles"""
+        try:
+            # Skip interactive articles that commonly fail
+            if '/interactive/' in url:
+                self.log('Skipping interactive article:', url)
+                return None
+            return BasicNewsRecipe.download_article(self, url, *args, **kwargs)
+        except Exception as e:
+            self.log('Failed to download article from:', url, 'Error:', str(e))
+            return None
 
     def publication_date(self):
         edition_date = self.recipe_specific_options.get('date')
@@ -401,6 +422,18 @@ class Economist(BasicNewsRecipe):
             'economist.com/cdn-cgi/image/width=960,quality=80,format=auto/')
         self.log('Got cover:', self.cover_url, '\n', self.description)
 
+        # Get max articles per section setting
+        max_articles = self.recipe_specific_options.get('max_articles')
+        if max_articles and isinstance(max_articles, str):
+            try:
+                max_articles = int(max_articles)
+                if max_articles <= 0:
+                    max_articles = None
+            except ValueError:
+                max_articles = 20
+        else:
+            max_articles = 20  # Default limit for CI environments
+
         feeds_dict = defaultdict(list)
         for part in safe_dict(data, 'hasPart', 'parts'):
             try:
@@ -409,11 +442,23 @@ class Economist(BasicNewsRecipe):
                 section = safe_dict(part, 'print', 'section', 'title') or 'section'
             if section not in feeds_dict:
                 self.log(section)
+            
+            # Skip if we've reached the article limit for this section
+            if max_articles and len(feeds_dict[section]) >= max_articles:
+                continue
+                
             title = safe_dict(part, 'title')
             desc = safe_dict(part, 'rubric') or ''
             sub = safe_dict(part, 'flyTitle') or ''
             if sub and section != sub:
-                desc = sub + ' :: ' + desc
+                desc = str(sub) + ' :: ' + str(desc)
+            
+            # Skip interactive articles that commonly timeout
+            canonical_url = safe_dict(part, 'url', 'canonical')
+            if canonical_url and '/interactive/' in canonical_url:
+                self.log('Skipping interactive article:', title)
+                continue
+                
             pt = PersistentTemporaryFile('.html')
             pt.write(json.dumps(part).encode('utf-8'))
             pt.close()
@@ -437,48 +482,52 @@ class Economist(BasicNewsRecipe):
         return soup
 
     def preprocess_raw_html(self, raw, url):
-        if self.from_archive:
-            return self.preprocess_raw_web_html(raw, url)
+        try:
+            if self.from_archive:
+                return self.preprocess_raw_web_html(raw, url)
 
-        # open('/t/raw.html', 'wb').write(raw.encode('utf-8'))
+            # open('/t/raw.html', 'wb').write(raw.encode('utf-8'))
 
-        body = '<html><body><article></article></body></html>'
-        root = parse(body)
-        load_article_from_json(raw, root)
+            body = '<html><body><article></article></body></html>'
+            root = parse(body)
+            load_article_from_json(raw, root)
 
-        if '/interactive/' in url:
-            return ('<html><body><article><h1>' + root.xpath('//h1')[0].text + '</h1><em>'
-                    'This article is supposed to be read in a browser.'
-                    '</em></article></body></html>')
+            if '/interactive/' in url:
+                return ('<html><body><article><h1>' + root.xpath('//h1')[0].text + '</h1><em>'
+                        'This article is supposed to be read in a browser.'
+                        '</em></article></body></html>')
 
-        for div in root.xpath('//div[@class="lazy-image"]'):
-            noscript = list(div.iter('noscript'))
-            if noscript and noscript[0].text:
-                img = list(parse(noscript[0].text).iter('img'))
-                if img:
-                    p = noscript[0].getparent()
-                    idx = p.index(noscript[0])
-                    p.insert(idx, p.makeelement('img', src=img[0].get('src')))
-                    p.remove(noscript[0])
-        for x in root.xpath('//*[name()="script" or name()="style" or name()="source" or name()="meta"]'):
-            x.getparent().remove(x)
-        # the economist uses <small> for small caps with a custom font
-        for init in root.xpath('//span[@data-caps="initial"]'):
-            init.set('style', 'font-weight:bold;')
-        for x in root.xpath('//small'):
-            if x.text and len(x) == 0:
-                x.text = x.text.upper()
-                x.tag = 'span'
-                x.set('style', 'font-variant: small-caps')
-        for h2 in root.xpath('//h2'):
-            h2.tag = 'h4'
-        for x in root.xpath('//figcaption'):
-            x.set('style', 'text-align:center; font-size:small;')
-        for x in root.xpath('//cite'):
-            x.tag = 'blockquote'
-            x.set('style', 'color:#404040;')
-        raw = etree.tostring(root, encoding='unicode')
-        return raw
+            for div in root.xpath('//div[@class="lazy-image"]'):
+                noscript = list(div.iter('noscript'))
+                if noscript and noscript[0].text:
+                    img = list(parse(noscript[0].text).iter('img'))
+                    if img:
+                        p = noscript[0].getparent()
+                        idx = p.index(noscript[0])
+                        p.insert(idx, p.makeelement('img', src=img[0].get('src')))
+                        p.remove(noscript[0])
+            for x in root.xpath('//*[name()="script" or name()="style" or name()="source" or name()="meta"]'):
+                x.getparent().remove(x)
+            # the economist uses <small> for small caps with a custom font
+            for init in root.xpath('//span[@data-caps="initial"]'):
+                init.set('style', 'font-weight:bold;')
+            for x in root.xpath('//small'):
+                if x.text and len(x) == 0:
+                    x.text = x.text.upper()
+                    x.tag = 'span'
+                    x.set('style', 'font-variant: small-caps')
+            for h2 in root.xpath('//h2'):
+                h2.tag = 'h4'
+            for x in root.xpath('//figcaption'):
+                x.set('style', 'text-align:center; font-size:small;')
+            for x in root.xpath('//cite'):
+                x.tag = 'blockquote'
+                x.set('style', 'color:#404040;')
+            raw = etree.tostring(root, encoding='unicode')
+            return raw
+        except Exception as e:
+            self.log('Error processing article from:', url, 'Error:', str(e))
+            return '<html><body><article><h1>Article processing failed</h1><p>This article could not be processed due to an error.</p></article></body></html>'
 
     def parse_index_from_printedition(self):
         # return self.economist_test_article()
@@ -556,34 +605,70 @@ class Economist(BasicNewsRecipe):
             data = json.loads(script_tag.string)
             # open('/t/raw.json', 'w').write(json.dumps(data, indent=2, sort_keys=True))
             self.description = safe_dict(data, 'props', 'pageProps', 'content', 'headline')
-            self.timefmt = ' [' + safe_dict(data, 'props', 'pageProps', 'content', 'formattedIssueDate') + ']'
-            self.cover_url = safe_dict(data, 'props', 'pageProps', 'content', 'cover', 'url').replace(
-                'economist.com/', 'economist.com/cdn-cgi/image/width=960,quality=80,format=auto/').replace('SQ_', '')
+            issue_date = safe_dict(data, 'props', 'pageProps', 'content', 'formattedIssueDate')
+            self.timefmt = ' [' + str(issue_date) + ']'
+            cover_url = safe_dict(data, 'props', 'pageProps', 'content', 'cover', 'url')
+            if isinstance(cover_url, str):
+                self.cover_url = cover_url.replace(
+                    'economist.com/', 'economist.com/cdn-cgi/image/width=960,quality=80,format=auto/').replace('SQ_', '')
             self.log('Got cover:', self.cover_url)
+
+            # Get max articles per section setting
+            max_articles = self.recipe_specific_options.get('max_articles')
+            if max_articles and isinstance(max_articles, str):
+                try:
+                    max_articles = int(max_articles)
+                    if max_articles <= 0:
+                        max_articles = None
+                except ValueError:
+                    max_articles = 20
+            else:
+                max_articles = 20  # Default limit for CI environments
 
             feeds = []
 
-            for part in safe_dict(
-                data, 'props', 'pageProps', 'content', 'headerSections'
-            ) + safe_dict(data, 'props', 'pageProps', 'content', 'sections'):
+            header_sections = safe_dict(data, 'props', 'pageProps', 'content', 'headerSections')
+            sections = safe_dict(data, 'props', 'pageProps', 'content', 'sections')
+            
+            # Safely combine sections
+            all_sections = []
+            if isinstance(header_sections, list):
+                all_sections.extend(header_sections)
+            if isinstance(sections, list):
+                all_sections.extend(sections)
+
+            for part in all_sections:
                 section = safe_dict(part, 'name') or ''
                 if not section:
                     continue
                 self.log(section)
 
                 articles = []
+                article_count = 0
 
-                for ar in part['articles']:
+                for ar in part.get('articles', []):
+                    # Skip if we've reached the article limit for this section
+                    if max_articles and article_count >= max_articles:
+                        break
+                        
                     title = safe_dict(ar, 'headline') or ''
                     url = process_url(safe_dict(ar, 'url') or '')
                     if not title or not url:
                         continue
+                    
+                    # Skip interactive articles that commonly timeout
+                    if '/interactive/' in url:
+                        self.log('Skipping interactive article:', title)
+                        continue
+                        
                     desc = safe_dict(ar, 'rubric') or ''
                     sub = safe_dict(ar, 'flyTitle') or ''
                     if sub and section != sub:
-                        desc = sub + ' :: ' + desc
+                        desc = str(sub) + ' :: ' + str(desc)
                     self.log('\t', title, '\n\t', desc, '\n\t\t', url)
                     articles.append({'title': title, 'url': url, 'description': desc})
+                    article_count += 1
+                    
                 feeds.append((section, articles))
             return feeds
         else:

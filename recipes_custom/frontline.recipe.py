@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 # vim:fileencoding=utf-8
+from collections import defaultdict
+
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 
-_name = 'Frontline'
 
 class Frontline(BasicNewsRecipe):
     title = u'Frontline'
@@ -13,66 +14,86 @@ class Frontline(BasicNewsRecipe):
     remove_javascript = True
     use_embedded_content = False
     encoding = 'utf-8'
-    oldest_article = 14
-    compress_news_images = True
-    compress_news_images_auto_size = 10
-    scale_news_images = (800, 800)
-    max_articles_per_feed = 50
     ignore_duplicate_articles = {'url'}
-    # masthead_url = 'https://fl.thgim.com/static/theme/default/base/img/fllogo.png'
+    masthead_url = 'https://frontline.thehindu.com/theme/images/fl-online/frontline-logo.png'
     remove_attributes = ['height', 'width']
-
-    def get_cover_url(self):
-        soup = self.index_to_soup(
-            'https://frontline.thehindu.com/current-issue/')
-        tag = soup.find(attrs={'class': 'sptar-image'})
-        if tag:
-            self.cover_url = tag.find('img')['data-original']
-        return super().get_cover_url()
-
-    # https://fl.thgim.com/incoming/b5zy2g/article38454943.ece/alternates/FREE_100/coverpng
+    resolve_internal_links = True
+    extra_css = '''
+        .environment, .publish-time, .author { font-size:small; color:#404040; }
+        .caption { font-size:small; text-align:center; }
+        img { display:block; margin:0 auto; }
+        .question {font-weight:bold;}
+    '''
 
     keep_only_tags = [
+        dict(name='div', attrs={'class':'container article-section'})
+    ]
+
+    remove_tags = [
         classes(
-            'overline mainart-title marginBottom10px articleBottomLine swiper-slide slide-caption artlead-text body-main article-container'
-        )
-    ]
-    remove_tags = [classes('dispatche-middle bigtitle mobilesocialicons ece_frontpage shareicon-article')]
-
-    remove_tags_after = [
-        classes('body-main'),
-    ]
-
-
-    extra_css = """
-    .lead-img-caption { font-size: 0.8rem; color: #c7c7c7; }
-    p{text-align: justify; font-size: 100%}
-    """
-
-
-    feeds = [
-        ('Cover Story',
-         'https://frontline.thehindu.com/cover-story/feeder/default.rss'),
-        ('The Nation',
-         'https://frontline.thehindu.com/the-nation/feeder/default.rss'),
-        ('World Affairs',
-         'https://frontline.thehindu.com/world-affairs/feeder/default.rss'),
-        ('Politics',
-         'https://frontline.thehindu.com/politics/feeder/default.rss'),
-        ('Arts & Culture',
-         'https://frontline.thehindu.com/arts-and-culture/feeder/default.rss'),
-        ('Social Issues',
-         'https://frontline.thehindu.com/social-issues/feeder/default.rss'),
-        ('Books', 'https://frontline.thehindu.com/books/feeder/default.rss'),
-        ('Columns',
-         'https://frontline.thehindu.com/columns/feeder/default.rss'),
-        ('Others', 'https://frontline.thehindu.com/other/feeder/default.rss'),
+            'breadcrumb comments-shares share-page article-video '
+            'referpara slide-mobile title-patch hide-mobile related-stories'
+        ),
     ]
 
     def preprocess_html(self, soup):
-        for source in soup.findAll('source', srcset=True, attrs={'media':'(min-width: 1600px)'}):
-            source.name = 'img'
-            source['src'] = source['srcset']
         for img in soup.findAll('img', attrs={'data-original':True}):
-            img['src'] = img['data-original']
+            if img['data-original'].endswith('1x1_spacer.png'):
+                source = img.findPrevious('source', srcset=True)
+                img.extract()
+                if source:
+                    source['src'] = source['srcset'].replace('_320','_1200')
+                    source.name = 'img'
+            else:
+                img['src'] = img['data-original']
+        for cap in soup.findAll(**classes('caption')):
+            cap.name = 'figcaption'
         return soup
+
+    def postprocess_html(self, soup, first_fetch):
+        for src in soup.findAll('source'):
+            src.extract()
+        return soup
+
+    recipe_specific_options = {
+        'issue': {
+            'short': 'Enter the Issue Number you want to download\n(Volume-Issue format)',
+            'long': 'For example, 41-12'
+        }
+    }
+
+    def parse_index(self):
+        issue_url = 'https://frontline.thehindu.com/current-issue/'
+        d = self.recipe_specific_options.get('issue')
+        if d and isinstance(d, str):
+            issue_url = 'https://frontline.thehindu.com/magazine/issue/vol' + d
+
+        soup = self.index_to_soup(issue_url)
+
+        if cover := soup.find('div', attrs={'class':'magazine'}):
+            self.cover_url = cover.find(**classes('sptar-image')).img['data-original'].replace('SQUARE_80', 'FREE_615')
+            self.log('Cover ', self.cover_url)
+            if desc := cover.find(**classes('sub-text')):
+                self.description = self.tag_to_string(desc)
+
+        feeds_dict = defaultdict(list)
+
+        mag = soup.find(**classes('current-issue-in-this-issue'))
+        for div in mag.findAll('div', attrs={'class':'content'}):
+            a = div.find(**classes('title')).find('a')
+            url = a['href']
+            title = self.tag_to_string(a)
+            section = 'Articles'
+            if cat := div.find(**classes('label')):
+                section = self.tag_to_string(cat)
+            desc = ''
+
+            if art := div.find(**classes('sub-text')):
+                desc = self.tag_to_string(art)
+            if auth := div.find(**classes('author')):
+                desc = self.tag_to_string(auth) + ' | ' + desc
+            if not url or not title:
+                continue
+            self.log(section, '\n\t', title, '\n\t', desc, '\n\t\t', url)
+            feeds_dict[section].append({'title': title, 'url': url, 'description': desc})
+        return list(feeds_dict.items())

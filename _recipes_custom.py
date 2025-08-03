@@ -3,7 +3,7 @@ from typing import List
 from _recipe_utils import Recipe, onlyon_days, onlyat_hours, onlyon_weekdays
 
 # Define the categories display order, optional
-categories_sort: List[str] = ["News","UPSC","Gujarati Newspapers","Hindi Newspapers","Newsletters","Indian Magazines","Intl Magazines","Books"]
+categories_sort: List[str] = ["News","UPSC","Gujarati Newspapers","Technology","Newsletters","Indian Magazines","Intl Magazines","Books"]
 
 # Define your custom recipes list here
 # Example: https://github.com/ping/newsrack-fork-test/blob/custom/_recipes_custom.py
@@ -17,14 +17,14 @@ recipes: List[Recipe] = [
 #         category="News",
 # #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),  # from 6am-11.59am daily, for the timezone UTC-5
 #     ),
-#     Recipe(
-#         recipe="indian-express",
-#         slug="indian-express",
-#         src_ext="epub",
-#         category="News",
-#         overwrite_cover=False,
-# #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
-#     ),
+    Recipe(
+        recipe="linux",
+        slug="linux",
+        src_ext="epub",
+        category="Technology",
+        overwrite_cover=False,
+#        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
+    ),
     Recipe(
         recipe="live-mint",
         slug="live-mint",
@@ -84,21 +84,20 @@ recipes: List[Recipe] = [
 #         category="Newsletters",
 # #        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
 #     ),
-#     Recipe(
-#         recipe="finshots",
-#         slug="finshots",
-#         src_ext="epub",
-#         target_ext=[],
-#         category="Newsletters",
-# #        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
-#     ),
-#     Recipe(
-#         recipe="frontline",
-#         slug="frontline",
-#         src_ext="epub",
-#         category="Indian Magazines",
-# #        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
-#     ),
+    Recipe(
+        recipe="newsletters",
+        slug="newsletters",
+        src_ext="epub",
+        category="Newsletters",
+#        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
+    ),
+    Recipe(
+        recipe="frontline",
+        slug="frontline",
+        src_ext="epub",
+        category="Indian Magazines",
+#        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
+    ),
 #     Recipe(
 #         recipe="outlook_india",
 #         slug="outlook_india",
@@ -129,26 +128,26 @@ recipes: List[Recipe] = [
 #         category="Indian Magazines",
 # #        enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
 #     ),
+    # Recipe(
+    #     recipe="open",
+    #     slug="open",
+    #     src_ext="epub",
+    #     target_ext=[],
+    #     timeout=180,
+    #     overwrite_cover=True,
+    #     category="Indian Magazines",
+    #    enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
+    # ),
     Recipe(
-        recipe="open",
-        slug="open",
+        recipe="atlantic-magazine",
+        slug="atlantic-magazine",
         src_ext="epub",
         target_ext=[],
-        timeout=180,
-        overwrite_cover=True,
-        category="Indian Magazines",
-       enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
+        overwrite_cover=False,
+        category="Intl Magazines",
+        enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4)
+#        and onlyon_days(list(range(32 - 14, 32)), -4),
     ),
-#     Recipe(
-#         recipe="atlantic-magazine",
-#         slug="atlantic-magazine",
-#         src_ext="epub",
-#         target_ext=[],
-#         overwrite_cover=False,
-#         category="Intl Magazines",
-#         enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4)
-# #        and onlyon_days(list(range(32 - 14, 32)), -4),
-#     ),
     Recipe(
         recipe="thediplomat",
         name="The Diplomat",
@@ -168,15 +167,15 @@ recipes: List[Recipe] = [
         timeout=240,
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
     ),
-    # Recipe(
-    #     recipe="thirdpole",
-    #     slug="thirdpole",
-    #     src_ext="epub",
-    #     target_ext=[],
-    #     category="Intl Magazines",
-    #     enable_on=onlyat_hours(list(range(5, 20)), 5.5),
-    #     tags=["asia", "climate"],
-    # ),
+    Recipe(
+        recipe="thirdpole",
+        slug="thirdpole",
+        src_ext="epub",
+        target_ext=[],
+        category="Intl Magazines",
+        enable_on=onlyat_hours(list(range(5, 20)), 5.5),
+        tags=["asia", "climate"],
+    ),
     Recipe(
         recipe="hbr",
         slug="hbr",
@@ -186,16 +185,16 @@ recipes: List[Recipe] = [
         category="Intl Magazines",
         enable_on=onlyon_days(list(range(1, 1 + 3)) + list(range(32 - 14, 32)), -5),
     ),
-    # Recipe(
-    #     recipe="foreign-affairs",
-    #     slug="foreign-affairs",
-    #     src_ext="epub",
-    #     target_ext=[],
-    #     overwrite_cover=False,
-    #     category="Intl Magazines",
-    #     enable_on=onlyon_days(list(range(1, 1 + 7)) + list(range(32 - 7, 32)), -4)
-    #     and onlyat_hours(list(range(8, 22)), -4),
-    # ),
+    Recipe(
+        recipe="foreign-affairs",
+        slug="foreign-affairs",
+        src_ext="epub",
+        target_ext=[],
+        overwrite_cover=False,
+        category="Intl Magazines",
+        enable_on=onlyon_days(list(range(1, 1 + 7)) + list(range(32 - 7, 32)), -4)
+        and onlyat_hours(list(range(8, 22)), -4),
+    ),
     Recipe(
         recipe="harvard-intl-review",
         slug="harvard-intl-review",
@@ -240,15 +239,15 @@ recipes: List[Recipe] = [
         overwrite_cover=False,
         enable_on=onlyon_weekdays([2, 3, 4], 0),
     ),
-    # Recipe(
-    #     recipe="scientific-american",
-    #     slug="scientific-american",
-    #     src_ext="epub",
-    #     target_ext=[],
-    #     category="Intl Magazines",
-    #     overwrite_cover=False,
-    #     enable_on=onlyon_days(list(range(15, 31)), -5),  # middle of the month?
-    # ),
+    Recipe(
+        recipe="scientific-american",
+        slug="scientific-american",
+        src_ext="epub",
+        target_ext=[],
+        category="Intl Magazines",
+        overwrite_cover=False,
+        enable_on=onlyon_days(list(range(15, 31)), -5),  # middle of the month?
+    ),
     Recipe(
         recipe="restofworld",
         slug="restofworld",

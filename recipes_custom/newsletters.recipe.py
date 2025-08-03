@@ -9,8 +9,8 @@ class Newsletters(BasicNewsRecipe):
     description = 'My Favourite Newsletters from Substack.'
     language = 'en_IN'
     __author__ = 'Arpan'
-    oldest_article = 7  # days
-    max_articles_per_feed = 1
+    oldest_article = 1  # days
+#     max_articles_per_feed = 1
     encoding = 'utf-8'
     use_embedded_content = True
     #masthead_url = 'https://upload.wikimedia.org/wikipedia/en/0/06/Sandesh%28IndianNewspaper%29Logo.jpg'

@@ -42,7 +42,6 @@ recipes: List[Recipe] = [
         enable_on=True,
         retry_attempts=1,
 #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
-#        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
     ), 
 #     Recipe(
 #         recipe="business-standard",
@@ -157,16 +156,16 @@ recipes: List[Recipe] = [
         category="Intl Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
     ),
-    Recipe(
-        recipe="economist",
-        slug="economist",
-        src_ext="epub",
-        target_ext=[],
-        overwrite_cover=False,
-        category="Intl Magazines",
-        timeout=240,
-        enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
-    ),
+    # Recipe(
+    #     recipe="economist",
+    #     slug="economist",
+    #     src_ext="epub",
+    #     target_ext=[],
+    #     overwrite_cover=False,
+    #     category="Intl Magazines",
+    #     timeout=240,
+    #     enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
+    # ),
     # Recipe(
     #     recipe="thirdpole",
     #     slug="thirdpole",
@@ -185,16 +184,16 @@ recipes: List[Recipe] = [
         category="Intl Magazines",
         enable_on=onlyon_days(list(range(1, 1 + 3)) + list(range(32 - 14, 32)), -5),
     ),
-    Recipe(
-        recipe="foreign-affairs",
-        slug="foreign-affairs",
-        src_ext="epub",
-        target_ext=[],
-        overwrite_cover=False,
-        category="Intl Magazines",
-        enable_on=onlyon_days(list(range(1, 1 + 7)) + list(range(32 - 7, 32)), -4)
-        and onlyat_hours(list(range(8, 22)), -4),
-    ),
+    # Recipe(
+    #     recipe="foreign-affairs",
+    #     slug="foreign-affairs",
+    #     src_ext="epub",
+    #     target_ext=[],
+    #     overwrite_cover=False,
+    #     category="Intl Magazines",
+    #     enable_on=onlyon_days(list(range(1, 1 + 7)) + list(range(32 - 7, 32)), -4)
+    #     and onlyat_hours(list(range(8, 22)), -4),
+    # ),
     Recipe(
         recipe="harvard-intl-review",
         slug="harvard-intl-review",
@@ -239,15 +238,15 @@ recipes: List[Recipe] = [
         overwrite_cover=False,
         enable_on=onlyon_weekdays([2, 3, 4], 0),
     ),
-    Recipe(
-        recipe="scientific-american",
-        slug="scientific-american",
-        src_ext="epub",
-        target_ext=[],
-        category="Intl Magazines",
-        overwrite_cover=False,
-        enable_on=onlyon_days(list(range(15, 31)), -5),  # middle of the month?
-    ),
+    # Recipe(
+    #     recipe="scientific-american",
+    #     slug="scientific-american",
+    #     src_ext="epub",
+    #     target_ext=[],
+    #     category="Intl Magazines",
+    #     overwrite_cover=False,
+    #     enable_on=onlyon_days(list(range(15, 31)), -5),  # middle of the month?
+    # ),
     Recipe(
         recipe="restofworld",
         slug="restofworld",

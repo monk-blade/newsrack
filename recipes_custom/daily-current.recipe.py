@@ -44,11 +44,11 @@ class UPSCDaily(BasicNewsRecipe):
     feeds = [
         ('Finshots-AI','https://monk-blade.github.io/scripts-rss/processed-Q_Fin.xml'),
         ('IE Explained-AI','https://monk-blade.github.io/scripts-rss/processed-Q_IE_Exp.xml'),
-        ('Mint OpED-AI','https://monk-blade.github.io/scripts-rss/processed-Q_mint_oped.xml'),
+        ('Mint Opinions-AI','https://monk-blade.github.io/scripts-rss/processed-Q_mint_oped.xml'),
+        ('Daily OpEds','https://afeias.com/knowledge-centre/feed/'),
         ('CivilsDaily' ,'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=493f596d8391aa0893413b695b1f564f&f=rss'),   
         ('DrishtiIAS Hindi CA', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=1f811be00e94cbb77e7ebed5b70c97c2&f=rss'),
         # ('Money', 'https://finshots.in/tag/money/rss/'),
-        # ('Civilsdaily','https://monk-blade.github.io/reader-scripts/rss.xml'),
         # ('Insights', 'https://www.insightsonindia.com/category/current-affairs-2/feed/'),
         # ('IASbaba', 'https://iasbaba.com/iasbabas-daily-current-affairs/feed/'),
         # ('9PM Brief ForumIAS','https://blog.forumias.com/category/9-pm-brief/feed/'),

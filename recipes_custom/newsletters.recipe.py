@@ -1,5 +1,6 @@
 #!/usr/bin/env  python
 
+import time
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 
 _name = 'Newsletters'
@@ -9,8 +10,7 @@ class Newsletters(BasicNewsRecipe):
     description = 'My Favourite Newsletters from Substack.'
     language = 'en_IN'
     __author__ = 'Arpan'
-    oldest_article = 1  # days
-#     max_articles_per_feed = 1
+    oldest_article = 5  # days
     encoding = 'utf-8'
     use_embedded_content = True
     #masthead_url = 'https://upload.wikimedia.org/wikipedia/en/0/06/Sandesh%28IndianNewspaper%29Logo.jpg'
@@ -26,14 +26,11 @@ class Newsletters(BasicNewsRecipe):
 
     feeds = [
         ('The Core', 'https://rss.beehiiv.com/feeds/4BOnz8D132.xml'),
-        ('Public Policy' ,'https://publicpolicy.substack.com/feed'),
+        ('Public Policy' ,'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=f781f37f49c75d5e12d31bf2610d0d54&f=rss'),
+        ('India Wants to Know', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=5d2a22d418134e27d410bac251a9e307&f=rss'),
         # ('Multitudes' ,'https://shantanukishwar.substack.com/feed'),
-        ('India Wants to Know', 'https://iwtkquiz.substack.com/feed'),
         # ('Wisdom Project', 'https://wisdomproject.substack.com/feed'),
         # ('Bank on Basak', 'https://www.bankonbasak.com/feed'),
         # ('Curated Commons', 'https://subbu.substack.com/feed'),
         # ('Environment of India', 'https://www.environmentofindia.com/feed'),
         ]
-
-#        ('Network Capital', 'https://www.thenetworkcapital.com/feed'),       
-#        https://pradologue.substack.com/feed

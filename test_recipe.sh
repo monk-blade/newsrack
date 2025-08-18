@@ -102,7 +102,7 @@ print_status $YELLOW "Temp recipe: $TEMP_RECIPE"
 print_status $YELLOW "Output: $OUTPUT_FILE"
 
 # Build ebook-convert command using the temporary .recipe file
-CONVERT_CMD="ebook-convert \"$TEMP_RECIPE\" \"$OUTPUT_FILE\""
+CONVERT_CMD="ebook-convert \"$TEMP_RECIPE\" \"$OUTPUT_FILE\" -vvv --debug-pipeline debug"
 
 # Add verbose flag if requested
 if [[ "$VERBOSE" == true ]]; then
@@ -130,19 +130,4 @@ else
     # Clean up temporary file even on failure
     rm -f "$TEMP_RECIPE"
     exit 1
-fi
-
-# Optional: Open the output directory
-if command -v xdg-open &> /dev/null; then
-    read -p "Open output directory? (y/n): " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        xdg-open "$OUTPUT_DIR"
-    fi
-elif command -v open &> /dev/null; then
-    read -p "Open output directory? (y/n): " -n 1 -r
-    echo
-    if [[ $REPLY =~ ^[Yy]$ ]]; then
-        open "$OUTPUT_DIR"
-    fi
 fi

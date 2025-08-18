@@ -12,8 +12,8 @@ from lxml import etree
 calibre_most_common_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'
 class UPSCDaily(BasicNewsRecipe):
     # title = 'UPSC Daily'
-    title = u'UPSC Daily - ' + datetime.now().strftime('%d.%m.%Y')
-    description = 'UPSC Daily is a daily news source for UPSC aspirants.'
+    title = u'Daily Current Affairs - ' + datetime.now().strftime('%d.%m.%Y')
+    description = 'Daily Current Affairs related Articles.'
     language = 'en_IN'
     __author__ = 'Arpan'
     oldest_article = 2  # days
@@ -43,7 +43,7 @@ class UPSCDaily(BasicNewsRecipe):
 
     feeds = [
         ('Finshots-AI','https://monk-blade.github.io/scripts-rss/processed-Q_Fin.xml'),
-        ('IE Explained-AI','https://monk-blade.github.io/scripts-rss/processed-Q_IE_Exp.xml'),
+        ('IE Explained-AI','https://monk-blade.github.io/scripts-rss/processed-Explained__IE.xml'),
         ('Mint Opinions-AI','https://monk-blade.github.io/scripts-rss/processed-Q_mint_oped.xml'),
         ('Daily OpEds','https://afeias.com/knowledge-centre/feed/'),
         ('CivilsDaily' ,'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=493f596d8391aa0893413b695b1f564f&f=rss'),   

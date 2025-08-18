@@ -468,7 +468,7 @@ def run(
             "ebook-convert",
             str(recipe_path),
             str(source_file_path),
-            f"--output-profile generic_eink_hd",
+            # f"--output-profile generic_eink_hd",
 #            '"--change-justification justify"',
         ]
         try:
@@ -729,7 +729,7 @@ def run(
                     f"--series={recipe.name}",
                     f"--series-index={pseudo_series_index}",
                     f"--publisher={publish_site}",
-                    f"--output-profile generic_eink_hd",
+                    # f"--output-profile generic_eink_hd",
 #                    '"--change-justification justify"',
                 ]
                 if recipe.conv_options and recipe.conv_options.get(ext):

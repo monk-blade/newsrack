@@ -62,6 +62,20 @@ class Frontline(BasicNewsRecipe):
         }
     }
 
+    def get_cover_url(self):
+        issue_url = 'https://frontline.thehindu.com/current-issue/'
+        d = self.recipe_specific_options.get('issue')
+        if d and isinstance(d, str):
+            issue_url = 'https://frontline.thehindu.com/magazine/issue/vol' + d
+
+        soup = self.index_to_soup(issue_url)
+        
+        if cover := soup.find('div', attrs={'class':'magazine'}):
+            cover_img = cover.find(**classes('sptar-image')).img
+            if cover_img and cover_img.get('data-original'):
+                return cover_img['data-original'].replace('SQUARE_80', 'PORTRAIT_615')
+        return None
+
     def parse_index(self):
         issue_url = 'https://frontline.thehindu.com/current-issue/'
         d = self.recipe_specific_options.get('issue')
@@ -70,11 +84,11 @@ class Frontline(BasicNewsRecipe):
 
         soup = self.index_to_soup(issue_url)
 
-        if cover := soup.find('div', attrs={'class':'magazine'}):
-            self.cover_url = cover.find(**classes('sptar-image')).img['data-original'].replace('SQUARE_80', 'FREE_615')
-            self.log('Cover ', self.cover_url)
-            if desc := cover.find(**classes('sub-text')):
-                self.description = self.tag_to_string(desc)
+        # if cover := soup.find('div', attrs={'class':'magazine'}):
+        #     self.cover_url = cover.find(**classes('sptar-image')).img['data-original'].replace('SQUARE_80', 'PORTRAIT_615')
+        #     self.log('Cover ', self.cover_url)
+        #     if desc := cover.find(**classes('sub-text')):
+        #         self.description = self.tag_to_string(desc)
 
         feeds_dict = defaultdict(list)
 

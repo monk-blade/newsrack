@@ -44,7 +44,7 @@ class IndiaToday(BasicNewsRecipe):
             for citem in soup.findAll(
                 'meta', content=lambda s: s and s.endswith('/magazine/300/new')
             ):
-                return citem['content'].replace('300', '600')
+                return citem['content'].replace('/magazine/300/new', '/magazine/600/new')
 
     def parse_index(self):
         issue = 'https://www.indiatoday.in/magazine'

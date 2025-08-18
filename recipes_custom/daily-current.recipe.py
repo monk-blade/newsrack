@@ -16,7 +16,7 @@ class UPSCDaily(BasicNewsRecipe):
     description = 'Daily Current Affairs related Articles.'
     language = 'en_IN'
     __author__ = 'Arpan'
-    oldest_article = 2  # days
+    oldest_article = 1.5  # days
     max_articles_per_feed = 50
     encoding = 'utf-8'
     use_embedded_content = True
@@ -73,15 +73,27 @@ class UPSCDaily(BasicNewsRecipe):
             date_text = datetime.now().strftime("%d %B %Y")
             day_text = datetime.now().strftime("%A")
 
-            # Load fonts
-            #font_path = "/Library/Fonts/Times New Roman.ttf"  # Adjust the path to a valid font file on your system
-            font_path = "/Library/Fonts/Times New Roman Bold.ttf"  # Adjust the path to a valid bold font file on your system
+            # Load fonts - use Linux system fonts
             font_size_middle = 120
             font_size_date = 65  # Increased font size for date
             font_size_day = 55
-            font_middle = ImageFont.truetype(font_path, font_size_middle)
-            font_date = ImageFont.truetype(font_path, font_size_date)
-            font_day = ImageFont.truetype(font_path, font_size_day)
+            
+            try:
+                # Try common Linux font paths
+                font_middle = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size_middle)
+                font_date = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size_date)
+                font_day = ImageFont.truetype("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf", font_size_day)
+            except OSError:
+                try:
+                    # Fallback to Liberation fonts
+                    font_middle = ImageFont.truetype("/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf", font_size_middle)
+                    font_date = ImageFont.truetype("/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf", font_size_date)
+                    font_day = ImageFont.truetype("/usr/share/fonts/truetype/liberation/LiberationSans-Bold.ttf", font_size_day)
+                except OSError:
+                    # Final fallback to default font
+                    font_middle = ImageFont.load_default()
+                    font_date = ImageFont.load_default()
+                    font_day = ImageFont.load_default()
 
             # Calculate text size and position using textbbox
             middle_text_bbox = draw.textbbox((0, 0), middle_text, font=font_middle)
@@ -146,60 +158,60 @@ class UPSCDaily(BasicNewsRecipe):
             # Write the image data to the cover file
             cover_file.write(img_data)
             cover_file.flush()
-        except:
-            self.log.exception('Failed to generate default cover')
+        except Exception as e:
+            self.log.exception('Failed to generate default cover: %s' % str(e))
             return False
         return True
 
-    def postprocess_book(self, oeb, opts, log):
-        # Iterate over each item in the manifest
-        for item in oeb.manifest.items:
-            log.info(f"File Name: {item.href}")
-            if item.media_type == 'text/html':
-                # Access the content of the item
-                soup = item.data
-                # Ensure soup is an lxml element
-                if isinstance(soup, etree._Element):
-                    # Convert the lxml element to a string for processing
-                    html_content = etree.tostring(soup, pretty_print=True, encoding='unicode')
-                    # Parse the HTML content with lxml
-                    parser = etree.HTMLParser()
-                    tree = etree.fromstring(html_content, parser)
+    # def postprocess_book(self, oeb, opts, log):
+    #     # Iterate over each item in the manifest
+    #     for item in oeb.manifest.items:
+    #         log.info(f"File Name: {item.href}")
+    #         if item.media_type == 'text/html':
+    #             # Access the content of the item
+    #             soup = item.data
+    #             # Ensure soup is an lxml element
+    #             if isinstance(soup, etree._Element):
+    #                 # Convert the lxml element to a string for processing
+    #                 html_content = etree.tostring(soup, pretty_print=True, encoding='unicode')
+    #                 # Parse the HTML content with lxml
+    #                 parser = etree.HTMLParser()
+    #                 tree = etree.fromstring(html_content, parser)
                     
-                    # Find all <p> tags using XPath
-                    p_tags = tree.xpath('//p')
+    #                 # Find all <p> tags using XPath
+    #                 p_tags = tree.xpath('//p')
                     
-                    # Iterate through the <p> tags
-                    for p in p_tags:
-                        # Check if the <p> tag contains the specified string
-                        if "This article was downloaded by" in ''.join(p.xpath('.//text()')):
-                            # Remove the <p> tag from the HTML content
-                            p.getparent().remove(p)
+    #                 # Iterate through the <p> tags
+    #                 for p in p_tags:
+    #                     # Check if the <p> tag contains the specified string
+    #                     if "This article was downloaded by" in ''.join(p.xpath('.//text()')):
+    #                         # Remove the <p> tag from the HTML content
+    #                         p.getparent().remove(p)
                     
-                    # Find the h2 tag and the div with class calibre_navbar1 using XPath
-                    h2_tag = tree.xpath('//h1')
-                    div_tag = tree.xpath('//div[@class="calibre_navbar"]')
+    #                 # Find the h2 tag and the div with class calibre_navbar1 using XPath
+    #                 h2_tag = tree.xpath('//h1')
+    #                 div_tag = tree.xpath('//div[@class="calibre_navbar"]')
                     
-                    if h2_tag and div_tag:
-                        h2_tag = h2_tag[0]
-                        div_tag = div_tag[0]
-                        # Get the parent of both tags
-                        parent = h2_tag.getparent()
-                        # Ensure both elements have the same parent
-                        if parent == div_tag.getparent():
-                            # Remove both tags from the parent
-                            parent.remove(h2_tag)
-                            parent.remove(div_tag)
-                            # Reinsert the tags in the desired order
-                            parent.insert(0, h2_tag)
-                            parent.insert(1, div_tag)
+    #                 if h2_tag and div_tag:
+    #                     h2_tag = h2_tag[0]
+    #                     div_tag = div_tag[0]
+    #                     # Get the parent of both tags
+    #                     parent = h2_tag.getparent()
+    #                     # Ensure both elements have the same parent
+    #                     if parent == div_tag.getparent():
+    #                         # Remove both tags from the parent
+    #                         parent.remove(h2_tag)
+    #                         parent.remove(div_tag)
+    #                         # Reinsert the tags in the desired order
+    #                         parent.insert(0, h2_tag)
+    #                         parent.insert(1, div_tag)
                     
-                    # Convert the modified tree back to a string
-                    modified_html = etree.tostring(tree, pretty_print=True, encoding='unicode')
-                    # Parse the modified HTML back to an lxml element
-                    soup = etree.fromstring(modified_html)
+    #                 # Convert the modified tree back to a string
+    #                 modified_html = etree.tostring(tree, pretty_print=True, encoding='unicode')
+    #                 # Parse the modified HTML back to an lxml element
+    #                 soup = etree.fromstring(modified_html)
                     
-                    # Update the item data with the modified HTML content
-                    item.data = soup
-                else:
-                    log.error("The soup object is not an lxml element.")
+    #                 # Update the item data with the modified HTML content
+    #                 item.data = soup
+    #             else:
+    #                 log.error("The soup object is not an lxml element.")

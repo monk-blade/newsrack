@@ -102,7 +102,7 @@ print_status $YELLOW "Temp recipe: $TEMP_RECIPE"
 print_status $YELLOW "Output: $OUTPUT_FILE"
 
 # Build ebook-convert command using the temporary .recipe file
-CONVERT_CMD="ebook-convert \"$TEMP_RECIPE\" \"$OUTPUT_FILE\" -vvv --debug-pipeline debug"
+CONVERT_CMD="ebook-convert \"$TEMP_RECIPE\" \"$OUTPUT_FILE\" --output-profile=sony -vvv --debug-pipeline debug"
 
 # Add verbose flag if requested
 if [[ "$VERBOSE" == true ]]; then

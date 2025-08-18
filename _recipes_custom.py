@@ -1,6 +1,6 @@
 from typing import List
 
-from _recipe_utils import Recipe, onlyon_days, onlyat_hours, onlyon_weekdays
+from _recipe_utils import CoverOptions, Recipe, onlyon_days, onlyat_hours, onlyon_weekdays
 
 # Define the categories display order, optional
 categories_sort: List[str] = ["News","UPSC","Gujarati Newspapers","Technology","Newsletters","Indian Magazines","Intl Magazines","Books"]
@@ -209,7 +209,12 @@ recipes: List[Recipe] = [
         target_ext=[],
         category="Intl Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4),
+        cover_options=CoverOptions(
+            text_colour="#444444",
+            logo_path_or_url="https://dhjhkxawhe8q4.cloudfront.net/mit-press/wp-content/uploads/2022/03/25123303/mitp-reader-logo_0-scaled.jpg",
+        ),
     ),
+
     Recipe(
         recipe="mit-tech-review",
         slug="mit-tech-review-feed",

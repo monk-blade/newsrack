@@ -43,14 +43,11 @@ class LiveMint(BasicNewsRecipe):
             self.oldest_article = float(d)
 
     def get_cover_url(self):
-        today = date.today().strftime('%d/%m/%Y')
-        today = today.replace('/', '%2F')
-        raw = self.index_to_soup(
-            'https://epaper.livemint.com/Home/GetAllpages?editionid=1&editiondate=' + today, raw=True
-        )
-        for cov in json.loads(raw):
-            if cov['NewsProPageTitle'].lower().startswith(('front', 'cover')):
-                return cov['HighResolution']
+        soup = self.index_to_soup('https://epaper.livemint.com/')
+        cov = soup.findAll('img', attrs={'src': lambda x: x and x.startswith('/EPAPERIMAGES')})
+        for x in cov:
+            if 'MINT_FRONT_1' in x['src']:
+                return 'https://epaper.livemint.com' + x['src'].replace('-S', '')
 
     if is_saturday:
         title = 'Mint Lounge'

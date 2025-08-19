@@ -41,6 +41,7 @@ recipes: List[Recipe] = [
         category="UPSC",
         enable_on=True,
         retry_attempts=1,
+        overwrite_cover=False,
 #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
     ), 
 #     Recipe(
@@ -88,6 +89,7 @@ recipes: List[Recipe] = [
         slug="newsletters",
         src_ext="epub",
         category="Newsletters",
+        overwrite_cover=False,
 #        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
     ),
     Recipe(
@@ -95,6 +97,7 @@ recipes: List[Recipe] = [
         slug="frontline",
         src_ext="epub",
         category="Indian Magazines",
+        overwrite_cover=False,
 #        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
     ),
 #     Recipe(

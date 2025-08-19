@@ -18,7 +18,8 @@ default_conv_options: Dict[str, List[str]] = {
     "mobi": ["--output-profile=kindle_oasis", "--mobi-file-type=both"],
     "pdf": ["--pdf-page-numbers"],
     "epub": [
-        "--output-profile=generic_eink_hd",
+        "--output-profile=generic_eink",
+        "-vvv",
         # to fix the problem of images having a fixed height after conversion
         "--extra-css=img{height:auto !important;}",
         # to fix the problem of some font sizes being too small

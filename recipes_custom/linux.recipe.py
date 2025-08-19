@@ -5,7 +5,7 @@ from datetime import datetime
 _name = 'Linux'
 
 class Linux(BasicNewsRecipe):
-    title = _name + u' - ' + datetime.now().strftime('%d.%m.%Y')
+    title = _name 
     description = 'My Favourite linux website feeds.'
     language = 'en_IN'
     __author__ = 'Arpan'

@@ -9,7 +9,7 @@ from lxml import etree
 
 _name = 'News of Gujarat'
 class GujaratSamachar(BasicNewsRecipe):
-    title = u'News of Gujarat - ' + datetime.now().strftime('%d.%m.%Y')
+    title = 'News of Gujarat'
     description = 'News of Gujarat is compilation of various feeds of Gujarati Paper'
     language = 'gu'
     __author__ = 'Arpan'

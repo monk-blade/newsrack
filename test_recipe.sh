@@ -88,7 +88,7 @@ fi
 # Create output directory if it doesn't exist
 mkdir -p "$OUTPUT_DIR"
 
-# Generate output filename (remove .recipe.py and add .epub)
+# Generate output filename (remove .recipe.py and add .mobi)
 RECIPE_NAME=$(basename "$RECIPE_FILE" .recipe.py)
 OUTPUT_FILE="$OUTPUT_DIR/${RECIPE_NAME}_$(date +%Y%m%d_%H%M%S).epub"
 
@@ -102,7 +102,7 @@ print_status $YELLOW "Temp recipe: $TEMP_RECIPE"
 print_status $YELLOW "Output: $OUTPUT_FILE"
 
 # Build ebook-convert command using the temporary .recipe file
-CONVERT_CMD="ebook-convert \"$TEMP_RECIPE\" \"$OUTPUT_FILE\" --output-profile=sony -vvv --debug-pipeline debug"
+CONVERT_CMD="ebook-convert \"$TEMP_RECIPE\" \"$OUTPUT_FILE\" --output-profile=kobo"
 
 # Add verbose flag if requested
 if [[ "$VERBOSE" == true ]]; then

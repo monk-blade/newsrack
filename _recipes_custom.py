@@ -105,6 +105,28 @@ recipes: List[Recipe] = [
         # retry_attempts=1,
         # timeout=300,
     ),
+    Recipe(
+        recipe="rasrang",
+        slug="rasrang",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="Gujarati Supplements",
+        overwrite_cover=False,
+        # enable_on=onlyon_weekdays([6], +5.5),  # Sunday only, IST timezone
+        # retry_attempts=1,
+        # timeout=300,
+    ),
+    Recipe(
+        recipe="kalash",
+        slug="kalash",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="Gujarati Supplements",
+        overwrite_cover=False,
+        # enable_on=onlyon_weekdays([6], +5.5),  # Sunday only, IST timezone
+        # retry_attempts=1,
+        # timeout=300,
+    ),
 #     Recipe(
 #         recipe="substack-nl",
 #         slug="substack-nl",
@@ -126,7 +148,7 @@ recipes: List[Recipe] = [
         src_ext="epub",
         category="Indian Magazines",
         overwrite_cover=False,
-#        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
+       enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
     ),
 #     Recipe(
 #         recipe="outlook_india",

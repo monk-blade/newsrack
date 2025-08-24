@@ -15,7 +15,7 @@ class Sanskar(BasicNewsRecipe):
     description = 'સંસ્કાર — Sandesh weekly publication that publishes on Sunday'
     language = 'gu'
     __author__ = 'Arpan'
-    oldest_article = 7  # days
+    oldest_article = 2  # days
     max_articles_per_feed = 50
     summary_length = 175
     encoding = 'utf-8'

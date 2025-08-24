@@ -15,7 +15,7 @@ class ArdhaSaptahik(BasicNewsRecipe):
     description = 'અર્ધસાપ્તાહિક — Sandesh weekly publication that publishes on Wednesday'
     language = 'gu'
     __author__ = 'Arpan'
-    oldest_article = 7  # days
+    oldest_article = 2  # days
     max_articles_per_feed = 50
     summary_length = 175
     encoding = 'utf-8'

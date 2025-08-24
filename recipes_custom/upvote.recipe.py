@@ -15,7 +15,7 @@ class Upvote(BasicNewsRecipe):
     description = 'Upvote — curated collection of tech and social news from Hacker News, Lemmy, and Lobsters'
     language = 'en'
     __author__ = 'Arpan'
-    oldest_article = 1  # days
+    oldest_article = 1.25  # days
     max_articles_per_feed = 50
     summary_length = 175
     encoding = 'utf-8'

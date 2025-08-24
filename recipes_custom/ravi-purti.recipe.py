@@ -15,7 +15,7 @@ class RaviPurti(BasicNewsRecipe):
     description = 'રવિપૂર્તિ — curated collection of Gujarati feed items'
     language = 'gu'
     __author__ = 'Arpan'
-    oldest_article = 7  # days
+    oldest_article = 2  # days
     max_articles_per_feed = 50
     summary_length = 175
     encoding = 'utf-8'

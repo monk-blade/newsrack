@@ -18,18 +18,9 @@ recipes: List[Recipe] = [
         overwrite_cover=True,
         cover_options=CoverOptions(
             text_colour="#444444",
-            logo_path_or_url="https://www.upvote-rss.com/img/logo.svg",
+            logo_path_or_url="recipes_custom/logo/upvote.png",
         ),
 #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),  # from 6am-11.59am daily, for the timezone UTC-5
-    ),
-    Recipe(
-        recipe="linux",
-        slug="linux",
-        src_ext="mobi",
-        target_ext=["epub"],
-        category="Technology",
-        overwrite_cover=False,
-#        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
     ),
     Recipe(
         recipe="live-mint",
@@ -77,8 +68,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Gujarati Supplements",
         overwrite_cover=False,
-#        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
-        # timeout=240,
+        enable_on=onlyon_weekdays([6]),  # Sunday only
     ),
     Recipe(
         recipe="shatdal-poorti",
@@ -87,7 +77,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Gujarati Supplements",
         overwrite_cover=False,
-#        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
+        enable_on=onlyon_weekdays([2]),  # Wednesday only
     ),
     Recipe(
         recipe="ardha-saptahik",
@@ -96,9 +86,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Gujarati Supplements",
         overwrite_cover=False,
-        # enable_on=onlyon_weekdays([2], +5.5),  # Wednesday only, IST timezone
-        # retry_attempts=1,
-        # timeout=300,
+        enable_on=onlyon_weekdays([2]),  # Wednesday only
     ),
     Recipe(
         recipe="sanskar",
@@ -107,9 +95,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Gujarati Supplements",
         overwrite_cover=False,
-        # enable_on=onlyon_weekdays([6], +5.5),  # Sunday only, IST timezone
-        # retry_attempts=1,
-        # timeout=300,
+        enable_on=onlyon_weekdays([6]),  # Sunday only
     ),
     Recipe(
         recipe="rasrang",
@@ -118,9 +104,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Gujarati Supplements",
         overwrite_cover=False,
-        # enable_on=onlyon_weekdays([6], +5.5),  # Sunday only, IST timezone
-        # retry_attempts=1,
-        # timeout=300,
+        enable_on=onlyon_weekdays([6]),  # Sunday only
     ),
     Recipe(
         recipe="kalash",
@@ -129,9 +113,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Gujarati Supplements",
         overwrite_cover=False,
-        # enable_on=onlyon_weekdays([6], +5.5),  # Sunday only, IST timezone
-        # retry_attempts=1,
-        # timeout=300,
+        enable_on=onlyon_weekdays([2]),  # Wednesday only
     ),
 #     Recipe(
 #         recipe="substack-nl",
@@ -235,8 +217,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         overwrite_cover=False,
         category="Intl Magazines",
-        # enable_on=onlyat_hours(list(range(5, 20)), 5.5),
-        # tags=["asia", "climate"],
+        enable_on=onlyon_weekdays([6]),  # Sunday only
     ),
     Recipe(
         recipe="hbr",
@@ -321,8 +302,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="Intl Magazines",
-       enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5])
-       and onlyat_hours(list(range(9, 19))),
+        enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5]) and onlyat_hours(list(range(9, 19))),
         tags=["technology"],
     ),
     Recipe(

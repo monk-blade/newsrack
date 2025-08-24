@@ -15,7 +15,7 @@ class Upvote(BasicNewsRecipe):
     description = 'Upvote — curated collection of tech and social news from Hacker News, Lemmy, and Lobsters'
     language = 'en'
     __author__ = 'Arpan'
-    oldest_article = 7  # days
+    oldest_article = 1  # days
     max_articles_per_feed = 50
     summary_length = 175
     encoding = 'utf-8'
@@ -31,10 +31,16 @@ class Upvote(BasicNewsRecipe):
     """
 
     feeds = [
-        ('Hacker News Best Stories', 'https://www.upvote-rss.com/?platform=hacker-news&community=beststories&averagePostsPerDay=7&showScore=&content=&summary=&comments=5&view=rss'),
+        ('HackerNews Best', 'https://www.upvote-rss.com/?platform=hacker-news&community=beststories&averagePostsPerDay=7&showScore=&content=&summary=&comments=5&view=rss'),
         ('Lemmy Technology', 'https://www.upvote-rss.com/?platform=lemmy&instance=lemmy.world&community=Technology&averagePostsPerDay=7&content=&summary=&comments=5&view=rss'),
         ('Lobsters All', 'https://www.upvote-rss.com/?platform=lobsters&community=all&type=all&score=50&content=&summary=&comments=7&filterOldPosts=7&view=rss'),
-    ]
+        ('HN Ask', 'https://www.upvote-rss.com/?platform=hacker-news&community=askstories&score=20&content=&summary=&comments=10&view=rss'),
+        ('OMG! Ubuntu', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=03286255647546a832597c8c99addfa8&f=rss'),
+        ('Phoronix' ,'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=2bab43c9dbc153cd7c03ab979ff6c2bf&f=rss'),
+        ('This Week in GNOME' ,'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=edde32a423219f4ee7d31f1e06be04c0&f=rss'),
+        ('Adventures in KDE', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=477c3220ee5a498a9de1fe5ad2b3ed01&f=rss'),
+        ('Announcements | nixOS', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=f5871e449b44927a088b5180c5b3d89f&f=rss'),
+        ]
 
     def get_cover_url(self):
         """Return the masthead URL since we're using a simple logo."""

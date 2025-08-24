@@ -10,8 +10,7 @@ from calibre.ebooks.oeb.base import OEBBook
 from calibre.utils.logging import default_log
 from lxml import etree
 calibre_most_common_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'
-class UPSCDaily(BasicNewsRecipe):
-    # title = 'UPSC Daily'
+class DailyCurrentAffairs(BasicNewsRecipe):
     title = 'Daily Current Affairs'
     description = 'Daily Current Affairs related Articles.'
     language = 'en_IN'
@@ -70,7 +69,7 @@ class UPSCDaily(BasicNewsRecipe):
             draw = ImageDraw.Draw(image)
 
             # Define the text
-            middle_text = "UPSC Daily"
+            middle_text = "Daily Affairs"
             date_text = datetime.now().strftime("%d %B %Y")
             day_text = datetime.now().strftime("%A")
 

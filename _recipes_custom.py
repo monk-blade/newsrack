@@ -160,7 +160,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="Indian Magazines",
-       enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
+        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
     ),
 #     Recipe(
 #         recipe="epw",
@@ -196,7 +196,10 @@ recipes: List[Recipe] = [
         overwrite_cover=False,
         category="Intl Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4)
-#        and onlyon_days(list(range(32 - 14, 32)), -4),
+        tags=["editorial", "commentary"],
+        cover_options=CoverOptions(
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/The_Atlantic_Logo_11.2019.svg/1200px-The_Atlantic_Logo_11.2019.svg.png"
+        ),
     ),
     Recipe(
         recipe="thediplomat",
@@ -206,6 +209,9 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Intl Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
+        cover_options=CoverOptions(
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/The_Diplomat_logo.svg/1024px-The_Diplomat_logo.svg.png"
+        ),
     ),
     Recipe(
         recipe="sc-am",
@@ -252,6 +258,9 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Intl Magazines",
         enable_on=onlyat_hours(list(range(11, 15))),
+        cover_options=CoverOptions(
+            logo_path_or_url="https://hir.harvard.edu/content/images/2020/12/HIRlogo_crimson-4.png"
+        ),
     ),
     Recipe(
         recipe="mit-press-reader",
@@ -274,6 +283,10 @@ recipes: List[Recipe] = [
         category="Intl Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], -4),
         tags=["technology"],
+        cover_options=CoverOptions(
+            text_colour="#444444",
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/86/MIT_Technology_Review_modern_logo.svg/1024px-MIT_Technology_Review_modern_logo.svg.png",
+        ),
     ),
     Recipe(
         recipe="mit-tech-review-magazine",
@@ -330,6 +343,9 @@ recipes: List[Recipe] = [
         overwrite_cover=True,
         category="Intl Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
+        cover_options=CoverOptions(
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Wired_logo.svg/1024px-Wired_logo.svg.png"
+        ),
     ),
     Recipe(
         recipe="knowable-magazine",

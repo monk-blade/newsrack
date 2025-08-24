@@ -88,9 +88,11 @@ fi
 # Create output directory if it doesn't exist
 mkdir -p "$OUTPUT_DIR"
 
-# Generate output filename (remove .recipe.py and add .mobi)
+# Generate output filenames
 RECIPE_NAME=$(basename "$RECIPE_FILE" .recipe.py)
-OUTPUT_FILE="$OUTPUT_DIR/${RECIPE_NAME}_$(date +%Y%m%d_%H%M%S).epub"
+TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+MOBI_FILE="$OUTPUT_DIR/${RECIPE_NAME}_${TIMESTAMP}.mobi"
+OUTPUT_FILE="$OUTPUT_DIR/${RECIPE_NAME}_${TIMESTAMP}.epub"
 
 # Create temporary .recipe file by copying the .recipe.py file
 TEMP_RECIPE="/tmp/${RECIPE_NAME}.recipe"
@@ -99,34 +101,67 @@ cp "$RECIPE_PATH" "$TEMP_RECIPE"
 print_status $GREEN "Starting recipe conversion..."
 print_status $YELLOW "Recipe: $RECIPE_PATH"
 print_status $YELLOW "Temp recipe: $TEMP_RECIPE"
-print_status $YELLOW "Output: $OUTPUT_FILE"
+print_status $YELLOW "MOBI output: $MOBI_FILE"
+print_status $YELLOW "Final EPUB output: $OUTPUT_FILE"
 
-# Build ebook-convert command using the temporary .recipe file
-CONVERT_CMD="ebook-convert \"$TEMP_RECIPE\" \"$OUTPUT_FILE\" --output-profile=kobo"
+# Build ebook-convert command for MOBI creation using the temporary .recipe file
+CONVERT_CMD="ebook-convert \"$TEMP_RECIPE\" \"$MOBI_FILE\" --output-profile=kindle_pw3 -vvv"
 
 # Add verbose flag if requested
 if [[ "$VERBOSE" == true ]]; then
     CONVERT_CMD="$CONVERT_CMD --verbose"
 fi
 
-print_status $GREEN "Running command: $CONVERT_CMD"
+print_status $GREEN "Running MOBI conversion command: $CONVERT_CMD"
 
-# Execute the conversion
+# Execute the MOBI conversion
 if eval $CONVERT_CMD; then
-    print_status $GREEN "✓ Conversion completed successfully!"
-    print_status $GREEN "✓ Output file: $OUTPUT_FILE"
+    print_status $GREEN "✓ MOBI conversion completed successfully!"
+    print_status $GREEN "✓ MOBI file: $MOBI_FILE"
     
-    # Display file size
-    if [[ -f "$OUTPUT_FILE" ]]; then
-        FILE_SIZE=$(du -h "$OUTPUT_FILE" | cut -f1)
-        print_status $GREEN "✓ File size: $FILE_SIZE"
+    # Display MOBI file size
+    if [[ -f "$MOBI_FILE" ]]; then
+        MOBI_SIZE=$(du -h "$MOBI_FILE" | cut -f1)
+        print_status $GREEN "✓ MOBI file size: $MOBI_SIZE"
     fi
     
-    # Clean up temporary file
-    rm -f "$TEMP_RECIPE"
+    # Now convert MOBI to EPUB
+    print_status $GREEN "Converting MOBI to EPUB..."
+    EPUB_CONVERT_CMD="ebook-convert \"$MOBI_FILE\" \"$OUTPUT_FILE\" --output-profile=kindle_pw3"
+    
+    # Add verbose flag if requested
+    if [[ "$VERBOSE" == true ]]; then
+        EPUB_CONVERT_CMD="$EPUB_CONVERT_CMD --verbose"
+    fi
+    
+    print_status $GREEN "Running EPUB conversion command: $EPUB_CONVERT_CMD"
+    
+    if eval $EPUB_CONVERT_CMD; then
+        print_status $GREEN "✓ EPUB conversion completed successfully!"
+        print_status $GREEN "✓ Final EPUB file: $OUTPUT_FILE"
+        
+        # Display EPUB file size
+        if [[ -f "$OUTPUT_FILE" ]]; then
+            EPUB_SIZE=$(du -h "$OUTPUT_FILE" | cut -f1)
+            print_status $GREEN "✓ EPUB file size: $EPUB_SIZE"
+        fi
+        
+        # Clean up temporary files
+        rm -f "$TEMP_RECIPE"
+        
+        print_status $GREEN "✓ Conversion pipeline completed successfully!"
+        print_status $GREEN "  - MOBI: $MOBI_FILE ($MOBI_SIZE)"
+        print_status $GREEN "  - EPUB: $OUTPUT_FILE ($EPUB_SIZE)"
+        
+    else
+        print_status $RED "✗ EPUB conversion failed!"
+        # Clean up temporary file even on failure
+        rm -f "$TEMP_RECIPE"
+        exit 1
+    fi
     
 else
-    print_status $RED "✗ Conversion failed!"
+    print_status $RED "✗ MOBI conversion failed!"
     # Clean up temporary file even on failure
     rm -f "$TEMP_RECIPE"
     exit 1

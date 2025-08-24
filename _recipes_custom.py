@@ -3,7 +3,7 @@ from typing import List
 from _recipe_utils import CoverOptions, Recipe, onlyon_days, onlyat_hours, onlyon_weekdays
 
 # Define the categories display order, optional
-categories_sort: List[str] = ["News","UPSC","Gujarati Newspapers","Technology","Newsletters","Indian Magazines","Intl Magazines","Books"]
+categories_sort: List[str] = ["News","UPSC","Gujarati Supplements","Technology","Newsletters","Indian Magazines","Intl Magazines","Books"]
 
 # Define your custom recipes list here
 # Example: https://github.com/ping/newsrack-fork-test/blob/custom/_recipes_custom.py
@@ -41,7 +41,7 @@ recipes: List[Recipe] = [
         slug="daily-current",
         src_ext="mobi",
         target_ext=["epub"],
-        category="UPSC",
+        category="News",
         enable_on=True,
         retry_attempts=1,
         overwrite_cover=False,
@@ -60,27 +60,29 @@ recipes: List[Recipe] = [
         slug="gujarat-samachar",
         src_ext="mobi",
         target_ext=["epub"],
-        category="Gujarati Newspapers",
+        category="News",
         overwrite_cover=False,
 #        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
     ),
-#     Recipe(
-#         recipe="divyabhaskar",
-#         slug="divyabhaskar",
-#         src_ext="epub",
-#         target_ext=[],
-#         category="Gujarati Newspapers",
-# #        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
-#         timeout=240,
-#     ),
-#     Recipe(
-#         recipe="sandesh",
-#         slug="sandesh",
-#         src_ext="epub",
-#         category="Gujarati Newspapers",
-#         overwrite_cover=False,
-# #        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
-#     ),
+    Recipe(
+        recipe="ravi-purti",
+        slug="ravi-purti",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="Gujarati Supplements",
+        overwrite_cover=False,
+#        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
+        timeout=240,
+    ),
+    Recipe(
+        recipe="shatdal-poorti",
+        slug="shatdal-poorti",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="Gujarati Supplements",
+        overwrite_cover=False,
+#        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
+    ),
 #     Recipe(
 #         recipe="substack-nl",
 #         slug="substack-nl",

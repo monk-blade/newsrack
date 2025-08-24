@@ -311,6 +311,16 @@ recipes: List[Recipe] = [
         category="Intl Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5]) and onlyat_hours(list(range(9, 19))),
         tags=["technology"],
+        cover_options=CoverOptions(
+            border_width=2,
+            text_colour="black",  # or in hex format, e.g. "#000000"
+            background_colour="white",  # or in hex format, e.g. "#FFFFFF"
+            title_font_path="static/OpenSans-Bold.ttf",  # you can define your own font path
+            title_font_size=80,
+            datestamp_font_path="static/OpenSans-Semibold.ttf",
+            datestamp_font_size=72,
+            logo_path_or_url="recipes/logo/row.png",
+        ),
     ),
     Recipe(
         recipe="wired",
@@ -328,5 +338,15 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Intl Magazines",
         tags=["science"],
+        cover_options=CoverOptions(
+            border_width=2,
+            text_colour="black",  # or in hex format, e.g. "#000000"
+            background_colour="white",  # or in hex format, e.g. "#FFFFFF"
+            title_font_path="static/OpenSans-Bold.ttf",  # you can define your own font path
+            title_font_size=80,
+            datestamp_font_path="static/OpenSans-Semibold.ttf",
+            datestamp_font_size=72,
+            logo_path_or_url="recipes/logo/knowable.png",
+        ),
     ),
 ]

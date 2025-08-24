@@ -16,7 +16,7 @@ class UPSCDaily(BasicNewsRecipe):
     description = 'Daily Current Affairs related Articles.'
     language = 'en_IN'
     __author__ = 'Arpan'
-    oldest_article = 1.5  # days
+    oldest_article = 1.25  # days
     max_articles_per_feed = 50
     encoding = 'utf-8'
     use_embedded_content = True
@@ -46,6 +46,7 @@ class UPSCDaily(BasicNewsRecipe):
         ('IE Explained-AI','https://monk-blade.github.io/scripts-rss/processed-Explained__IE.xml'),
         ('Mint Opinions-AI','https://monk-blade.github.io/scripts-rss/processed-Q_mint_oped.xml'),
         ('Daily OpEds','https://afeias.com/knowledge-centre/feed/'),
+        ('The Hindu OpEd','https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=403b016ea7274f8e856ce18043cccd1b&f=rss'),
         ('CivilsDaily' ,'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=493f596d8391aa0893413b695b1f564f&f=rss'),   
         ('DrishtiIAS Hindi CA', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=1f811be00e94cbb77e7ebed5b70c97c2&f=rss'),
         # ('Money', 'https://finshots.in/tag/money/rss/'),

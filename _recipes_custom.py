@@ -17,7 +17,13 @@ recipes: List[Recipe] = [
         category="News",
         overwrite_cover=True,
         cover_options=CoverOptions(
-            text_colour="#444444",
+            border_width=2,
+            text_colour="black",  # or in hex format, e.g. "#000000"
+            background_colour="white",  # or in hex format, e.g. "#FFFFFF"
+            title_font_path="static/OpenSans-Bold.ttf",  # you can define your own font path
+            title_font_size=80,
+            datestamp_font_path="static/OpenSans-Semibold.ttf",
+            datestamp_font_size=72,
             logo_path_or_url="recipes_custom/logo/upvote.png",
         ),
 #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),  # from 6am-11.59am daily, for the timezone UTC-5
@@ -129,6 +135,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Newsletters",
         overwrite_cover=False,
+        enable_on=onlyon_weekdays([1,3,5,6]), 
 #        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
     ),
     Recipe(

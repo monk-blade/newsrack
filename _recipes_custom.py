@@ -15,6 +15,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="News",
+        overwrite_cover=True,
         cover_options=CoverOptions(
             text_colour="#444444",
             logo_path_or_url="https://www.upvote-rss.com/img/logo.svg",
@@ -232,6 +233,7 @@ recipes: List[Recipe] = [
         slug="philosophy-now",
         src_ext="mobi",
         target_ext=["epub"],
+        overwrite_cover=False,
         category="Intl Magazines",
         # enable_on=onlyat_hours(list(range(5, 20)), 5.5),
         # tags=["asia", "climate"],
@@ -279,8 +281,8 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="mit-tech-review",
         slug="mit-tech-review-feed",
-        src_ext="epub",
-        target_ext=[],
+        src_ext="mobi",
+        target_ext=["epub"],
         category="Intl Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], -4),
         tags=["technology"],
@@ -288,8 +290,8 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="mit-tech-review-magazine",
         slug="mit-tech-review-magazine",
-        src_ext="epub",
-        target_ext=[],
+        src_ext="mobi",
+        target_ext=["epub"],
         category="Intl Magazines",
         overwrite_cover=False,
         enable_on=onlyon_days(list(range(1, 1 + 7)) + list(range(32 - 7, 32)), -5),
@@ -298,8 +300,8 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="nature",
         slug="nature",
-        src_ext="epub",
-        target_ext=[],
+        src_ext="mobi",
+        target_ext=["epub"],
         category="Intl Magazines",
         overwrite_cover=False,
         enable_on=onlyon_weekdays([2, 3, 4], 0),
@@ -316,8 +318,8 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="restofworld",
         slug="restofworld",
-        src_ext="epub",
-        target_ext=[],
+        src_ext="mobi",
+        target_ext=["epub"],
         category="Intl Magazines",
        enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5])
        and onlyat_hours(list(range(9, 19))),
@@ -326,8 +328,8 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="wired",
         slug="wired",
-        src_ext="epub",
-        target_ext=[],
+        src_ext="mobi",
+        target_ext=["epub"],
         overwrite_cover=True,
         category="Intl Magazines",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
@@ -335,8 +337,8 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="knowable-magazine",
         slug="knowable-magazine",
-        src_ext="epub",
-        target_ext=[],
+        src_ext="mobi",
+        target_ext=["epub"],
         category="Intl Magazines",
         tags=["science"],
     ),

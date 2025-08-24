@@ -94,6 +94,7 @@ mkdir -p "$OUTPUT_DIR"
 # Generate output filenames
 RECIPE_NAME=$(basename "$RECIPE_FILE" .recipe.py)
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
+DATE_DD_MM_YY=$(date +%d-%m-%y)
 MOBI_FILE="$OUTPUT_DIR/${RECIPE_NAME}_${TIMESTAMP}.mobi"
 OUTPUT_FILE="$OUTPUT_DIR/${RECIPE_NAME}_${TIMESTAMP}.epub"
 
@@ -108,7 +109,7 @@ print_status $YELLOW "MOBI output: $MOBI_FILE"
 print_status $YELLOW "Final EPUB output: $OUTPUT_FILE"
 
 # Build ebook-convert command for MOBI creation using the temporary .recipe file
-CONVERT_CMD="ebook-convert \"$TEMP_RECIPE\" \"$MOBI_FILE\" --output-profile=kindle_pw3 -vvv"
+CONVERT_CMD="ebook-convert \"$TEMP_RECIPE\" \"$MOBI_FILE\" --output-profile=kindle_pw3 --mobi-file-type=both -vvv"
 
 # Add verbose flag if requested
 if [[ "$VERBOSE" == true ]]; then
@@ -130,14 +131,29 @@ if eval $CONVERT_CMD; then
     
     # Now convert MOBI to EPUB
     print_status $GREEN "Converting MOBI to EPUB..."
-    EPUB_CONVERT_CMD="ebook-convert \"$MOBI_FILE\" \"$OUTPUT_FILE\" --output-profile=kindle_pw3"
+    
+    # Extract the title from the MOBI file
+    MOBI_TITLE=$(ebook-meta "$MOBI_FILE" | grep -E '^Title\s+:' | sed 's/^Title\s*:\s*//')
+    
+    # If title extraction fails, fallback to recipe name
+    if [[ -z "$MOBI_TITLE" ]]; then
+        MOBI_TITLE="$RECIPE_NAME"
+        print_status $YELLOW "Warning: Could not extract title from MOBI, using recipe name as fallback"
+    fi
+    
+    # Create new title by appending date to the extracted title
+    NEW_TITLE="${MOBI_TITLE} ${DATE_DD_MM_YY}"
+    
+    EPUB_CONVERT_CMD="ebook-convert \"$MOBI_FILE\" \"$OUTPUT_FILE\" --output-profile=kobo --title \"$NEW_TITLE\""
     
     # Add verbose flag if requested
     if [[ "$VERBOSE" == true ]]; then
         EPUB_CONVERT_CMD="$EPUB_CONVERT_CMD --verbose"
     fi
     
-    print_status $GREEN "Running EPUB conversion command: $EPUB_CONVERT_CMD"
+    print_status $GREEN "Running EPUB conversion command with original title: '$MOBI_TITLE'"
+    print_status $GREEN "New title with date: '$NEW_TITLE'"
+    print_status $GREEN "Command: $EPUB_CONVERT_CMD"
     
     if eval $EPUB_CONVERT_CMD; then
         print_status $GREEN "✓ EPUB conversion completed successfully!"

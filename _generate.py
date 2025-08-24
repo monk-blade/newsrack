@@ -729,9 +729,41 @@ def run(
                     f"--series={recipe.name}",
                     f"--series-index={pseudo_series_index}",
                     f"--publisher={publish_site}",
-                    # f"--output-profile generic_eink_hd",
-#                    '"--change-justification justify"',
                 ]
+                
+                # For EPUB conversion, extract title from source file and append date
+                if ext == "epub":
+                    try:
+                        # Extract title from source file using ebook-meta
+                        meta_result = subprocess.run(
+                            ["ebook-meta", str(source_file_path)],
+                            capture_output=True,
+                            text=True,
+                            timeout=30
+                        )
+                        if meta_result.returncode == 0:
+                            # Parse title from ebook-meta output
+                            for line in meta_result.stdout.split('\n'):
+                                if line.strip().startswith('Title'):
+                                    source_title = line.split(':', 1)[1].strip()
+                                    break
+                            else:
+                                source_title = recipe.name  # fallback
+                        else:
+                            source_title = recipe.name  # fallback
+                        
+                        # Append current date in dd-mm-yy format
+                        current_date = datetime.now().strftime("%d-%m-%y")
+                        new_title = f"{source_title} {current_date}"
+                        cmd.append(f"--title={new_title}")
+                        
+                        logger.info(f"EPUB title: '{source_title}' -> '{new_title}'")
+                        
+                    except Exception as e:
+                        logger.warning(f"Failed to extract title from source file: {e}")
+                        # fallback to original behavior
+                        pass
+                
                 if recipe.conv_options and recipe.conv_options.get(ext):
                     cmd.extend(recipe.conv_options[ext])
 

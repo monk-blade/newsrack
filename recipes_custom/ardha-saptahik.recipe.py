@@ -161,9 +161,9 @@ class ArdhaSaptahik(BasicNewsRecipe):
         all_text = soup.get_text()
         words = [w for w in all_text.split() if w.strip()]
         word_count = len(words)
-        
-        # Calculate reading time (200 words per minute)
-        minutes = max(1, (word_count + 199) // 200)
+
+        # Calculate reading time (180 words per minute)
+        minutes = max(1, (word_count + 179) // 180)
         
         # Log article content info
         default_log.info(f"[ArdhaSaptahik] Article: '{article.title}' | Words: {word_count} | Reading time: {minutes}m")

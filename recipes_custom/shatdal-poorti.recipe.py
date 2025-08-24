@@ -9,10 +9,10 @@ from lxml import etree
 import urllib.request
 import urllib.error
 
-_name = 'શતદલ પૂર્તિ'
+_name = 'શતદલ'
 class ShatdalPoorti(BasicNewsRecipe):
-    title = 'શતદલ પૂર્તિ'
-    description = 'શતદલ પૂરતિ — curated collection of Gujarati feed items'
+    title = 'શતદલ'
+    description = 'શતદલ — curated collection of Gujarati feed items'
     language = 'gu'
     __author__ = 'Arpan'
     oldest_article = 7  # days
@@ -93,9 +93,9 @@ class ShatdalPoorti(BasicNewsRecipe):
         all_text = soup.get_text()
         words = [w for w in all_text.split() if w.strip()]
         word_count = len(words)
-        
-        # Calculate reading time (200 words per minute)
-        minutes = max(1, (word_count + 199) // 200)
+
+        # Calculate reading time (180 words per minute)
+        minutes = max(1, (word_count + 179) // 180)
         
         # Log article content info
         default_log.info(f"[ShatdalPoorti] Article: '{article.title}' | Words: {word_count} | Reading time: {minutes}m")

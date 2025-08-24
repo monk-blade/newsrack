@@ -72,7 +72,7 @@ recipes: List[Recipe] = [
         category="Gujarati Supplements",
         overwrite_cover=False,
 #        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
-        timeout=240,
+        # timeout=240,
     ),
     Recipe(
         recipe="shatdal-poorti",
@@ -82,6 +82,28 @@ recipes: List[Recipe] = [
         category="Gujarati Supplements",
         overwrite_cover=False,
 #        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
+    ),
+    Recipe(
+        recipe="ardha-saptahik",
+        slug="ardha-saptahik",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="Gujarati Supplements",
+        overwrite_cover=False,
+        # enable_on=onlyon_weekdays([2], +5.5),  # Wednesday only, IST timezone
+        # retry_attempts=1,
+        # timeout=300,
+    ),
+    Recipe(
+        recipe="sanskar",
+        slug="sanskar",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="Gujarati Supplements",
+        overwrite_cover=False,
+        # enable_on=onlyon_weekdays([6], +5.5),  # Sunday only, IST timezone
+        # retry_attempts=1,
+        # timeout=300,
     ),
 #     Recipe(
 #         recipe="substack-nl",

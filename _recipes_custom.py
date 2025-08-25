@@ -332,7 +332,7 @@ recipes: List[Recipe] = [
             title_font_size=80,
             datestamp_font_path="static/OpenSans-Semibold.ttf",
             datestamp_font_size=72,
-            logo_path_or_url="recipes/logo/row.png",
+            logo_path_or_url="recipes/logos/row.png",
         ),
     ),
     Recipe(
@@ -351,7 +351,7 @@ recipes: List[Recipe] = [
             title_font_size=80,
             datestamp_font_path="static/OpenSans-Semibold.ttf",
             datestamp_font_size=72,
-            logo_path_or_url="recipes/logo/nautilus.png",
+            logo_path_or_url="recipes/logos/nautilus.png",
         ),
     ),
     Recipe(
@@ -381,7 +381,7 @@ recipes: List[Recipe] = [
             title_font_size=80,
             datestamp_font_path="static/OpenSans-Semibold.ttf",
             datestamp_font_size=72,
-            logo_path_or_url="recipes/logo/knowable.png",
+            logo_path_or_url="recipes/logos/knowable.png",
         ),
     ),
 ]

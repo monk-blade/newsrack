@@ -16,11 +16,11 @@ from recipes_shared import BasicCookielessNewsrackRecipe, format_title
 
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 
-_name = "Wired Magazine- " + datetime.now().strftime('%d.%m.%Y')
+# _name = "Wired Magazine" + datetime.now().strftime('%d.%m.%Y')
 
 
 class WiredMagazine(BasicCookielessNewsrackRecipe, BasicNewsRecipe):
-    title = _name
+    title = "Wired Magazine"
     __author__ = (
         "Darko Miletic, update by Howard Cornett, Zach Lapidus, Michael Marotta"
     )

@@ -42,9 +42,9 @@ class Upvote(BasicNewsRecipe):
         ('Announcements | nixOS', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=f5871e449b44927a088b5180c5b3d89f&f=rss'),
         ]
 
-    def get_cover_url(self):
-        """Return the masthead URL since we're using a simple logo."""
-        return self.masthead_url
+    # def get_cover_url(self):
+    #     """Return the masthead URL since we're using a simple logo."""
+    #     return self.masthead_url
 
     def parse_feeds(self):
         """Parse feeds and return articles without modifying titles yet."""

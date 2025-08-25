@@ -5,6 +5,7 @@ www.wired.com
 __license__ = "GPL v3"
 __copyright__ = "2014, Darko Miletic <darko.miletic at gmail.com>"
 
+import datetime
 import os
 import sys
 
@@ -16,11 +17,11 @@ from recipes_shared import BasicCookielessNewsrackRecipe, format_title
 
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 
-# _name = "Wired Magazine" + datetime.now().strftime('%d.%m.%Y')
-
+# _name = "Wired Magazine" + datetime.now().strftime('%d.%m.%Y') # type: ignore
+_name = "Wired Magazine"
 
 class WiredMagazine(BasicCookielessNewsrackRecipe, BasicNewsRecipe):
-    title = "Wired Magazine"
+    title = _name
     __author__ = (
         "Darko Miletic, update by Howard Cornett, Zach Lapidus, Michael Marotta"
     )

@@ -15,7 +15,6 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="News",
-        overwrite_cover=True,
         cover_options=CoverOptions(
             border_width=2,
             text_colour="black",  # or in hex format, e.g. "#000000"
@@ -24,7 +23,7 @@ recipes: List[Recipe] = [
             title_font_size=80,
             datestamp_font_path="static/OpenSans-Semibold.ttf",
             datestamp_font_size=72,
-            logo_path_or_url="recipes_custom/logo/upvote.png",
+            logo_path_or_url="recipes/logos/upvote.png",
         ),
 #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),  # from 6am-11.59am daily, for the timezone UTC-5
     ),

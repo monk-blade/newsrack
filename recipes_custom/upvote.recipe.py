@@ -1,17 +1,20 @@
-#!/usr/bin/env  python
-from datetime import date, datetime, timedelta
-from calibre.web.feeds.news import BasicNewsRecipe,classes
-from calibre.ebooks.BeautifulSoup import BeautifulSoup
-import re
-from calibre.ebooks.oeb.base import OEBBook
-from calibre.utils.logging import default_log
-from lxml import etree
-import urllib.request
-import urllib.error
+# Copyright (c) 2022 https://github.com/monk-blade/
+#
+# This software is released under the GNU General Public License v3.0
+# https://opensource.org/licenses/GPL-3.0
+
+import json
+import os
+import sys
+
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+
+from calibre.web.feeds.news import BasicNewsRecipe
 
 _name = 'Upvote'
 class Upvote(BasicNewsRecipe):
-    title = 'Upvote'
+    title = _name
     description = 'Upvote — curated collection of tech and social news from Hacker News, Lemmy, and Lobsters'
     language = 'en'
     __author__ = 'Arpan'
@@ -41,10 +44,6 @@ class Upvote(BasicNewsRecipe):
         ('Adventures in KDE', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=477c3220ee5a498a9de1fe5ad2b3ed01&f=rss'),
         ('Announcements | nixOS', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=f5871e449b44927a088b5180c5b3d89f&f=rss'),
         ]
-
-    # def get_cover_url(self):
-    #     """Return the masthead URL since we're using a simple logo."""
-    #     return self.masthead_url
 
     def parse_feeds(self):
         """Parse feeds and return articles without modifying titles yet."""

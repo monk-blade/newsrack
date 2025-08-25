@@ -95,6 +95,38 @@ class Nautilus(BasicNewsrackRecipe, BasicNewsRecipe):
     #     if breadcrumb:
     #         breadcrumb.append(srclink)
 
+    def populate_article_metadata(self, article, soup, first):
+        """
+        Calculate reading time from actual article content, update article title,
+        and update publication date metadata.
+        
+        Args:
+            article: The article object containing metadata.
+            soup: BeautifulSoup object of the article content.
+            first: Boolean indicating if this is the first article.
+        """
+        # Get all text from the article
+        all_text = soup.get_text()
+        words = [w for w in all_text.split() if w.strip()]
+        word_count = len(words)
+        
+        # Calculate reading time (180 words per minute)
+        minutes = max(1, (word_count + 179) // 180)
+        
+        # Log article content info
+        default_log.info(f"[nautilus] Article: '{article.title}' | Words: {word_count} | Reading time: {minutes}m")
+        default_log.info(f"[nautilus] Content preview: {' '.join(words[:30])}")
+        
+        # Update article title with reading time if not already present
+        if not re.search(r" \(\d+m\)$", article.title or ''):
+            article.title = f"{article.title} ({minutes}m)"
+            default_log.info(f"[nautilus] Updated title: {article.title}")
+        
+        # Update publication date and title metadata
+        if (not self.pub_date) or article.utctime > self.pub_date:
+            self.pub_date = article.utctime
+            self.title = format_title(_name, article.utctime)
+
     def preprocess_html(self, soup):
         breadcrumb = soup.find("ul", attrs={"class": "breadcrumb"})
         if breadcrumb:

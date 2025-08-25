@@ -9,7 +9,12 @@ import sys
 
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
-
+from recipes_shared import (
+    BasicNewsrackRecipe,
+    format_title,
+    get_datetime_format,
+    parse_date,
+)
 from calibre.web.feeds.news import BasicNewsRecipe
 
 _name = 'Upvote'
@@ -51,7 +56,15 @@ class Upvote(BasicNewsRecipe):
         return BasicNewsRecipe.parse_feeds(self)
 
     def populate_article_metadata(self, article, soup, first):
-        """Calculate reading time from actual article content and update article title."""
+        """
+        Calculate reading time from actual article content, update article title,
+        and update publication date metadata.
+        
+        Args:
+            article: The article object containing metadata.
+            soup: BeautifulSoup object of the article content.
+            first: Boolean indicating if this is the first article.
+        """
         # Get all text from the article
         all_text = soup.get_text()
         words = [w for w in all_text.split() if w.strip()]
@@ -68,6 +81,11 @@ class Upvote(BasicNewsRecipe):
         if not re.search(r" \(\d+m\)$", article.title or ''):
             article.title = f"{article.title} ({minutes}m)"
             default_log.info(f"[Upvote] Updated title: {article.title}")
+        
+        # Update publication date and title metadata
+        if (not self.pub_date) or article.utctime > self.pub_date:
+            self.pub_date = article.utctime
+            self.title = format_title(_name, article.utctime)
 
     def preprocess_html(self, soup):
         """Basic HTML preprocessing."""

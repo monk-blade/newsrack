@@ -2,14 +2,27 @@
 nautil.us
 """
 # Original from https://github.com/kovidgoyal/calibre/blob/946ae082e1291f61d88638ff3f3723df591da835/recipes/nautilus.recipe
+from __future__ import unicode_literals
+
+import json
 import os
 import sys
+import re
 from urllib.parse import urljoin
 from calibre.web.feeds.news import BasicNewsRecipe, classes
+from calibre.ebooks.BeautifulSoup import BeautifulSoup
 
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import (
+    BasicNewsrackRecipe,
+    format_title,
+    get_datetime_format,
+    parse_date,
+)
 _name = "Nautilus"
 
-class Nautilus(BasicNewsRecipe):
+class Nautilus(BasicNewsrackRecipe, BasicNewsRecipe):
     title = _name
     language = "en"
     __author__ = "unkn0wn"

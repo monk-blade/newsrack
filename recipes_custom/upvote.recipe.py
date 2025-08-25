@@ -20,6 +20,7 @@ class Upvote(BasicNewsRecipe):
     __author__ = 'Arpan'
     oldest_article = 1.25  # days
     max_articles_per_feed = 50
+    publication_type = "magazine"
     summary_length = 175
     encoding = 'utf-8'
     center_navbar = True

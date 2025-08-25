@@ -75,7 +75,14 @@ class KnowableMagazine(BasicNewsrackRecipe, BasicNewsRecipe):
         (_name, "https://knowablemagazine.org/rss"),
     ]
 
-    def populate_article_metadata(self, article, __, _):
+    def populate_article_metadata(self, article, _):
+        """
+        Update publication date and title metadata for an article.
+
+        Args:
+            article: The article object containing metadata.
+            _: Unused parameter for compatibility.
+        """
         if (not self.pub_date) or article.utctime > self.pub_date:
             self.pub_date = article.utctime
             self.title = format_title(_name, article.utctime)

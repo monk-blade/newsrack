@@ -48,6 +48,7 @@ class DailyCurrentAffairs(BasicNewsRecipe):
         ('The Hindu OpEd','https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=403b016ea7274f8e856ce18043cccd1b&f=rss'),
         ('CivilsDaily' ,'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=493f596d8391aa0893413b695b1f564f&f=rss'),   
         ('DrishtiIAS Hindi CA', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=1f811be00e94cbb77e7ebed5b70c97c2&f=rss'),
+        ('Word of the day','https://www.merriam-webster.com/wotd/feed/rss2'),
         # ('Money', 'https://finshots.in/tag/money/rss/'),
         # ('Insights', 'https://www.insightsonindia.com/category/current-affairs-2/feed/'),
         # ('IASbaba', 'https://iasbaba.com/iasbabas-daily-current-affairs/feed/'),

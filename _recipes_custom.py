@@ -36,6 +36,7 @@ recipes: List[Recipe] = [
         enable_on=True,
         retry_attempts=1,
         overwrite_cover=False,
+        enable_on=onlyat_hours(list(range(0, 9)), +5.5),
 #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
     ),
     Recipe(
@@ -135,7 +136,7 @@ recipes: List[Recipe] = [
         category="Newsletters",
         overwrite_cover=False,
         enable_on=onlyon_weekdays([1,3,5,6]), 
-#        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
+#        enable_on=onlyat_hours(list(range(0, 9)), +5.5),
     ),
     Recipe(
         recipe="business-standard",
@@ -144,6 +145,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="News",
         overwrite_cover=False,
+        enable_on=onlyat_hours(list(range(0, 9)), +5.5),
     ),
     Recipe(
         recipe="indian-express",
@@ -152,6 +154,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="News",
         overwrite_cover=False,
+        enable_on=onlyat_hours(list(range(0, 9)), +5.5),
     ),
     Recipe(
         recipe="frontline",
@@ -200,7 +203,7 @@ recipes: List[Recipe] = [
         src_ext="epub",
         target_ext=[],
         timeout=180,
-        overwrite_cover=True,
+        overwrite_cover=False,
         category="Indian Magazines",
     #    enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
     ),
@@ -246,6 +249,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         overwrite_cover=False,
         category="Intl Magazines",
+        enable_on=onlyon_weekdays([6]),
         # timeout=240,
         # enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
     ),
@@ -367,7 +371,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="Intl Magazines",
-        enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5]) and onlyat_hours(list(range(9, 19))),
+        enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5]) and onlyat_hours(list(range(0, 9))),
         tags=["science"],
         cover_options=CoverOptions(
             border_width=2,

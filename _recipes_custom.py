@@ -16,14 +16,14 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="News",
         cover_options=CoverOptions(
-            border_width=2,
-            text_colour="black",  # or in hex format, e.g. "#000000"
-            background_colour="white",  # or in hex format, e.g. "#FFFFFF"
-            title_font_path="static/OpenSans-Bold.ttf",  # you can define your own font path
-            title_font_size=80,
-            datestamp_font_path="static/OpenSans-Semibold.ttf",
-            datestamp_font_size=72,
-            logo_path_or_url="recipes/logos/upvote.png",
+            border_width=10,
+            # text_colour="black",  # or in hex format, e.g. "#000000"
+            # background_colour="white",  # or in hex format, e.g. "#FFFFFF"
+            # title_font_path="static/OpenSans-Bold.ttf",  # you can define your own font path
+            # title_font_size=80,
+            # datestamp_font_path="static/OpenSans-Semibold.ttf",
+            # datestamp_font_size=72,
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/en/b/bf/Hackernews_logo.png",
         ),
 #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),  # from 6am-11.59am daily, for the timezone UTC-5
     ),

@@ -1,6 +1,14 @@
 from typing import List
 
-from _recipe_utils import CoverOptions, Recipe, onlyon_days, onlyat_hours, onlyon_weekdays
+from _recipe_utils import (
+    CoverOptions,
+    Recipe,
+    first_n_days_of_month,
+    last_n_days_of_month,
+    onlyat_hours,
+    onlyon_days,
+    onlyon_weekdays,
+)
 
 # Define the categories display order, optional
 categories_sort: List[str] = ["News","UPSC","Gujarati Supplements","Technology","Newsletters","Indian Magazines","Intl Magazines","Books"]
@@ -119,13 +127,16 @@ recipes: List[Recipe] = [
         overwrite_cover=False,
         enable_on=onlyon_weekdays([2]),  # Wednesday only
     ),
-#     Recipe(
-#         recipe="substack-nl",
-#         slug="substack-nl",
-#         src_ext="epub",
-#         category="Newsletters",
-# #        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
-#     ),
+    Recipe(
+        recipe="spectator-magazine",
+        slug="spectator-magazine",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="Magazines",
+        tags=["europe", "britain"],
+        enable_on=onlyon_weekdays([3, 4]),
+        overwrite_cover=False,
+    ),
     Recipe(
         recipe="newsletters",
         slug="newsletters",
@@ -203,7 +214,7 @@ recipes: List[Recipe] = [
         timeout=180,
         overwrite_cover=False,
         category="Indian Magazines",
-    #    enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
+       enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
     ),
     Recipe(
         recipe="atlantic-magazine",
@@ -270,16 +281,16 @@ recipes: List[Recipe] = [
         enable_on=onlyon_weekdays([6]),
         # enable_on=onlyon_days(list(range(1, 1 + 3)) + list(range(32 - 14, 32)), -5),
     ),
-    # Recipe(
-    #     recipe="foreign-affairs",
-    #     slug="foreign-affairs",
-    #     src_ext="epub",
-    #     target_ext=[],
-    #     overwrite_cover=False,
-    #     category="Intl Magazines",
-    #     enable_on=onlyon_days(list(range(1, 1 + 7)) + list(range(32 - 7, 32)), -4)
-    #     and onlyat_hours(list(range(8, 22)), -4),
-    # ),
+    Recipe(
+        recipe="foreign-affairs",
+        slug="foreign-affairs",
+        src_ext="mobi",
+        target_ext=["epub"],
+        overwrite_cover=False,
+        category="Magazines",
+        enable_on=(first_n_days_of_month(4, -4) or last_n_days_of_month(10, -4))
+        and onlyat_hours(list(range(8, 22)), -4),
+    ),
     # Recipe(
     #     recipe="harvard-intl-review",
     #     slug="harvard-intl-review",

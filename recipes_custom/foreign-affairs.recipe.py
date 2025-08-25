@@ -1,21 +1,10 @@
-# Original at https://github.com/kovidgoyal/calibre/blob/962fc18be18cccb6fc70d29a086f16a7e0a36519/recipes/foreignaffairs.recipe
+#!/usr/bin/env python
 import json
-import os
 import re
-import sys
-from datetime import datetime
-
-from calibre.ebooks.BeautifulSoup import BeautifulSoup
-
-# custom include to share code between recipes
-sys.path.append(os.environ["recipes_includes"])
-from recipes_shared import BasicNewsrackRecipe
 
 import mechanize
-from calibre.web.feeds.news import BasicNewsRecipe, classes
 
-_name = "Foreign Affairs"
-_issue_url = ""
+from calibre.web.feeds.news import BasicNewsRecipe, classes
 
 
 def as_article(source, log):

@@ -250,17 +250,17 @@ recipes: List[Recipe] = [
     #     enable_on=onlyon_days(list(range(1, 1 + 7)) + list(range(32 - 7, 32)), -4)
     #     and onlyat_hours(list(range(8, 22)), -4),
     # ),
-    Recipe(
-        recipe="harvard-intl-review",
-        slug="harvard-intl-review",
-        src_ext="mobi",
-        target_ext=["epub"],
-        category="Intl Magazines",
-        enable_on=onlyat_hours(list(range(11, 15))),
-        cover_options=CoverOptions(
-            logo_path_or_url="https://hir.harvard.edu/content/images/2020/12/HIRlogo_crimson-4.png",
-        ),
-    ),
+    # Recipe(
+    #     recipe="harvard-intl-review",
+    #     slug="harvard-intl-review",
+    #     src_ext="mobi",
+    #     target_ext=["epub"],
+    #     category="Intl Magazines",
+    #     enable_on=onlyat_hours(list(range(11, 15))),
+    #     cover_options=CoverOptions(
+    #         logo_path_or_url="https://hir.harvard.edu/content/images/2020/12/HIRlogo_crimson-4.png",
+    #     ),
+    # ),
     Recipe(
         recipe="mit-press-reader",
         slug="mit-press-reader",

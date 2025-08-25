@@ -267,7 +267,8 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         overwrite_cover=False,
         category="Intl Magazines",
-        enable_on=onlyon_days(list(range(1, 1 + 3)) + list(range(32 - 14, 32)), -5),
+        enable_on=onlyon_weekdays([6]),
+        # enable_on=onlyon_days(list(range(1, 1 + 3)) + list(range(32 - 14, 32)), -5),
     ),
     # Recipe(
     #     recipe="foreign-affairs",
@@ -401,6 +402,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Intl Magazines",
         tags=["science"],
+        enable_on=onlyon_weekdays([6]),
         cover_options=CoverOptions(
             border_width=2,
             text_colour="black",  # or in hex format, e.g. "#000000"

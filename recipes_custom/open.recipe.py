@@ -22,9 +22,8 @@ class OpenMagazine(BasicNewsRecipe):
     extra_css = """
             p{text-align: justify; font-size: 100%}
             blockquote{color:#404040;}
-            {font-size: small;font-style: italic;}
+            [id^="caption-attachment"]{font-size: small;font-style: italic;}
             .about-author{font-size:small;}
-            [id^="caption-attachment"]
     """
     def get_cover_url(self):
         soup = self.index_to_soup('https://openthemagazine.com/magazine/')

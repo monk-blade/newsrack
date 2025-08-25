@@ -74,9 +74,9 @@ class DailyCurrentAffairs(BasicNewsRecipe):
             day_text = datetime.now().strftime("%A")
 
             # Load fonts - use Linux system fonts
-            font_size_middle = 120
-            font_size_date = 65  # Increased font size for date
-            font_size_day = 55
+            font_size_middle = 100
+            font_size_date = 60  # Increased font size for date
+            font_size_day = 50
             
             try:
                 # Try common Linux font paths

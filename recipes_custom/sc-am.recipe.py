@@ -11,7 +11,8 @@ from datetime import datetime, timezone, timedelta
 from zoneinfo import ZoneInfo
 # from os.path import splitext
 from urllib.parse import urljoin
-
+# custom include to share code between recipes
+sys.path.append(os.environ["recipes_includes"])
 
 # custom include to share code between recipes
 # Add the shared-recipes `includes` directory to sys.path so we can import

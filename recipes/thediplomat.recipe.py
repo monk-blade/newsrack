@@ -17,7 +17,7 @@ from recipes_shared import WordPressNewsrackRecipe, get_date_format
 
 from calibre.web.feeds.news import BasicNewsRecipe
 
-_name = "The Diplomat- " + datetime.now().strftime('%d.%m.%Y')
+_name = "The Diplomat"
 
 
 class TheDiplomat(WordPressNewsrackRecipe, BasicNewsRecipe):

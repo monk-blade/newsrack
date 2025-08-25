@@ -30,7 +30,6 @@ class KnowableMagazine(BasicNewsrackRecipe, BasicNewsRecipe):
     )
     masthead_url = "https://knowablemagazine.org/pb-assets/knowable-assets/images/logo-1586554394067.svg"
     language = "en"
-    publication_type = "magazine"
     timeout = 60
 
     oldest_article = 45  # days
@@ -75,7 +74,7 @@ class KnowableMagazine(BasicNewsrackRecipe, BasicNewsRecipe):
         (_name, "https://knowablemagazine.org/rss"),
     ]
 
-    def populate_article_metadata(self, article, _):
+    def populate_article_metadata(self, article, __, _):
         """
         Update publication date and title metadata for an article.
 

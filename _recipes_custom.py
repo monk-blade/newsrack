@@ -195,7 +195,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         overwrite_cover=False,
         category="Intl Magazines",
-        enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4)
+        enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4),
         tags=["editorial", "commentary"],
         cover_options=CoverOptions(
             logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/The_Atlantic_Logo_11.2019.svg/1200px-The_Atlantic_Logo_11.2019.svg.png"
@@ -259,7 +259,7 @@ recipes: List[Recipe] = [
         category="Intl Magazines",
         enable_on=onlyat_hours(list(range(11, 15))),
         cover_options=CoverOptions(
-            logo_path_or_url="https://hir.harvard.edu/content/images/2020/12/HIRlogo_crimson-4.png"
+            logo_path_or_url="https://hir.harvard.edu/content/images/2020/12/HIRlogo_crimson-4.png",
         ),
     ),
     Recipe(

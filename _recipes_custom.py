@@ -17,11 +17,11 @@ recipes: List[Recipe] = [
         category="News",
         cover_options=CoverOptions(
             border_width=10,
-            # text_colour="black",  # or in hex format, e.g. "#000000"
-            # background_colour="white",  # or in hex format, e.g. "#FFFFFF"
-            # title_font_path="static/OpenSans-Bold.ttf",  # you can define your own font path
+            text_colour="black",  # or in hex format, e.g. "#000000"
+            background_colour="white",  # or in hex format, e.g. "#FFFFFF"
+            title_font_path="static/OpenSans-Bold.ttf",  # you can define your own font path
             # title_font_size=80,
-            # datestamp_font_path="static/OpenSans-Semibold.ttf",
+            datestamp_font_path="static/OpenSans-Semibold.ttf",
             # datestamp_font_size=72,
             logo_path_or_url="https://upload.wikimedia.org/wikipedia/en/b/bf/Hackernews_logo.png",
         ),

@@ -146,13 +146,13 @@ recipes: List[Recipe] = [
         overwrite_cover=False,
        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
     ),
-#     Recipe(
-#         recipe="outlook_india",
-#         slug="outlook_india",
-#         src_ext="epub",
-#         category="Indian Magazines",
-# #        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
-#     ),
+    Recipe(
+        recipe="outlook_india",
+        slug="outlook_india",
+        src_ext="epub",
+        category="Indian Magazines",
+       enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
+    ),
     Recipe(
         recipe="india_today",
         slug="india_today",

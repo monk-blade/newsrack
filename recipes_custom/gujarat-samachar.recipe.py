@@ -13,9 +13,10 @@ class GujaratSamachar(BasicNewsRecipe):
     description = 'News of Gujarat is compilation of various feeds of Gujarati Paper'
     language = 'gu'
     __author__ = 'Arpan'
-    oldest_article = 2  # days
+    oldest_article = 1.25  # days
     max_articles_per_feed = 50
     summary_length = 175
+    publication_type = "newspaper"
     encoding = 'utf-8'
     center_navbar = True
     use_embedded_content = True

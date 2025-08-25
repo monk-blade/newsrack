@@ -72,6 +72,7 @@ class ScientificAmerican(BasicNewsrackRecipe, BasicNewsRecipe):
     publisher = "Nature Publishing Group"
     remove_empty_feeds = True
     remove_javascript = True
+    publication_type = "magazine"
     # timefmt = ": %B %Y"
     remove_attributes = ["width", "height", "style", "decoding", "loading", "fetchpriority", "sizes"]
     # masthead_url = (

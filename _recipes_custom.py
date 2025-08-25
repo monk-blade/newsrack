@@ -33,11 +33,9 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="News",
-        enable_on=True,
         retry_attempts=1,
         overwrite_cover=False,
         enable_on=onlyat_hours(list(range(0, 9)), +5.5),
-#        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
     ),
     Recipe(
         recipe="daily-current",

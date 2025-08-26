@@ -111,7 +111,7 @@ print_status $YELLOW "MOBI output: $MOBI_FILE"
 print_status $YELLOW "Final EPUB output: $OUTPUT_FILE"
 
 # Build ebook-convert command for MOBI creation using the temporary .recipe file
-CONVERT_CMD="ebook-convert \"$TEMP_RECIPE\" \"$MOBI_FILE\" --output-profile=kindle_pw3 --mobi-file-type=both -vvv"
+CONVERT_CMD="ebook-convert \"$TEMP_RECIPE\" \"$MOBI_FILE\" --output-profile=kindle_pw3 --mobi-file-type=both -vvv --debug-pipeline debug"
 
 # Add verbose flag if requested
 if [[ "$VERBOSE" == true ]]; then

@@ -122,8 +122,8 @@ class LiveMint(BasicNewsRecipe):
         ]
         remove_tags = [
             dict(name=['meta', 'link', 'svg', 'button', 'iframe']),
-            classes('hidden-article-url sidebarAdv similarStoriesClass moreFromSecClass linkStories publishDetail'),
-            dict(attrs={'id':['hidden-article-id-0', 'hidden-article-type-0']})
+            classes('hidden-article-url sidebarAdv similarStoriesClass moreFromSecClass linkStories publishDetail backlink socialMediaShare psTopLogo backlink psTopicsHeading double_gift_box premiumImgIcon alsoRead topicsTag'),
+            dict(attrs={'id':['gift-an-article', 'hidden-article-id-0', 'hidden-article-type-0']})
         ]
 
         feeds = [
@@ -168,11 +168,11 @@ class LiveMint(BasicNewsRecipe):
             dict(attrs={'class':lambda x: x and x.startswith(
                 ('storyPage_alsoRead__', 'storyPage_firstPublishDate__', 'storyPage_bcrumb__')
             )}),
-            dict(attrs={'id':['faqSection', 'seoText', 'ellipsisId']}),
+            dict(attrs={'id':['gift-an-article','faqSection', 'seoText', 'ellipsisId']}),
             classes(
                 'trendingSimilarHeight moreNews mobAppDownload label msgError msgOk taboolaHeight gadgetSlider ninSec'
                 ' socialHolder imgbig disclamerText disqus-comment-count openinApp2 lastAdSlot bs_logo author-widget'
-                ' datePublish sepStory premiumSlider moreStory Joinus moreAbout milestone benefitText checkCibilBtn trade'
+                ' datePublish sepStory premiumSlider moreStory Joinus moreAbout milestone benefitText checkCibilBtn trade psTopLogo backlink psTopicsHeading double_gift_box premiumImgIcon alsoRead topicsTag'
             )
         ]
 

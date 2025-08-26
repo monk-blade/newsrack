@@ -70,24 +70,32 @@ class LWNFree(BasicNewsRecipe):
         masthead = Image.open(BytesIO(f.read())).convert('RGBA')
         f.close()
 
-        # Set cover size
-        cover_width = max(800, masthead.width)
-        cover_height = masthead.height + 200
+        # Set cover size to fixed 800x1200
+        cover_width = 800
+        cover_height = 1200
         cover = Image.new('RGBA', (cover_width, cover_height), (255, 255, 255, 255))
 
-        # Paste masthead at top center
-        masthead_x = (cover_width - masthead.width) // 2
-        cover.paste(masthead, (masthead_x, 30), masthead)
+        # Paste masthead in the top half, centered horizontally
+        masthead_max_height = cover_height // 2 - 40
+        masthead_scale = min(1.0, masthead_max_height / masthead.height, (cover_width - 40) / masthead.width)
+        try:
+            resample_method = Image.Resampling.LANCZOS
+        except AttributeError:
+            resample_method = 3  # BICUBIC fallback
+        masthead_resized = masthead.resize((int(masthead.width * masthead_scale), int(masthead.height * masthead_scale)), resample=resample_method)
+        masthead_x = (cover_width - masthead_resized.width) // 2
+        masthead_y = 40 + (masthead_max_height - masthead_resized.height) // 2
+        cover.paste(masthead_resized, (masthead_x, masthead_y), masthead_resized)
 
-        # Draw title below masthead
+        # Draw title in the bottom half
         draw = ImageDraw.Draw(cover)
         try:
-            font = ImageFont.truetype("DejaVuSans-Bold.ttf", 48)
+            font = ImageFont.truetype("DejaVuSans-Bold.ttf", 65)
         except Exception:
             font = ImageFont.load_default()
         # Split title into multiple lines if too long
         title_text = self.title
-        max_chars = 28
+        max_chars = 15
         words = title_text.split()
         lines = []
         current_line = ''
@@ -102,7 +110,7 @@ class LWNFree(BasicNewsRecipe):
         if current_line:
             lines.append(current_line)
 
-        # Draw each line centered
+        # Calculate total height for all lines
         total_height = 0
         line_heights = []
         for line in lines:
@@ -112,9 +120,10 @@ class LWNFree(BasicNewsRecipe):
             total_height += line_height
 
         # Add spacing between lines
-        line_spacing = 10
+        line_spacing = 7
         total_height += line_spacing * (len(lines) - 1)
-        start_y = masthead.height + 60
+        # Center text block in bottom half
+        start_y = cover_height // 2 + ((cover_height // 2 - total_height) // 2)
         y = start_y
         for i, line in enumerate(lines):
             bbox = draw.textbbox((0, 0), line, font=font)
@@ -126,10 +135,10 @@ class LWNFree(BasicNewsRecipe):
         # Add border using provided example
         border_color = (0, 0, 0)  # Black
         border_width = 5
-        bordered_width = cover_width - border_width
-        bordered_height = cover_height - border_width
+        bordered_width = cover_width
+        bordered_height = cover_height
         bordered_cover = Image.new('RGBA', (bordered_width, bordered_height), (255, 255, 255, 255))
-        bordered_cover.paste(cover, (border_width // 2, border_width // 2))
+        bordered_cover.paste(cover, (0, 0))
         draw_border = ImageDraw.Draw(bordered_cover)
         draw_border.rectangle(
             [border_width // 2, border_width // 2, bordered_width - border_width // 2, bordered_height - border_width // 2],

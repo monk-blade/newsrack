@@ -11,7 +11,7 @@ from _recipe_utils import (
 )
 
 # Define the categories display order, optional
-categories_sort: List[str] = ["News","Gujarati Supplements","Technology","Newsletters","Indian Magazines","Intl Magazines"]
+categories_sort: List[str] = ["News","Gujarati Supplements","Technology","Newsletters","Indian Magazines","Intl Magazines","Legal"]
 
 # Define your custom recipes list here
 # Example: https://github.com/ping/newsrack-fork-test/blob/custom/_recipes_custom.py
@@ -197,14 +197,16 @@ recipes: List[Recipe] = [
         category="Indian Magazines",
         enable_on=onlyon_weekdays([6]),  
     ),
-#     Recipe(
-#         recipe="dte",
-#         slug="dte",
-#         src_ext="epub",
-#         target_ext=[],
-#         category="Indian Magazines",
-# #        enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
-#     ),
+    Recipe(
+        recipe="bar-and-bench",
+        slug="bar-and-bench",
+        src_ext="mobi",
+        target_ext=["epub"],
+        overwrite_cover=False,
+        category="Legal",
+        enable_on=onlyon_weekdays([3,6]),
+#        enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
+    ),
     Recipe(
         recipe="new-scientist",
         slug="new-scientist",
@@ -322,7 +324,7 @@ recipes: List[Recipe] = [
         slug="mit-tech-review-feed",
         src_ext="mobi",
         target_ext=["epub"],
-        category="Intl Magazines",
+        category="Technology",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], -4),
         tags=["technology"],
         cover_options=CoverOptions(
@@ -335,7 +337,7 @@ recipes: List[Recipe] = [
         slug="mit-tech-review-magazine",
         src_ext="mobi",
         target_ext=["epub"],
-        category="Intl Magazines",
+        category="Technology",
         overwrite_cover=False,
         enable_on=onlyon_days(list(range(1, 1 + 7)) + list(range(32 - 7, 32)), -5),
         tags=["technology"],
@@ -402,7 +404,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         overwrite_cover=True,
-        category="Intl Magazines",
+        category="Technology",
         enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5]) and onlyat_hours(list(range(0, 9))),
         cover_options=CoverOptions(
             logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/9/95/Wired_logo.svg/1024px-Wired_logo.svg.png"

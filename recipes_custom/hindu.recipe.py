@@ -69,7 +69,7 @@ class TheHindu(BasicNewsRecipe):
         return soup
 
     def parse_index(self):
-        self.title = 'The Hindu'
+        self.title = 'The Hindu' + ' - ' + datetime.now().strftime('%d.%m.%y')
         local_edition = 'th_delhi'
         d = self.recipe_specific_options.get('location')
         if d and isinstance(d, str):

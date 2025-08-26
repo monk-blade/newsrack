@@ -7,7 +7,7 @@ from urllib.parse import urlparse
 
 from html5_parser import parse
 from mechanize import Request
-
+from datetime import datetime
 from calibre import browser, random_user_agent
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 
@@ -19,7 +19,7 @@ def absurl(url):
 
 
 class HBR(BasicNewsRecipe):
-    title = 'Harvard Business Review'
+    title = 'Harvard Business Review' + ' - ' + datetime.now().strftime('%d.%m.%y')
     __author__ = 'unkn0wn'
     description = (
         'Harvard Business Review is the leading destination for smart management thinking. '

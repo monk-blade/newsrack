@@ -1,6 +1,7 @@
 #!/usr/bin/env python
-import json, re
-from datetime import datetime
+import json
+import re
+
 import mechanize
 
 from calibre.web.feeds.news import BasicNewsRecipe, classes
@@ -112,7 +113,7 @@ def get_issue_data(br, log, node_id='1126213', year='2020', volnum='99', issue_v
 
 
 class ForeignAffairsRecipe(BasicNewsRecipe):
-    title = u'Foreign Affairs'+ datetime.now().strftime('%d.%m.%Y')
+    title = u'Foreign Affairs'
     __author__ = 'Kovid Goyal'
     language = 'en'
     publisher = u'Council on Foreign Relations'
@@ -167,13 +168,50 @@ class ForeignAffairsRecipe(BasicNewsRecipe):
         link = soup.find('link', rel='canonical', href=True)['href']
         year, volnum, issue_vol = link.split('/')[-3:]
         main = soup.find('main', attrs={'id': 'content'})
+        
+        # Try to find cover image - multiple strategies
+        cover_url = None
+        
+        # Strategy 1: Look for img with Cover.jpg in srcset
         cov = main.find('img', attrs={'srcset': lambda x: x and 'Cover.jpg' in x})
         if cov:
-            self.cover_url = re.sub(
+            # Extract the base URL and convert to high-res webp format
+            base_url = cov['srcset'].split()[0]
+            # Convert to the correct high-res format: _webp_issue_large_2x and add .webp
+            cover_url = re.sub(
                 r'_webp_issue_small_\dx',
                 '_webp_issue_large_2x',
-                cov['srcset'].split()[0]
+                base_url
             )
+            # Ensure .webp extension is added if not present
+            if not cover_url.endswith('.webp'):
+                cover_url = cover_url.replace('.jpg', '.jpg.webp')
+        
+        # Strategy 2: Check OpenGraph meta tags
+        if not cover_url:
+            og_image = soup.find('meta', property='og:image', content=True)
+            if og_image:
+                cover_url = og_image['content']
+                # Convert social_share to high-res format
+                cover_url = re.sub(r'/styles/social_share/', '/styles/_webp_issue_large_2x/', cover_url)
+                # Ensure .webp extension
+                if not cover_url.endswith('.webp'):
+                    cover_url = cover_url.replace('.jpg', '.jpg.webp')
+        
+        # Strategy 3: Check og:image:url meta tag
+        if not cover_url:
+            og_image_url = soup.find('meta', property='og:image:url', content=True)
+            if og_image_url:
+                cover_url = og_image_url['content']
+                # Convert to high-res format
+                cover_url = re.sub(r'/styles/social_share/', '/styles/_webp_issue_large_2x/', cover_url)
+                # Ensure .webp extension
+                if not cover_url.endswith('.webp'):
+                    cover_url = cover_url.replace('.jpg', '.jpg.webp')
+        
+        if cover_url:
+            self.cover_url = cover_url
+            self.log(f'Found cover image: {cover_url}')
 
         cls = soup.find('link', attrs={'rel':'shortlink'})['href']
         node_id = re.search(r'https://www.foreignaffairs.com/node/(\d+)', cls).group(1)

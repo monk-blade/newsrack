@@ -63,6 +63,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="News",
         retry_attempts=1,
+        overwrite_cover=False,
         # timeout=300,
         # enable_on=onlyat_hours(list(range(6, 18)), +5.5),  # from 6am-5:59pm daily, for the timezone UTC+5:30
     ),
@@ -128,16 +129,6 @@ recipes: List[Recipe] = [
         category="Gujarati Supplements",
         overwrite_cover=False,
         enable_on=onlyon_weekdays([2]),  # Wednesday only
-    ),
-    Recipe(
-        recipe="spectator-magazine",
-        slug="spectator-magazine",
-        src_ext="mobi",
-        target_ext=["epub"],
-        category="Magazines",
-        tags=["europe", "britain"],
-        enable_on=onlyon_weekdays([3, 4]),
-        overwrite_cover=False,
     ),
     Recipe(
         recipe="newsletters",
@@ -208,16 +199,16 @@ recipes: List[Recipe] = [
 #         category="Indian Magazines",
 # #        enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
 #     ),
-    Recipe(
-        recipe="open",
-        slug="open",
-        src_ext="epub",
-        target_ext=[],
-        timeout=180,
-        overwrite_cover=False,
-        category="Indian Magazines",
-       enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
-    ),
+    # Recipe(
+    #     recipe="open",
+    #     slug="open",
+    #     src_ext="epub",
+    #     target_ext=[],
+    #     timeout=180,
+    #     overwrite_cover=False,
+    #     category="Indian Magazines",
+    #    enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
+    # ),
     Recipe(
         recipe="atlantic-magazine",
         slug="atlantic-magazine",
@@ -289,7 +280,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         overwrite_cover=False,
-        category="Magazines",
+        category="Intl Magazines",
         enable_on=(first_n_days_of_month(4, -4) or last_n_days_of_month(10, -4))
         and onlyat_hours(list(range(8, 22)), -4),
     ),

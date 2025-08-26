@@ -21,7 +21,7 @@ from recipes_shared import (
 _name = "Nautilus"
 
 class Nautilus(BasicNewsrackRecipe, BasicNewsRecipe):
-    title = _name+ datetime.now().strftime('%d.%m.%Y')
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     language = "en"
     __author__ = "unkn0wn"
     oldest_article = 14  # days

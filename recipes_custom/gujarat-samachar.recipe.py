@@ -13,7 +13,7 @@ import mechanize
 
 _name = 'News of Gujarat'
 class GujaratSamachar(BasicNewsrackRecipe, BasicNewsRecipe):
-    title = 'News of Gujarat'+ datetime.now().strftime('%d.%m.%Y')
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     description = 'News of Gujarat is compilation of various feeds of Gujarati Paper'
     language = 'gu'
     __author__ = 'Arpan'

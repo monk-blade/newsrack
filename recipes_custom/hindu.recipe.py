@@ -7,6 +7,7 @@ from datetime import date
 from datetime import datetime
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 
+_name = 'The Hindu'
 
 def absurl(url):
     if url.startswith('/'):
@@ -15,7 +16,7 @@ def absurl(url):
 
 
 class TheHindu(BasicNewsRecipe):
-    title = 'The Hindu'+ datetime.now().strftime('%d.%m.%Y')
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     __author__ = 'unkn0wn'
     description = "Articles from The Hindu, Today's Paper."
     language = 'en_IN'

@@ -6,7 +6,7 @@ from datetime import datetime
 _name = 'Newsletters'
 
 class Newsletters(BasicNewsRecipe):
-    title = _name+ datetime.now().strftime('%d.%m.%Y')
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     description = 'My Favourite Newsletters from Substack.'
     language = 'en_IN'
     __author__ = 'Arpan'

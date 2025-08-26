@@ -8,7 +8,7 @@ import urllib.request
 
 _name = 'શતદલ'
 class ShatdalPoorti(BasicNewsRecipe):
-    title = 'શતદલ'+ datetime.now().strftime('%d.%m.%Y')
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     description = 'શતદલ — curated collection of Gujarati feed items'
     language = 'gu'
     __author__ = 'Arpan'

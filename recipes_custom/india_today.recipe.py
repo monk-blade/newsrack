@@ -8,7 +8,7 @@ from datetime import datetime
 _name = 'India Today'
 
 class IndiaToday(BasicNewsRecipe):
-    title = u'India Today'+ datetime.now().strftime('%d.%m.%Y')
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     language = 'en_IN'
     __author__ = 'unkn0wn'
     no_stylesheets = True

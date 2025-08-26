@@ -4,9 +4,9 @@ from collections import defaultdict
 from datetime import datetime
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 
-
+_name='Frontline'
 class Frontline(BasicNewsRecipe):
-    title = u'Frontline'+ datetime.now().strftime('%d.%m.%Y')
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     __author__ = 'unkn0wn'
     description = 'Frontline, the fortnightly English magazine from the stable of The Hindu, has been a distinguished presence in the media world since 1984.'
     language = 'en_IN'

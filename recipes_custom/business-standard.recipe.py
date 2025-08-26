@@ -7,9 +7,9 @@ from html5_parser import parse
 
 from calibre.web.feeds.news import BasicNewsRecipe
 
-
+_name = 'Business Standard'
 class BusinessStandardPrint(BasicNewsRecipe):
-    title = 'Business Standard' + datetime.now().strftime('%d.%m.%Y')
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     __author__ = 'unkn0wn'
     description = "India's most respected business daily, Articles from Today's Paper"
     language = 'en_IN'

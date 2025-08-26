@@ -8,7 +8,7 @@ import urllib.request
 
 _name = 'રવિપૂર્તિ'
 class RaviPurti(BasicNewsRecipe):
-    title = 'રવિપૂર્તિ'+datetime.now().strftime('%d.%m.%Y')
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     description = 'રવિપૂર્તિ — curated collection of Gujarati feed items'
     language = 'gu'
     __author__ = 'Arpan'

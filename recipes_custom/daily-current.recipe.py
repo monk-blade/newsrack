@@ -1,17 +1,15 @@
 #!/usr/bin/env  python
-#TODO fix image in 
 
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
 import io
 import mechanize
-from calibre.ebooks.oeb.base import OEBBook
-from calibre.utils.logging import default_log
-from lxml import etree
 calibre_most_common_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'
+_name = 'Daily Affairs'
+
 class DailyCurrentAffairs(BasicNewsRecipe):
-    title = 'Daily Affairs'+ datetime.now().strftime('%d.%m.%Y')
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     description = 'Daily Affairs related Articles.'
     language = 'en_IN'
     __author__ = 'Arpan'

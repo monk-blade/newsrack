@@ -17,7 +17,7 @@ from calibre.web.feeds.news import BasicNewsRecipe
 
 _name = 'Upvote'
 class Upvote(BasicNewsRecipe):
-    title = _name+ datetime.now().strftime('%d.%m.%Y')
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     description = 'Upvote — curated collection of tech and social news from Hacker News, Lemmy, and Lobsters'
     language = 'en'
     __author__ = 'Arpan'

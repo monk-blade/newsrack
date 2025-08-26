@@ -8,7 +8,7 @@ import json
 
 _name = 'સંસ્કાર'
 class Sanskar(BasicNewsRecipe):
-    title = 'સંસ્કાર'+ datetime.now().strftime('%d.%m.%Y')
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     description = 'સંસ્કાર — Sandesh weekly publication that publishes on Sunday'
     language = 'gu'
     __author__ = 'Arpan'

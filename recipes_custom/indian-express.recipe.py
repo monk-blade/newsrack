@@ -12,9 +12,10 @@ from datetime import datetime, timedelta
 from calibre.utils.date import parse_date
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 
+_name = 'Indian Express'
 
 class IndianExpress(BasicNewsRecipe):
-    title = 'Indian Express'+ datetime.now().strftime('%d.%m.%Y')
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     language = 'en_IN'
     __author__ = 'unkn0wn'
     oldest_article = 1.15  # days

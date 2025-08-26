@@ -9,7 +9,7 @@ import urllib.request
 
 _name = 'રસરંગ'
 class Rasrang(BasicNewsRecipe):
-    title = 'રસરંગ'+ datetime.now().strftime('%d.%m.%Y')
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     description = 'રસરંગ — curated collection of Gujarati feed items'
     language = 'gu'
     __author__ = 'Arpan'

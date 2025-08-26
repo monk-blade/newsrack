@@ -2,9 +2,10 @@ import json, re
 from datetime import datetime
 
 from calibre.web.feeds.news import BasicNewsRecipe, classes
+_name = 'Outlook Business Magazine'
 
 class outlook(BasicNewsRecipe):
-    title = 'Outlook Business'+ datetime.now().strftime('%d.%m.%Y')
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     __author__ = 'unkn0wn'
     description = (
         'Outlook Business (Monthly) Magazine produces Business, Market, Startup and Leadership'

@@ -3,8 +3,9 @@
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 from datetime import datetime
 
+_name = 'Outlook Magazine'
 class outlook(BasicNewsRecipe):
-    title = 'Outlook Magazine'+ datetime.now().strftime('%d.%m.%Y')
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     __author__ = 'unkn0wn'
     description = (
         'Outlook covers the latest India news, analysis, business news and long-form stories on culture,'

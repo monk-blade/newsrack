@@ -2,9 +2,10 @@
 
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 
+_name = 'Open Magazine'
 
 class OpenMagazine(BasicNewsRecipe):
-    title = u'Open Magazine'
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     description = 'The weekly current affairs and features magazine.'
     language = 'en_IN'
     __author__ = 'unkn0wn'

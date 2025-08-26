@@ -7,7 +7,7 @@ import urllib.request
 
 _name = 'કળશ'
 class Kalash(BasicNewsRecipe):
-    title = 'કળશ'+ datetime.now().strftime('%d.%m.%Y')
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     description = 'કળશ — curated collection of Gujarati feed items'
     language = 'gu'
     __author__ = 'Arpan'

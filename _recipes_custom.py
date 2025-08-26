@@ -11,7 +11,7 @@ from _recipe_utils import (
 )
 
 # Define the categories display order, optional
-categories_sort: List[str] = ["News","UPSC","Gujarati Supplements","Technology","Newsletters","Indian Magazines","Intl Magazines","Books"]
+categories_sort: List[str] = ["News","Gujarati Supplements","Technology","Newsletters","Indian Magazines","Intl Magazines"]
 
 # Define your custom recipes list here
 # Example: https://github.com/ping/newsrack-fork-test/blob/custom/_recipes_custom.py
@@ -36,7 +36,7 @@ recipes: List[Recipe] = [
         retry_attempts=1,
         overwrite_cover=False,
         # timeout=300,
-        # enable_on=onlyat_hours(list(range(6, 18)), +5.5),  # from 6am-5:59pm daily, for the timezone UTC+5:30
+        enable_on=onlyat_hours(list(range(0, 9)), +5.5),  
     ),
     Recipe(
         recipe="business-standard",
@@ -72,7 +72,7 @@ recipes: List[Recipe] = [
             # datestamp_font_size=72,
             logo_path_or_url="https://upload.wikimedia.org/wikipedia/en/b/bf/Hackernews_logo.png",
         ),
-#        enable_on=onlyat_hours(list(range(6, 10)), +5.5),  # from 6am-11.59am daily, for the timezone UTC-5
+       enable_on=onlyat_hours(list(range(0, 9)), +5.5),  
     ),
 
     Recipe(
@@ -81,10 +81,9 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="News",
-        enable_on=True,
         retry_attempts=1,
         overwrite_cover=False,
-#        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
+        enable_on=onlyat_hours(list(range(0, 9)), +5.5),
     ),
 
     Recipe(
@@ -94,7 +93,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="News",
         overwrite_cover=False,
-#        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
+       enable_on=onlyat_hours(list(range(6, 12)), +5.5),
     ),
     Recipe(
         recipe="ravi-purti",
@@ -184,18 +183,20 @@ recipes: List[Recipe] = [
         slug="india_today",
         src_ext="mobi",
         target_ext=["epub"],
+        overwrite_cover=False,
         category="Indian Magazines",
         enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
     ),
 
-#     Recipe(
-#         recipe="epw",
-#         slug="epw",
-#         src_ext="epub",
-#         target_ext=[],
-#         category="Indian Magazines",
-# #       enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
-#     ),
+    Recipe(
+        recipe="epw",
+        slug="epw",
+        src_ext="mobi",
+        target_ext=["epub"],
+        overwrite_cover=False,
+        category="Indian Magazines",
+        enable_on=onlyon_weekdays([6]),  
+    ),
 #     Recipe(
 #         recipe="dte",
 #         slug="dte",

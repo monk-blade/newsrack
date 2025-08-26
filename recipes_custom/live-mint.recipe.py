@@ -2,18 +2,14 @@
 # vim:fileencoding=utf-8
 import json
 import re
-from datetime import date
-from datetime import datetime  # Correct import
+from datetime import date, datetime
 
 from calibre.web.feeds.news import BasicNewsRecipe, classes
-from calibre.ebooks.oeb.base import OEBBook
-from calibre.utils.logging import default_log
-from lxml import etree
 
 calibre_most_common_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'
 
 class LiveMint(BasicNewsRecipe):
-    title = 'Live Mint'
+    title = 'Live Mint'+ datetime.now().strftime('%d.%m.%Y')
     description = 'Financial News from India.'
     language = 'en_IN'
     __author__ = 'Krittika Goyal, revised by unkn0wn'

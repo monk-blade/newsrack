@@ -3,10 +3,12 @@ import json
 import re
 
 from calibre.web.feeds.news import BasicNewsRecipe
+from datetime import datetime
 
+_name = 'India Today'
 
 class IndiaToday(BasicNewsRecipe):
-    title = u'India Today Magazine'
+    title = u'India Today'+ datetime.now().strftime('%d.%m.%Y')
     language = 'en_IN'
     __author__ = 'unkn0wn'
     no_stylesheets = True

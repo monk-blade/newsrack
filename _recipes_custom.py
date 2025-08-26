@@ -55,15 +55,17 @@ recipes: List[Recipe] = [
         retry_attempts=1,
         overwrite_cover=False,
 #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
-    ), 
-#     Recipe(
-#         recipe="business-standard",
-#         slug="business-standard",
-#         src_ext="epub",
-#         target_ext=[],
-#         category="News",
-# #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
-#     ),
+    ),
+    Recipe(
+        recipe="hindu",
+        slug="hindu",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="News",
+        retry_attempts=1,
+        # timeout=300,
+        # enable_on=onlyat_hours(list(range(6, 18)), +5.5),  # from 6am-5:59pm daily, for the timezone UTC+5:30
+    ),
     Recipe(
         recipe="gujarat-samachar",
         slug="gujarat-samachar",

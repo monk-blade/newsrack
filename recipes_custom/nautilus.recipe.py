@@ -5,13 +5,11 @@ nautil.us
 from __future__ import unicode_literals
 
 import json
-import os
-import sys
-import re
+import os, sys, re
 from urllib.parse import urljoin
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
-
+from datetime import datetime
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
 from recipes_shared import (
@@ -23,7 +21,7 @@ from recipes_shared import (
 _name = "Nautilus"
 
 class Nautilus(BasicNewsrackRecipe, BasicNewsRecipe):
-    title = _name
+    title = _name+ datetime.now().strftime('%d.%m.%Y')
     language = "en"
     __author__ = "unkn0wn"
     oldest_article = 14  # days

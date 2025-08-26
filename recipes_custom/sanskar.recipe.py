@@ -1,17 +1,14 @@
 #!/usr/bin/env  python
 from datetime import date, datetime, timedelta
 from calibre.web.feeds.news import BasicNewsRecipe,classes
-from calibre.ebooks.BeautifulSoup import BeautifulSoup
 import re
-from calibre.ebooks.oeb.base import OEBBook
 from calibre.utils.logging import default_log
 import urllib.request
-import urllib.error
 import json
 
 _name = 'સંસ્કાર'
 class Sanskar(BasicNewsRecipe):
-    title = 'સંસ્કાર'
+    title = 'સંસ્કાર'+ datetime.now().strftime('%d.%m.%Y')
     description = 'સંસ્કાર — Sandesh weekly publication that publishes on Sunday'
     language = 'gu'
     __author__ = 'Arpan'

@@ -3,10 +3,8 @@
 # This software is released under the GNU General Public License v3.0
 # https://opensource.org/licenses/GPL-3.0
 
-import json
-import os
-import sys
-
+import json, os, sys
+from datetime import datetime
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
 from recipes_shared import (
@@ -19,7 +17,7 @@ from calibre.web.feeds.news import BasicNewsRecipe
 
 _name = 'Upvote'
 class Upvote(BasicNewsRecipe):
-    title = _name
+    title = _name+ datetime.now().strftime('%d.%m.%Y')
     description = 'Upvote — curated collection of tech and social news from Hacker News, Lemmy, and Lobsters'
     language = 'en'
     __author__ = 'Arpan'

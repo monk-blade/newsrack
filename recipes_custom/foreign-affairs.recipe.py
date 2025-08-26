@@ -1,7 +1,6 @@
 #!/usr/bin/env python
-import json
-import re
-
+import json, re
+from datetime import datetime
 import mechanize
 
 from calibre.web.feeds.news import BasicNewsRecipe, classes
@@ -113,7 +112,7 @@ def get_issue_data(br, log, node_id='1126213', year='2020', volnum='99', issue_v
 
 
 class ForeignAffairsRecipe(BasicNewsRecipe):
-    title = u'Foreign Affairs'
+    title = u'Foreign Affairs'+ datetime.now().strftime('%d.%m.%Y')
     __author__ = 'Kovid Goyal'
     language = 'en'
     publisher = u'Council on Foreign Relations'

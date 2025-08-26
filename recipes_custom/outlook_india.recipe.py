@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 # vim:fileencoding=utf-8
 from calibre.web.feeds.news import BasicNewsRecipe, classes
-
+from datetime import datetime
 
 class outlook(BasicNewsRecipe):
-    title = 'Outlook Magazine'
+    title = 'Outlook Magazine'+ datetime.now().strftime('%d.%m.%Y')
     __author__ = 'unkn0wn'
     description = (
         'Outlook covers the latest India news, analysis, business news and long-form stories on culture,'

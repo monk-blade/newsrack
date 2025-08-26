@@ -11,8 +11,8 @@ from calibre.utils.logging import default_log
 from lxml import etree
 calibre_most_common_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'
 class DailyCurrentAffairs(BasicNewsRecipe):
-    title = 'Daily Current Affairs'
-    description = 'Daily Current Affairs related Articles.'
+    title = 'Daily Affairs'+ datetime.now().strftime('%d.%m.%Y')
+    description = 'Daily Affairs related Articles.'
     language = 'en_IN'
     __author__ = 'Arpan'
     oldest_article = 1.25  # days

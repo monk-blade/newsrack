@@ -10,7 +10,7 @@ _name = 'Philosophy Now'
 
 class PhilosophyNow(BasicNewsRecipe):
 
-    title = _name
+    title = _name + datetime.now().strftime('%d.%m.%Y')
     __author__ = 'unkn0wn'
     description = '''Philosophy Now is a lively magazine for everyone
     interested in ideas. It isn't afraid to tackle all the major questions of

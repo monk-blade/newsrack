@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 # vim:fileencoding=utf-8
 from collections import defaultdict
-
+from datetime import datetime
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 
 
 class Frontline(BasicNewsRecipe):
-    title = u'Frontline'
+    title = u'Frontline'+ datetime.now().strftime('%d.%m.%Y')
     __author__ = 'unkn0wn'
     description = 'Frontline, the fortnightly English magazine from the stable of The Hindu, has been a distinguished presence in the media world since 1984.'
     language = 'en_IN'

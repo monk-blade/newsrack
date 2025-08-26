@@ -9,7 +9,7 @@ from calibre.web.feeds.news import BasicNewsRecipe
 
 
 class BusinessStandardPrint(BasicNewsRecipe):
-    title = 'Business Standard Print Edition'
+    title = 'Business Standard' + datetime.now().strftime('%d.%m.%Y')
     __author__ = 'unkn0wn'
     description = "India's most respected business daily, Articles from Today's Paper"
     language = 'en_IN'

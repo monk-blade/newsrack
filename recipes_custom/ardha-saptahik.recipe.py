@@ -11,7 +11,7 @@ import json
 
 _name = 'અર્ધસાપ્તાહિક'
 class ArdhaSaptahik(BasicNewsRecipe):
-    title = 'અર્ધસાપ્તાહિક'
+    title = 'અર્ધસાપ્તાહિક' + datetime.now().strftime('%d.%m.%Y')
     description = 'અર્ધસાપ્તાહિક — Sandesh weekly publication that publishes on Wednesday'
     language = 'gu'
     __author__ = 'Arpan'

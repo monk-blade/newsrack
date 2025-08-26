@@ -61,7 +61,7 @@ _issue_url = ""
 
 
 class ScientificAmerican(BasicNewsrackRecipe, BasicNewsRecipe):
-    title = _name
+    title = _name + datetime.now().strftime('%d.%m.%Y')
     description = (
         "Popular Science. Monthly magazine. Downloaded around the middle of each month. https://www.scientificamerican.com/"
     )

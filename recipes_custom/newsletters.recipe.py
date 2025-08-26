@@ -2,11 +2,11 @@
 
 import time
 from calibre.web.feeds.news import BasicNewsRecipe, classes
-
+from datetime import datetime
 _name = 'Newsletters'
 
 class Newsletters(BasicNewsRecipe):
-    title = _name
+    title = _name+ datetime.now().strftime('%d.%m.%Y')
     description = 'My Favourite Newsletters from Substack.'
     language = 'en_IN'
     __author__ = 'Arpan'

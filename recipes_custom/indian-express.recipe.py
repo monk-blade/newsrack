@@ -14,7 +14,7 @@ from calibre.web.feeds.news import BasicNewsRecipe, classes
 
 
 class IndianExpress(BasicNewsRecipe):
-    title = 'Indian Express'
+    title = 'Indian Express'+ datetime.now().strftime('%d.%m.%Y')
     language = 'en_IN'
     __author__ = 'unkn0wn'
     oldest_article = 1.15  # days

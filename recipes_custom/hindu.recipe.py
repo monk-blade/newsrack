@@ -4,11 +4,9 @@ import json
 import re
 from collections import defaultdict
 from datetime import date
-
+from datetime import datetime
 from calibre.web.feeds.news import BasicNewsRecipe, classes
-from calibre.ebooks.oeb.base import OEBBook
-from calibre.utils.logging import default_log
-from lxml import etree
+
 
 def absurl(url):
     if url.startswith('/'):
@@ -17,9 +15,9 @@ def absurl(url):
 
 
 class TheHindu(BasicNewsRecipe):
-    title = 'The Hindu'
+    title = 'The Hindu'+ datetime.now().strftime('%d.%m.%Y')
     __author__ = 'unkn0wn'
-    description = 'Articles from The Hindu, Today\'s Paper.'
+    description = "Articles from The Hindu, Today's Paper."
     language = 'en_IN'
     no_stylesheets = True
     masthead_url = 'https://www.thehindu.com/theme/images/th-online/thehindu-logo.svg'
@@ -42,7 +40,7 @@ class TheHindu(BasicNewsRecipe):
                      'erode, hyderabad, international, kochi, kolkata,\n'
                      'kozhikode, madurai, mangalore, mumbai, thiruvananthapuram, '
                      'tiruchirapalli, vijayawada, visakhapatnam'),
-            'default': 'international'
+            'default': 'chennai'
         },
         'date': {
             'short': 'The date of the edition to download (YYYY-MM-DD format)',
@@ -70,7 +68,8 @@ class TheHindu(BasicNewsRecipe):
         return soup
 
     def parse_index(self):
-        local_edition = 'th_international'
+        self.title = 'The Hindu'
+        local_edition = 'th_delhi'
         d = self.recipe_specific_options.get('location')
         if d and isinstance(d, str):
             local_edition = 'th_' + d
@@ -100,13 +99,13 @@ class TheHindu(BasicNewsRecipe):
         raw = self.index_to_soup(url, raw=True)
         soup = self.index_to_soup(raw)
         ans = self.hindu_parse_index(soup)
-        cover = soup.find(attrs={'class':'hindu-ad'})
-        if cover:
-            self.cover_url = cover.img['src']
         if not ans:
             raise ValueError(
                     'The Hindu Newspaper is not published Today.'
                 )
+        cover = soup.find(attrs={'class':'hindu-ad'})
+        if cover:
+            self.cover_url = cover.img['src']
         if mag_url:
             self.log('\nFetching Magazine')
             soup = self.index_to_soup(mag_url)
@@ -135,61 +134,7 @@ class TheHindu(BasicNewsRecipe):
                         url = absurl(item['href'])
                         desc = 'Page no.' + item['pageno'] + ' | ' + item['teaser_text'] or ''
                         self.log('            ', title, '\n\t', url)
-                        feeds_dict[section].append({"title": title, "url": url, "description": desc})
-                return [(section, articles) for section, articles in feeds_dict.items()]
+                        feeds_dict[section].append({'title': title, 'url': url, 'description': desc})
+                return list(feeds_dict.items())
             else:
                 return []
-
-
-    def postprocess_book(self, oeb, opts, log):
-        # Iterate over each item in the manifest
-        for item in oeb.manifest.items:
-            log.info(f"File Name: {item.href}")
-            if item.media_type == 'text/html':
-                # Access the content of the item
-                soup = item.data
-                # Ensure soup is an lxml element
-                if isinstance(soup, etree._Element):
-                    # Convert the lxml element to a string for processing
-                    html_content = etree.tostring(soup, pretty_print=True, encoding='unicode')
-                    # Parse the HTML content with lxml
-                    parser = etree.HTMLParser()
-                    tree = etree.fromstring(html_content, parser)
-                    
-                    # Find all <p> tags using XPath
-                    p_tags = tree.xpath('//p')
-                    
-                    # Iterate through the <p> tags
-                    for p in p_tags:
-                        # Check if the <p> tag contains the specified string
-                        if "This article was downloaded by" in ''.join(p.xpath('.//text()')):
-                            # Remove the <p> tag from the HTML content
-                            p.getparent().remove(p)
-                    
-                    # Find the h2 tag and the div with class calibre_navbar1 using XPath
-                    h2_tag = tree.xpath('//h2')
-                    div_tag = tree.xpath('//div[@class="calibre_navbar"]')
-                    
-                    if h2_tag and div_tag:
-                        h2_tag = h2_tag[0]
-                        div_tag = div_tag[0]
-                        # Get the parent of both tags
-                        parent = h2_tag.getparent()
-                        # Ensure both elements have the same parent
-                        if parent == div_tag.getparent():
-                            # Remove both tags from the parent
-                            parent.remove(h2_tag)
-                            parent.remove(div_tag)
-                            # Reinsert the tags in the desired order
-                            parent.insert(0, h2_tag)
-                            parent.insert(1, div_tag)
-                    
-                    # Convert the modified tree back to a string
-                    modified_html = etree.tostring(tree, pretty_print=True, encoding='unicode')
-                    # Parse the modified HTML back to an lxml element
-                    soup = etree.fromstring(modified_html)
-                    
-                    # Update the item data with the modified HTML content
-                    item.data = soup
-                else:
-                    log.error("The soup object is not an lxml element.")

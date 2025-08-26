@@ -1,17 +1,15 @@
 #!/usr/bin/env  python
 from datetime import date, datetime, timedelta
 from calibre.web.feeds.news import BasicNewsRecipe,classes
-from calibre.ebooks.BeautifulSoup import BeautifulSoup
 import re
 from calibre.ebooks.oeb.base import OEBBook
 from calibre.utils.logging import default_log
-from lxml import etree
 import urllib.request
-import urllib.error
+
 
 _name = 'રસરંગ'
 class Rasrang(BasicNewsRecipe):
-    title = 'રસરંગ'
+    title = 'રસરંગ'+ datetime.now().strftime('%d.%m.%Y')
     description = 'રસરંગ — curated collection of Gujarati feed items'
     language = 'gu'
     __author__ = 'Arpan'

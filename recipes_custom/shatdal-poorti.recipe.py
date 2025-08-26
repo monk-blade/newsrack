@@ -3,15 +3,12 @@ from datetime import date, datetime, timedelta
 from calibre.web.feeds.news import BasicNewsRecipe,classes
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 import re
-from calibre.ebooks.oeb.base import OEBBook
 from calibre.utils.logging import default_log
-from lxml import etree
 import urllib.request
-import urllib.error
 
 _name = 'શતદલ'
 class ShatdalPoorti(BasicNewsRecipe):
-    title = 'શતદલ'
+    title = 'શતદલ'+ datetime.now().strftime('%d.%m.%Y')
     description = 'શતદલ — curated collection of Gujarati feed items'
     language = 'gu'
     __author__ = 'Arpan'

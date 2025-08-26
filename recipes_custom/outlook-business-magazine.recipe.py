@@ -19,7 +19,7 @@ class outlook(BasicNewsRecipe):
     ignore_duplicate_articles = {'url'}
     compress_news_images = True
     compress_news_images_auto_size = 10
-    scale_news_images = (800, 800)
+    simultaneous_downloads = 9
     masthead_url = 'https://imgnew.outlookindia.com/uploadimage/library/free_files/jpg/logo_2022_04_30_092331.jpg'
     extra_css = '.author{font-size:small;}'
 

@@ -142,17 +142,24 @@ class Nature(BasicNewsrackRecipe, BasicNewsRecipe):
             """
             pass
 
-        title_div = soup.find(attrs={"data-container-type": "title"})
-        if title_div:
-            mobj = re.search(
-                r"Volume \d+ Issue \d+, (?P<issue_date>\d+ [a-z]+ \d{4})",
-                self.tag_to_string(title_div),
-                re.IGNORECASE,
-            )
-            if mobj:
-                # "%d %B %Y"
-                issue_date = self.parse_date(mobj.group("issue_date"))
-                self.title = format_title(_name, issue_date)
+        # Try to extract the issue name/title from the current issue page
+        issue_name = None
+        # Strategy 1: Use <title> tag from <head>
+        if soup.head and soup.head.title and soup.head.title.string:
+            issue_name = soup.head.title.string.strip()
+        # Strategy 2: Use main heading in the page if available
+        if not issue_name:
+            h1 = soup.find('h1')
+            if h1 and h1.get_text(strip=True):
+                issue_name = h1.get_text(strip=True)
+        # Strategy 3: Use div with class containing 'title' or 'issue'
+        if not issue_name:
+            div_title = soup.find('div', class_=lambda x: x and ('title' in x.lower() or 'issue' in x.lower()))
+            if div_title and div_title.get_text(strip=True):
+                issue_name = div_title.get_text(strip=True)
+        if issue_name:
+            self.title = issue_name
+            self.log('Set recipe title to issue name:', issue_name)
 
         sectioned_feeds = OrderedDict()
         section_tags = soup.find_all(

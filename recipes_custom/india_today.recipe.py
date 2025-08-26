@@ -20,7 +20,7 @@ class IndiaToday(BasicNewsRecipe):
         ' Read the most preferred magazine of 9.5 million Indians to access highly researched and unbiased content.'
     )
     masthead_url = 'https://akm-img-a-in.tosshub.com/sites/all/themes/itg/logo.png'
-
+    simultaneous_downloads = 9
     extra_css = '''
         #sub-h {font-style:italic; color:#202020;}
         .body_caption, #imgcap, .mos__alt .caption, .caption-drupal-entity, .calibre-nuked-tag-figcaption {font-size:small; text-align:center;}

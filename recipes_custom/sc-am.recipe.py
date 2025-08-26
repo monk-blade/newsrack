@@ -73,6 +73,7 @@ class ScientificAmerican(BasicNewsrackRecipe, BasicNewsRecipe):
     remove_empty_feeds = True
     remove_javascript = True
     publication_type = "magazine"
+    simultaneous_downloads = 9
     # timefmt = ": %B %Y"
     remove_attributes = ["width", "height", "style", "decoding", "loading", "fetchpriority", "sizes"]
     # masthead_url = (

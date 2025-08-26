@@ -26,7 +26,7 @@ class Upvote(BasicNewsRecipe):
     publication_type = "magazine"
     summary_length = 175
     encoding = 'utf-8'
-    center_navbar = True
+    simultaneous_downloads = 9
     use_embedded_content = True
     masthead_url = 'https://www.upvote-rss.com/img/logo.svg'
     no_stylesheets = True

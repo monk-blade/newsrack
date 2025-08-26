@@ -18,6 +18,7 @@ class outlook(BasicNewsRecipe):
     remove_attributes = ['height', 'width', 'style']
     ignore_duplicate_articles = {'url'}
     resolve_internal_links = True
+    simultaneous_downloads = 9
     masthead_url = 'https://images.assettype.com/outlookindia/2024-02/96fb06ce-1cc8-410e-ad6c-da4de57405f8/Outlook.svg'
     extra_css = '''
         .subcap-story {font-style:italic; color:#202020;}

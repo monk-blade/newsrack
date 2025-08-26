@@ -13,6 +13,7 @@ class Newsletters(BasicNewsRecipe):
     oldest_article = 2 # days
     encoding = 'utf-8'
     use_embedded_content = True
+    simultaneous_downloads = 9
     #masthead_url = 'https://upload.wikimedia.org/wikipedia/en/0/06/Sandesh%28IndianNewspaper%29Logo.jpg'
     no_stylesheets = True
     remove_attributes = ['style', 'height', 'width']

@@ -17,6 +17,7 @@ class ArdhaSaptahik(BasicNewsRecipe):
     __author__ = 'Arpan'
     oldest_article = 2  # days
     max_articles_per_feed = 50
+    simultaneous_downloads = 9
     summary_length = 175
     encoding = 'utf-8'
     center_navbar = True

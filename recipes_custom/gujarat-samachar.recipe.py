@@ -22,8 +22,8 @@ class GujaratSamachar(BasicNewsrackRecipe, BasicNewsRecipe):
     summary_length = 175
     publication_type = "newspaper"
     encoding = 'utf-8'
-    center_navbar = True
     use_embedded_content = True
+    simultaneous_downloads = 9
     masthead_url = 'https://www.gujaratsamachar.com/assets/logo.png'
     no_stylesheets = True
     remove_attributes = ['style', 'height', 'width']

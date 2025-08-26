@@ -23,7 +23,7 @@ class TheHindu(BasicNewsRecipe):
     no_stylesheets = True
     masthead_url = 'https://www.thehindu.com/theme/images/th-online/thehindu-logo.svg'
     remove_attributes = ['style', 'height', 'width']
-
+    simultaneous_downloads = 9
     extra_css = '''
         .caption {font-size:small; text-align:center;}
         .author, .dateLine {font-size:small;}

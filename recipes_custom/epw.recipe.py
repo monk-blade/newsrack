@@ -176,17 +176,28 @@ class EconomicAndPoliticalWeekly(BasicNewsRecipe):
         
         # Now parse the latest issue page
         issue_soup = self.index_to_soup(latest_issue_url)
+        # Try to extract the issue name/title from the issue page
+        issue_name = None
+        # Common patterns: h1, div.issue-title, etc.
+        h1 = issue_soup.find('h1')
+        if h1 and h1.get_text(strip=True):
+            issue_name = h1.get_text(strip=True)
+        else:
+            # Try div with class containing 'issue' or 'title'
+            div_title = issue_soup.find('div', class_=lambda x: x and ('issue' in x.lower() or 'title' in x.lower()))
+            if div_title and div_title.get_text(strip=True):
+                issue_name = div_title.get_text(strip=True)
+        if issue_name:
+            self.title = issue_name
+            self.log('Set recipe title to issue name:', issue_name)
         sections = OrderedDict()
-        
         # Find the main content area that contains all the sections
         content_area = issue_soup.find('div', class_='view-content')
         if not content_area:
             self.log('Could not find view-content area')
             return []
-        
         # Parse the content by looking for h3 section headers followed by article rows
         current_section = None
-        
         for element in content_area.find_all(['h3', 'div']):
             if element.name == 'h3':
                 # This is a section header
@@ -196,7 +207,6 @@ class EconomicAndPoliticalWeekly(BasicNewsRecipe):
                     if current_section not in sections:
                         sections[current_section] = []
                         self.log('\n\n' + current_section)
-            
             elif element.name == 'div' and 'views-row' in element.get('class', []):
                 # This is an article row
                 if current_section:
@@ -207,7 +217,6 @@ class EconomicAndPoliticalWeekly(BasicNewsRecipe):
                         if title_link:
                             title = self.tag_to_string(title_link).strip()
                             url = absurl(title_link['href'])
-                            
                             # Get authors if available
                             desc = ''
                             authors_div = element.find('div', class_='views-field-field-authors')
@@ -215,15 +224,12 @@ class EconomicAndPoliticalWeekly(BasicNewsRecipe):
                                 authors = self.tag_to_string(authors_div).strip()
                                 if authors:
                                     desc = authors
-                            
                             self.log('\t', title, url)
                             if desc:
                                 self.log('\t\t', desc)
-                            
                             sections[current_section].append({
-                                'title': title, 
-                                'url': url, 
+                                'title': title,
+                                'url': url,
                                 'description': desc
                             })
-
         return [(t, articles) for t, articles in sections.items() if articles]

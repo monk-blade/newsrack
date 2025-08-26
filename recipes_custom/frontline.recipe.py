@@ -13,6 +13,7 @@ class Frontline(BasicNewsRecipe):
     no_stylesheets = True
     remove_javascript = True
     use_embedded_content = False
+    simultaneous_downloads = 9
     encoding = 'utf-8'
     ignore_duplicate_articles = {'url'}
     masthead_url = 'https://frontline.thehindu.com/theme/images/fl-online/frontline-logo.png'

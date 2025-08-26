@@ -16,7 +16,7 @@ class ShatdalPoorti(BasicNewsRecipe):
     max_articles_per_feed = 50
     summary_length = 175
     encoding = 'utf-8'
-    center_navbar = True
+    simultaneous_downloads = 9
     use_embedded_content = True
     masthead_url = 'https://www.gujaratsamachar.com/assets/logo.png'
     no_stylesheets = True

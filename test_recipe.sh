@@ -142,11 +142,9 @@ if eval $CONVERT_CMD; then
         MOBI_TITLE="$RECIPE_NAME"
         print_status $YELLOW "Warning: Could not extract title from MOBI, using recipe name as fallback"
     fi
+
     
-    # Create new title by appending date to the extracted title
-    NEW_TITLE="${MOBI_TITLE} ${DATE_DD_MM_YY}"
-    
-    EPUB_CONVERT_CMD="ebook-convert \"$MOBI_FILE\" \"$OUTPUT_FILE\" --output-profile=kobo --title \"$NEW_TITLE\""
+    EPUB_CONVERT_CMD="ebook-convert \"$MOBI_FILE\" \"$OUTPUT_FILE\" --output-profile=kindle_pw3"
     
     # Add verbose flag if requested
     if [[ "$VERBOSE" == true ]]; then
@@ -154,7 +152,6 @@ if eval $CONVERT_CMD; then
     fi
     
     print_status $GREEN "Running EPUB conversion command with original title: '$MOBI_TITLE'"
-    print_status $GREEN "New title with date: '$NEW_TITLE'"
     print_status $GREEN "Command: $EPUB_CONVERT_CMD"
     
     if eval $EPUB_CONVERT_CMD; then

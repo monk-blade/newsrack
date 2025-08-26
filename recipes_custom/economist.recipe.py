@@ -215,7 +215,7 @@ class Economist(BasicNewsRecipe):
     '''
 
     resolve_internal_links = True
-
+    
     delay = 1
     browser_type = 'webengine'
     from_web = True

@@ -24,6 +24,7 @@ class DailyCurrentAffairs(BasicNewsRecipe):
     compress_news_images = True
     compress_news_images_auto_size = 12
     scale_news_images = (800, 800)
+    simultaneous_downloads = 9
     # keep_only_tags = [
     #     classes('page-hdng stry-shrt-head img-hgt-blk athr-info tm-stmp stry-bdy'),
     # ]

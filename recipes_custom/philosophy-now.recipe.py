@@ -26,7 +26,7 @@ class PhilosophyNow(BasicNewsRecipe):
     remove_attributes = ['height', 'width', 'style']
     encoding = 'utf-8'
     ignore_duplicate_articles = {'url'}
-
+    simultaneous_downloads = 9
     keep_only_tags = [classes('article_page')]
     remove_tags = [dict(name='div', attrs={'id': 'welcome_box'})]
     conversion_options = {

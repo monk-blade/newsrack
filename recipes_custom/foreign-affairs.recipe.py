@@ -162,59 +162,69 @@ class ForeignAffairsRecipe(BasicNewsRecipe):
 
         soup = self.index_to_soup(self.INDEX)
         # get dates
-        date = re.split(r'\s\|\s', self.tag_to_string(
-            soup.head.title.string))[0]
+        date = re.split(r'\s\|\s', self.tag_to_string(soup.head.title.string))[0]
         self.timefmt = u' [%s]' % date
         link = soup.find('link', rel='canonical', href=True)['href']
         year, volnum, issue_vol = link.split('/')[-3:]
         main = soup.find('main', attrs={'id': 'content'})
-        
+
+        # Dynamically set the recipe title from the issue page
+        issue_name = None
+        # Try h1 first
+        h1 = main.find('h1') if main else None
+        if h1 and h1.get_text(strip=True):
+            issue_name = h1.get_text(strip=True)
+        else:
+            # Try div with class containing 'issue' or 'title'
+            div_title = main.find('div', class_=lambda x: x and ('issue' in x.lower() or 'title' in x.lower())) if main else None
+            if div_title and div_title.get_text(strip=True):
+                issue_name = div_title.get_text(strip=True)
+        if issue_name:
+            self.title = issue_name
+            self.log(f'Set recipe title to issue name: {issue_name}')
+
         # Try to find cover image - multiple strategies
         cover_url = None
-        
         # Strategy 1: Look for img with Cover.jpg in srcset
-        cov = main.find('img', attrs={'srcset': lambda x: x and 'Cover.jpg' in x})
+        cov = main.find('img', attrs={'srcset': lambda x: x and 'Cover.jpg' in x}) if main else None
         if cov:
-            # Extract the base URL and convert to high-res webp format
             base_url = cov['srcset'].split()[0]
-            # Convert to the correct high-res format: _webp_issue_large_2x and add .webp
-            cover_url = re.sub(
-                r'_webp_issue_small_\dx',
-                '_webp_issue_large_2x',
-                base_url
-            )
-            # Ensure .webp extension is added if not present
+            cover_url = re.sub(r'_webp_issue_small_\dx', '_webp_issue_large_2x', base_url)
             if not cover_url.endswith('.webp'):
                 cover_url = cover_url.replace('.jpg', '.jpg.webp')
-        
         # Strategy 2: Check OpenGraph meta tags
         if not cover_url:
             og_image = soup.find('meta', property='og:image', content=True)
             if og_image:
                 cover_url = og_image['content']
-                # Convert social_share to high-res format
                 cover_url = re.sub(r'/styles/social_share/', '/styles/_webp_issue_large_2x/', cover_url)
-                # Ensure .webp extension
                 if not cover_url.endswith('.webp'):
                     cover_url = cover_url.replace('.jpg', '.jpg.webp')
-        
         # Strategy 3: Check og:image:url meta tag
         if not cover_url:
             og_image_url = soup.find('meta', property='og:image:url', content=True)
             if og_image_url:
                 cover_url = og_image_url['content']
-                # Convert to high-res format
                 cover_url = re.sub(r'/styles/social_share/', '/styles/_webp_issue_large_2x/', cover_url)
-                # Ensure .webp extension
                 if not cover_url.endswith('.webp'):
                     cover_url = cover_url.replace('.jpg', '.jpg.webp')
-        
         if cover_url:
             self.cover_url = cover_url
             self.log(f'Found cover image: {cover_url}')
 
-        cls = soup.find('link', attrs={'rel':'shortlink'})['href']
-        node_id = re.search(r'https://www.foreignaffairs.com/node/(\d+)', cls).group(1)
+        cls_link = soup.find('link', attrs={'rel':'shortlink'})
+        node_id = None
+        if cls_link and cls_link.has_attr('href'):
+            match = re.search(r'https://www.foreignaffairs.com/node/(\d+)', cls_link['href'])
+            if match:
+                node_id = match.group(1)
+            else:
+                self.log('ERROR: Could not extract node_id from shortlink:', cls_link['href'])
+        else:
+            self.log('ERROR: Could not find shortlink in issue page')
+        if not node_id:
+            self.log('ERROR: node_id is missing, cannot fetch articles')
+            return []
         br = self.cloned_browser
         feeds = get_issue_data(br, self.log, node_id, year, volnum, issue_vol)
         return feeds

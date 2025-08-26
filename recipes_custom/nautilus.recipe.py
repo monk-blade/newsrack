@@ -4,12 +4,12 @@ nautil.us
 # Original from https://github.com/kovidgoyal/calibre/blob/946ae082e1291f61d88638ff3f3723df591da835/recipes/nautilus.recipe
 from __future__ import unicode_literals
 
-import json
 import os, sys, re
 from urllib.parse import urljoin
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 from calibre.ebooks.BeautifulSoup import BeautifulSoup
 from datetime import datetime
+from calibre.utils.logging import default_log
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
 from recipes_shared import (
@@ -26,6 +26,7 @@ class Nautilus(BasicNewsrackRecipe, BasicNewsRecipe):
     __author__ = "unkn0wn"
     oldest_article = 14  # days
     max_articles_per_feed = 50
+    simultaneous_downloads = 9
     description = (
         '''Nautilus is a different kind of science magazine. Our stories take you into the depths of science and spotlight its ripples in our lives and cultures. We believe any subject in science, no matter how complex, can be explained with clarity and vitality. https://nautil.us/'''
     )
@@ -45,7 +46,7 @@ class Nautilus(BasicNewsrackRecipe, BasicNewsRecipe):
 
     remove_tags = [
         classes(
-            "article-action-list article-bottom-newsletter_box main-post-comments-toggle-wrap main-post-comments-wrapper social-share supported-one article-collection_box"
+            "article-action-list article-bottom-newsletter_box main-post-comments-toggle-wrap main-post-comments-wrapper social-share supported-one article-collection_box primis-ad article-ad"
         )
     ]
     extra_css = """

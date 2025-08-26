@@ -45,7 +45,17 @@ jobs:
         with:
           submodules: true
           fetch-depth: 1
-
+      - name: Trigger feed update
+        timeout-minutes: 1
+        env:
+          READER_URL: ${{ secrets.READER_URL }}
+        run: |
+          if [[ -n "$READER_URL" ]]; then
+            echo "Triggering feed update..."
+            curl -L --retry 3 --silent --fail --max-time 30 "$READER_URL" || echo "Warning: Feed update request failed"
+          else
+            echo "No reader URL configured, skipping feed update"
+          fi
       - name: Setup node
         uses: actions/setup-node@v3
         timeout-minutes: 2

@@ -18,6 +18,45 @@ categories_sort: List[str] = ["News","UPSC","Gujarati Supplements","Technology",
 
 recipes: List[Recipe] = [
     Recipe(
+        recipe="live-mint",
+        slug="live-mint",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="News",
+        retry_attempts=1,
+        overwrite_cover=False,
+        enable_on=onlyat_hours(list(range(0, 9)), +5.5),
+    ),
+    Recipe(
+        recipe="hindu",
+        slug="hindu",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="News",
+        retry_attempts=1,
+        overwrite_cover=False,
+        # timeout=300,
+        # enable_on=onlyat_hours(list(range(6, 18)), +5.5),  # from 6am-5:59pm daily, for the timezone UTC+5:30
+    ),
+    Recipe(
+        recipe="business-standard",
+        slug="business-standard",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="News",
+        overwrite_cover=False,
+        enable_on=onlyat_hours(list(range(0, 9)), +5.5),
+    ),
+    Recipe(
+        recipe="indian-express",
+        slug="indian-express",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="News",
+        overwrite_cover=False,
+        enable_on=onlyat_hours(list(range(0, 9)), +5.5),
+    ),
+    Recipe(
         recipe="upvote",
         slug="upvote",
         src_ext="mobi",
@@ -35,16 +74,7 @@ recipes: List[Recipe] = [
         ),
 #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),  # from 6am-11.59am daily, for the timezone UTC-5
     ),
-    Recipe(
-        recipe="live-mint",
-        slug="live-mint",
-        src_ext="mobi",
-        target_ext=["epub"],
-        category="News",
-        retry_attempts=1,
-        overwrite_cover=False,
-        enable_on=onlyat_hours(list(range(0, 9)), +5.5),
-    ),
+
     Recipe(
         recipe="daily-current",
         slug="daily-current",
@@ -56,17 +86,7 @@ recipes: List[Recipe] = [
         overwrite_cover=False,
 #        enable_on=onlyat_hours(list(range(6, 10)), +5.5),
     ),
-    Recipe(
-        recipe="hindu",
-        slug="hindu",
-        src_ext="mobi",
-        target_ext=["epub"],
-        category="News",
-        retry_attempts=1,
-        overwrite_cover=False,
-        # timeout=300,
-        # enable_on=onlyat_hours(list(range(6, 18)), +5.5),  # from 6am-5:59pm daily, for the timezone UTC+5:30
-    ),
+
     Recipe(
         recipe="gujarat-samachar",
         slug="gujarat-samachar",
@@ -140,24 +160,7 @@ recipes: List[Recipe] = [
         enable_on=onlyon_weekdays([1,3,5,6]), 
 #        enable_on=onlyat_hours(list(range(0, 9)), +5.5),
     ),
-    Recipe(
-        recipe="business-standard",
-        slug="business-standard",
-        src_ext="mobi",
-        target_ext=["epub"],
-        category="News",
-        overwrite_cover=False,
-        enable_on=onlyat_hours(list(range(0, 9)), +5.5),
-    ),
-    Recipe(
-        recipe="indian-express",
-        slug="indian-express",
-        src_ext="mobi",
-        target_ext=["epub"],
-        category="News",
-        overwrite_cover=False,
-        enable_on=onlyat_hours(list(range(0, 9)), +5.5),
-    ),
+
     Recipe(
         recipe="frontline",
         slug="frontline",

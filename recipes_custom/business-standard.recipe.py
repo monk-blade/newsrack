@@ -5,7 +5,7 @@ from datetime import datetime
 
 from html5_parser import parse
 
-from calibre.web.feeds.news import BasicNewsRecipe
+from calibre.web.feeds.news import BasicNewsRecipe, classes
 
 _name = 'Business Standard'
 class BusinessStandardPrint(BasicNewsRecipe):
@@ -15,7 +15,7 @@ class BusinessStandardPrint(BasicNewsRecipe):
     language = 'en_IN'
     masthead_url = 'https://bsmedia.business-standard.com/include/_mod/site/html5/images/business-standard-logo.png'
     encoding = 'utf-8'
-
+    simultaneous_downloads = 9
     no_stylesheets = True
     remove_javascript = True
     remove_attributes = ['width', 'height', 'style']
@@ -27,7 +27,9 @@ class BusinessStandardPrint(BasicNewsRecipe):
     remove_empty_feeds = True
     resolve_internal_links = True
     browser_type = 'webengine'
-
+    remove_tags = [
+         classes('read_more')
+    ]
     extra_css = '''
         img {display:block; margin:0 auto;}
         .sub { font-style:italic; color:#202020; }

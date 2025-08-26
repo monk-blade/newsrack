@@ -25,7 +25,7 @@ class IndianExpress(BasicNewsRecipe):
     use_embedded_content = False
     remove_attributes = ['style', 'height', 'width']
     ignore_duplicate_articles = {'url'}
-
+    simultaneous_downloads = 9
     extra_css = '''
         .ie-custom-caption, .custom-caption, .ie-authorbox, .author-block, #storycenterbyline .top-opinion { font-size:small; }
         blockquote { color:#404040; }
@@ -47,9 +47,9 @@ class IndianExpress(BasicNewsRecipe):
         dict(name='img', attrs={'src': lambda x: x and x.endswith('-button-300-ie.jpeg')}),
         dict(name='a', attrs={'href': lambda x: x and x.endswith('/?utm_source=newbanner')}),
         classes(
-            'share-social appstext ie-int-campign-ad ie-breadcrumb custom_read_button unitimg copyright '
+            'share-social appstext ie-int-campign-ad ie-breadcrumb custom_read_button unitimg copyright most-read-container '
             'storytags pdsc-related-modify news-guard premium-story append_social_share ie-int-campign-ad '
-            'digital-subscriber-only h-text-widget ie-premium ie-first-publish adboxtop adsizes immigrationimg '
+            'digital-subscriber-only h-text-widget ie-premium ie-first-publish adboxtop adsizes ie-adtext immigrationimg '
             'next-story-wrap ie-ie-share next-story-box brand-logo quote_section ie-customshare osv-ad-class '
             'custom-share o-story-paper-quite ie-network-commenting audio-player-tts-sec o-story-list subscriber_hide '
             'author-social author-follow author-img premium_widget_below_article author-block'
@@ -76,18 +76,17 @@ class IndianExpress(BasicNewsRecipe):
             self.oldest_article = float(d)
 
     feeds = [
+        'https://indianexpress.com/section/live-news/feed',
         'https://indianexpress.com/section/opinion/feed',
+        'https://indianexpress.com/section/upsc-current-affairs/feed',
+        'https://indianexpress.com/section/explained/feed',
         'https://indianexpress.com/section/delhi-confidential/feed',
         'https://indianexpress.com/section/india/feed',
         'https://indianexpress.com/section/political-pulse/feed',
-        'https://indianexpress.com/section/explained/feed',
         'https://indianexpress.com/section/business/feed/',
-        'https://indianexpress.com/section/upsc-current-affairs/feed',
         'https://indianexpress.com/section/express-sunday-eye/feed',
         'http://indianexpress.com/section/world/feed',
         'https://indianexpress.com/section/technology/feed',
-        'https://indianexpress.com/section/entertainment/feed',
-        'https://indianexpress.com/feed',
     ]
 
     # def parse_index(self):

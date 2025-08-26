@@ -173,7 +173,8 @@ recipes: List[Recipe] = [
     Recipe(
         recipe="outlook_india",
         slug="outlook_india",
-        src_ext="epub",
+        src_ext="mobi",
+        target_ext=["epub"],
         category="Indian Magazines",
         overwrite_cover=False,
         enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
@@ -186,6 +187,7 @@ recipes: List[Recipe] = [
         category="Indian Magazines",
         enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
     ),
+
 #     Recipe(
 #         recipe="epw",
 #         slug="epw",
@@ -202,16 +204,19 @@ recipes: List[Recipe] = [
 #         category="Indian Magazines",
 # #        enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
 #     ),
-    # Recipe(
-    #     recipe="open",
-    #     slug="open",
-    #     src_ext="epub",
-    #     target_ext=[],
-    #     timeout=180,
-    #     overwrite_cover=False,
-    #     category="Indian Magazines",
-    #    enable_on=onlyon_days([1, 14]),   # only on days 1, 14 of each month
-    # ),
+    Recipe(
+        recipe="new-scientist",
+        slug="new-scientist",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="Science",
+        tags=["science"],
+        overwrite_cover=True,
+        enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -5),
+        cover_options=CoverOptions(
+            logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/New_Scientist_logo.svg/1024px-New_Scientist_logo.svg.png"
+        ),
+    ),
     Recipe(
         recipe="atlantic-magazine",
         slug="atlantic-magazine",

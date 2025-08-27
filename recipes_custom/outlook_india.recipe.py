@@ -1,11 +1,13 @@
-#!/usr/bin/env python
-# vim:fileencoding=utf-8
+import os, sys
+sys.path.append(os.environ["recipes_includes"])
+from recipes_shared import BasicNewsrackRecipe
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 from datetime import datetime
 
 _name = 'Outlook Magazine'
-class outlook(BasicNewsRecipe):
-    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
+
+class outlook(BasicNewsrackRecipe, BasicNewsRecipe):
+    title = _name
     __author__ = 'unkn0wn'
     description = (
         'Outlook covers the latest India news, analysis, business news and long-form stories on culture,'
@@ -26,10 +28,9 @@ class outlook(BasicNewsRecipe):
         .main-img-div, .sb-image {font-size:small; text-align:center;}
         em { color:#202020; }
     '''
-    browser_type = 'webengine'
+    # Remove browser_type = 'webengine' for CI compatibility
 
     keep_only_tags = [
-        # classes('story-slug story-title subcap-story article-name-date main-img-div sb-article')
         classes('story-slug story-title subcap-story article-name-date w-93')
     ]
 
@@ -40,7 +41,7 @@ class outlook(BasicNewsRecipe):
             attrs={'href': lambda x: x and x.startswith('https://www.whatsapp.com/')},
         ),
         classes(
-            'ads-box info-img-absolute mobile-info-id story-dec-time-mobile sb-also-read ads-box1 story-mag-issue-section'
+            'ads-box ad-slot olm-story-related-stories hd-summry info-img-absolute mobile-info-id story-dec-time-mobile sb-also-read ads-box1 story-mag-issue-section'
         ),
     ]
 
@@ -63,16 +64,24 @@ class outlook(BasicNewsRecipe):
         else:
             soup = self.index_to_soup('https://www.outlookindia.com/magazine')
             a = soup.find('a', attrs={'aria-label': 'magazine-cover-image'})
+            if not a:
+                # Fallback: try to find any magazine link
+                a = soup.find('a', href=lambda x: x and '/magazine/' in x)
+            if not a:
+                self.abort_recipe_processing('Could not find magazine cover link')
             url = a['href']
 
         self.log('Downloading issue:', url)
 
         soup = self.index_to_soup(url)
         cov = soup.find(attrs={'aria-label': 'magazine-cover-image'})
-        self.cover_url = cov.img['src'].split('?')[0]
+        if cov and cov.img:
+            self.cover_url = cov.img['src'].split('?')[0]
+        
         summ = soup.find(attrs={'data-test-id': 'magazine-summary'})
         if summ:
             self.description = self.tag_to_string(summ)
+        
         tme = soup.find(attrs={'class': 'arr__timeago'})
         if tme:
             self.timefmt = ' [' + self.tag_to_string(tme).split('-')[-1].strip() + ']'
@@ -81,6 +90,8 @@ class outlook(BasicNewsRecipe):
 
         for div in soup.findAll(attrs={'class': 'article-heading-two'}):
             a = div.a
+            if not a:
+                continue
             url = a['href']
             title = self.tag_to_string(a)
             desc = ''

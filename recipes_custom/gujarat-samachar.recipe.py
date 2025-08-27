@@ -24,7 +24,7 @@ class GujaratSamachar(BasicNewsrackRecipe, BasicNewsRecipe):
     encoding = 'utf-8'
     use_embedded_content = True
     simultaneous_downloads = 9
-    masthead_url = 'https://www.gujaratsamachar.com/assets/logo.png'
+    # masthead_url = 'https://www.gujaratsamachar.com/assets/logo.png'
     no_stylesheets = True
     remove_attributes = ['style', 'height', 'width']
     ignore_duplicate_articles = {'url'}

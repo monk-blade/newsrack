@@ -95,7 +95,7 @@ recipes: List[Recipe] = [
         category="News",
         overwrite_cover=False,
         retry_attempts=1,
-        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
+        enable_on=onlyat_hours(list(range(0, 9)), +5.5),
     ),
     Recipe(
         recipe="ravi-purti",

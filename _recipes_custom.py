@@ -53,6 +53,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="News",
+        retry_attempts=1,
         overwrite_cover=False,
         enable_on=onlyat_hours(list(range(0, 9)), +5.5),
     ),
@@ -93,7 +94,8 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="News",
         overwrite_cover=False,
-       enable_on=onlyat_hours(list(range(6, 12)), +5.5),
+        retry_attempts=1,
+        enable_on=onlyat_hours(list(range(6, 12)), +5.5),
     ),
     Recipe(
         recipe="ravi-purti",
@@ -102,6 +104,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Gujarati Supplements",
         overwrite_cover=False,
+        retry_attempts=1,
         enable_on=onlyon_weekdays([6]),  # Sunday only
     ),
     Recipe(
@@ -111,6 +114,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Gujarati Supplements",
         overwrite_cover=False,
+        retry_attempts=1,
         enable_on=onlyon_weekdays([2]),  # Wednesday only
     ),
     Recipe(
@@ -120,6 +124,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Gujarati Supplements",
         overwrite_cover=False,
+        retry_attempts=1,
         enable_on=onlyon_weekdays([2]),  # Wednesday only
     ),
     Recipe(
@@ -129,6 +134,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Gujarati Supplements",
         overwrite_cover=False,
+        retry_attempts=1,
         enable_on=onlyon_weekdays([6]),  # Sunday only
     ),
     Recipe(
@@ -138,6 +144,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Gujarati Supplements",
         overwrite_cover=False,
+        retry_attempts=1,
         enable_on=onlyon_weekdays([6]),  # Sunday only
     ),
     Recipe(
@@ -147,6 +154,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Gujarati Supplements",
         overwrite_cover=False,
+        retry_attempts=1,
         enable_on=onlyon_weekdays([2]),  # Wednesday only
     ),
     Recipe(
@@ -156,6 +164,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Newsletters",
         overwrite_cover=False,
+        retry_attempts=1,
         enable_on=onlyon_weekdays([1,3,5,6]), 
 #        enable_on=onlyat_hours(list(range(0, 9)), +5.5),
     ),
@@ -176,6 +185,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Indian Magazines",
         overwrite_cover=False,
+        retry_attempts=1,
         enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
     ),
     Recipe(

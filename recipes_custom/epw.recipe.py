@@ -190,6 +190,7 @@ class EconomicAndPoliticalWeekly(BasicNewsRecipe):
         if issue_name:
             self.title = issue_name
             self.log('Set recipe title to issue name:', issue_name)
+        self.title = 'EPW: ' + issue_name # type: ignore
         sections = OrderedDict()
         # Find the main content area that contains all the sections
         content_area = issue_soup.find('div', class_='view-content')

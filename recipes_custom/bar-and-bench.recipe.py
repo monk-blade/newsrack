@@ -5,8 +5,10 @@ import os
 from io import BytesIO
 from PIL import Image, ImageDraw, ImageFont
 
+_name = 'Bar & Bench'
+
 class bar(BasicNewsRecipe):
-    title = 'Bar and Bench'
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     __author__ = 'unkn0wn'
     description = (
         'Bar & Bench is the premier online portal for Indian legal news. News, interviews,'

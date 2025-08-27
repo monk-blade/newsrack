@@ -186,7 +186,7 @@ recipes: List[Recipe] = [
         category="Indian Magazines",
         overwrite_cover=False,
         retry_attempts=1,
-        enable_on=onlyon_days([1, 14]),  # only on days 1, 14 of each month
+        enable_on=onlyon_weekdays([6]),   # only on days 1, 14 of each month
     ),
     Recipe(
         recipe="india_today",

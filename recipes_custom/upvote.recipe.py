@@ -3,8 +3,16 @@
 # This software is released under the GNU General Public License v3.0
 # https://opensource.org/licenses/GPL-3.0
 
-import json, os, sys
-from datetime import datetime
+import sys
+import re
+import os
+from datetime import datetime, timedelta
+from uuid import uuid4
+
+
+from calibre.web.feeds.news import BasicNewsRecipe
+from calibre.utils.logging import default_log
+
 # custom include to share code between recipes
 sys.path.append(os.environ["recipes_includes"])
 from recipes_shared import (
@@ -13,7 +21,6 @@ from recipes_shared import (
     get_datetime_format,
     parse_date,
 )
-from calibre.web.feeds.news import BasicNewsRecipe
 
 _name = 'Upvote'
 class Upvote(BasicNewsRecipe):
@@ -21,9 +28,8 @@ class Upvote(BasicNewsRecipe):
     description = 'Upvote — curated collection of tech and social news from Hacker News, Lemmy, and Lobsters'
     language = 'en'
     __author__ = 'Arpan'
-    oldest_article = 1.25  # days
+    oldest_article = 1.5  # days
     max_articles_per_feed = 50
-    publication_type = "magazine"
     summary_length = 175
     encoding = 'utf-8'
     simultaneous_downloads = 9
@@ -38,17 +44,16 @@ class Upvote(BasicNewsRecipe):
     """
 
     feeds = [
-        ('HackerNews Best', 'https://www.upvote-rss.com/?platform=hacker-news&community=beststories&averagePostsPerDay=7&showScore=&content=&summary=&comments=5&view=rss'),
-        ('Lemmy Technology', 'https://www.upvote-rss.com/?platform=lemmy&instance=lemmy.world&community=Technology&averagePostsPerDay=7&content=&summary=&comments=5&view=rss'),
-        ('Lobsters All', 'https://www.upvote-rss.com/?platform=lobsters&community=all&type=all&score=50&content=&summary=&comments=7&filterOldPosts=7&view=rss'),
-        ('HN Ask', 'https://www.upvote-rss.com/?platform=hacker-news&community=askstories&score=20&content=&summary=&comments=10&view=rss'),
+        ('HackerNews Top', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=33ce785fad3c8b527179003b527c5060&f=rss'),
+        ('Lemmy Technology', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=fd42f206151d91c5e604a6469f87c3a8&f=rss'),
+        ('Lobsters All', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=4e053ca15039a7bc11ffdf3f962ae12e&f=rss'),
+        ('HN Ask', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=48e37bee1996b908cbd499cd95661b3a&f=rss'),
         ('OMG! Ubuntu', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=03286255647546a832597c8c99addfa8&f=rss'),
         ('Phoronix' ,'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=2bab43c9dbc153cd7c03ab979ff6c2bf&f=rss'),
         ('This Week in GNOME' ,'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=edde32a423219f4ee7d31f1e06be04c0&f=rss'),
         ('Adventures in KDE', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=477c3220ee5a498a9de1fe5ad2b3ed01&f=rss'),
         ('Announcements | nixOS', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=f5871e449b44927a088b5180c5b3d89f&f=rss'),
         ]
-
     def parse_feeds(self):
         """Parse feeds and return articles without modifying titles yet."""
         return BasicNewsRecipe.parse_feeds(self)
@@ -79,11 +84,6 @@ class Upvote(BasicNewsRecipe):
         if not re.search(r" \(\d+m\)$", article.title or ''):
             article.title = f"{article.title} ({minutes}m)"
             default_log.info(f"[Upvote] Updated title: {article.title}")
-        
-        # Update publication date and title metadata
-        if (not self.pub_date) or article.utctime > self.pub_date:
-            self.pub_date = article.utctime
-            self.title = format_title(_name, article.utctime)
 
     def preprocess_html(self, soup):
         """Basic HTML preprocessing."""

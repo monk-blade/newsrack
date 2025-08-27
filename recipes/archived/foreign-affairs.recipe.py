@@ -133,6 +133,7 @@ class ForeignAffairsRecipe(BasicNewsRecipe):
     encoding = 'utf-8'
     no_stylesheets = True
     remove_javascript = True
+    simultaneous_downloads = 9
     needs_subscription = 'optional'
     remove_attributes = ['style', 'height', 'width']
     masthead_url = 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Foreign_Affairs_Logo.svg/500px-Foreign_Affairs_Logo.svg.png'

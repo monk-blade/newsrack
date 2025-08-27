@@ -180,7 +180,7 @@ class ForeignAffairsRecipe(BasicNewsRecipe):
             if div_title and div_title.get_text(strip=True):
                 issue_name = div_title.get_text(strip=True)
         if issue_name:
-            self.title = issue_name
+            self.title = 'Foreign Affairs: ' + issue_name
             self.log(f'Set recipe title to issue name: {issue_name}')
 
         # Try to find cover image - multiple strategies

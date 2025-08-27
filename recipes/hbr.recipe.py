@@ -17,9 +17,9 @@ def absurl(url):
         url = 'https://www.hbr.org' + url
     return url
 
-
+_name = 'Harvard Business Review'
 class HBR(BasicNewsRecipe):
-    title = 'Harvard Business Review' + ' - ' + datetime.now().strftime('%d.%m.%y')
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     __author__ = 'unkn0wn'
     description = (
         'Harvard Business Review is the leading destination for smart management thinking. '

@@ -4,7 +4,7 @@ from collections import defaultdict
 from datetime import datetime
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 
-_name='Frontline'
+_name = 'Frontline'
 class Frontline(BasicNewsRecipe):
     title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     __author__ = 'unkn0wn'

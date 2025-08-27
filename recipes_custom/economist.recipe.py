@@ -197,9 +197,9 @@ def process_url(url):
         url = 'https://www.economist.com' + url
     return url
 
-
+_name = 'The Economist'
 class Economist(BasicNewsRecipe):
-    title = 'The Economist'+ ' - ' + datetime.now().strftime('%d.%m.%Y')
+    title = _name + ' - ' + datetime.now().strftime('%d.%m.%Y')
     language = 'en_GB'
     encoding = 'utf-8'
     masthead_url = 'https://www.livemint.com/lm-img/dev/economist-logo-oneline.png'

@@ -46,7 +46,7 @@ jobs:
           submodules: true
           fetch-depth: 1
       - name: Trigger feed update
-        timeout-minutes: 1
+        timeout-minutes: 3
         env:
           READER_URL: ${{ secrets.READER_URL }}
         run: |

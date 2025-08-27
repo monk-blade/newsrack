@@ -96,13 +96,12 @@ jobs:
           key: cache-calibre-x86_64-${{ env.calibre_ver }}
 
       - name: Install calibre
-        timeout-minutes: 2
         run: sh .github/workflows/install_calibre.sh
 
       - name: Download meta artifacts
         id: download-meta-artifact
         uses: dawidd6/action-download-artifact@v8
-        timeout-minutes: 1
+        timeout-minutes: 2
         with:
           name: meta-artifacts
           path: meta
@@ -112,7 +111,7 @@ jobs:
       - name: Setup Pages
         id: setup_pages
         uses: actions/configure-pages@v3
-        timeout-minutes: 1
+        timeout-minutes: 2
 
       - name: Generate periodicals
         env:
@@ -136,22 +135,9 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        timeout-minutes: 4
 
       - uses: actions/upload-artifact@v4
         with:
           name: meta-artifacts
           path: meta
           if-no-files-found: warn
-
-      # - name: Send EPUB to Kindle
-      #   env:
-      #     EMAIL: ${{ secrets.KINDLE_EMAIL }}
-      #     SMTP_USER: ${{ secrets.SMTP_USER }}
-      #     SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
-      #     SMTP_SERVER: ${{ secrets.SMTP_SERVER }}
-      #     SMTP_PORT: ${{ secrets.SMTP_PORT }}
-      #   run: |
-      #       for epub in $(find ./public -name "*.epub"); do
-      #         calibre-smtp --attachment "$epub" --relay "$SMTP_SERVER" --port "$SMTP_PORT" --username "$SMTP_USER" --password "$SMTP_PASSWORD" --encryption-method TLS "$SMTP_USER" "$EMAIL" ""
-      #       done

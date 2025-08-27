@@ -74,6 +74,24 @@ class outlook(BasicNewsrackRecipe, BasicNewsRecipe):
         self.log('Downloading issue:', url)
 
         soup = self.index_to_soup(url)
+        
+        # Extract issue name from page title
+        page_title = soup.find('title')
+        if page_title:
+            title_text = self.tag_to_string(page_title)
+            self.log(f'Page title: {title_text}')
+            
+            # Look for "Outlook Magazine Issue - " pattern
+            if '|' in title_text and 'Outlook Magazine Issue -' in title_text:
+                # Split by | and find the part with "Outlook Magazine Issue -"
+                parts = title_text.split('|')
+                for part in parts:
+                    part = part.strip()
+                    if 'Outlook Magazine Issue -' in part:
+                        self.title = part
+                        self.log(f'Set recipe title to: {self.title}')
+                        break
+
         cov = soup.find(attrs={'aria-label': 'magazine-cover-image'})
         if cov and cov.img:
             self.cover_url = cov.img['src'].split('?')[0]

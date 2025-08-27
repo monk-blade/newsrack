@@ -161,7 +161,7 @@ class Nature(BasicNewsrackRecipe, BasicNewsRecipe):
             self.title = issue_name
             self.log('Set recipe title to issue name:', issue_name)
         
-        self.title = 'Nature ' + issue_name # type: ignore
+        self.title = 'Nature: ' + issue_name # type: ignore
         
         sectioned_feeds = OrderedDict()
         section_tags = soup.find_all(

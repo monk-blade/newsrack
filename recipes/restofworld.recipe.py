@@ -24,8 +24,8 @@ class RestOfWorld(BasicNewsrackRecipe, BasicNewsRecipe):
     language = "en"
     __author__ = "ping"
     publication_type = "blog"
-    oldest_article = 30  # days
-    max_articles_per_feed = 25
+    oldest_article = 7  # days
+    max_articles_per_feed = 50
     masthead_url = "https://restofworld.org/style-guide/images/Variation_3.svg"
     timeout = 60
 

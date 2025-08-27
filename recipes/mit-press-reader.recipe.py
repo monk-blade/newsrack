@@ -21,7 +21,7 @@ class MITPressReader(BasicNewsrackRecipe, BasicNewsRecipe):
     description = "Thought-provoking excerpts, interviews and essays backed by academic rigor written by MIT Press authors. https://thereader.mitpress.mit.edu/"
     language = "en"
     publication_type = "blog"
-    oldest_article = 30  # days
+    oldest_article = 7  # days
     compress_news_images = False
     masthead_url = "https://thereader.mitpress.mit.edu/wp-content/themes/ta/img/log.png"
     reverse_article_order = False

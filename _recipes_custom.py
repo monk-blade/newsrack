@@ -225,7 +225,7 @@ recipes: List[Recipe] = [
         category="Science",
         tags=["science"],
         overwrite_cover=True,
-        enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -5),
+        enable_on=onlyon_weekdays([6]),  # Sunday only
         cover_options=CoverOptions(
             logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/New_Scientist_logo.svg/1024px-New_Scientist_logo.svg.png"
         ),
@@ -237,7 +237,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         overwrite_cover=False,
         category="Intl Magazines",
-        enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4),
+        enable_on=onlyon_days([1, 14]),
         tags=["editorial", "commentary"],
         cover_options=CoverOptions(
             logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/d/da/The_Atlantic_Logo_11.2019.svg/1200px-The_Atlantic_Logo_11.2019.svg.png"
@@ -250,7 +250,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="Intl Magazines",
-        enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5]) and onlyat_hours(list(range(0, 9))),
+        enable_on=onlyon_weekdays([5]),  # Saturday only
         cover_options=CoverOptions(
             logo_path_or_url="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/The_Diplomat_logo.svg/1024px-The_Diplomat_logo.svg.png"
         ),
@@ -262,8 +262,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         overwrite_cover=False,
         category="Science",
-        # timeout=240,
-        # enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
+        enable_on=onlyon_days([1, 14]),
     ),
     Recipe(
         recipe="economist",
@@ -272,9 +271,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         overwrite_cover=False,
         category="Intl Magazines",
-        enable_on=onlyon_weekdays([6]),
-        # timeout=240,
-        # enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], 5.5),
+        enable_on=onlyon_weekdays([5]),
     ),
     Recipe(
         recipe="philosophy-now",
@@ -283,7 +280,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         overwrite_cover=False,
         category="Intl Magazines",
-        enable_on=onlyon_weekdays([6]),  # Sunday only
+        enable_on=onlyon_weekdays([5]),  # Saturday only
     ),
     Recipe(
         recipe="hbr",
@@ -292,7 +289,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         overwrite_cover=False,
         category="Intl Magazines",
-        enable_on=onlyon_weekdays([6]),
+        enable_on=onlyon_weekdays([5]),
         # enable_on=onlyon_days(list(range(1, 1 + 3)) + list(range(32 - 14, 32)), -5),
     ),
     Recipe(
@@ -302,8 +299,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         overwrite_cover=False,
         category="Intl Magazines",
-        enable_on=(first_n_days_of_month(4, -4) or last_n_days_of_month(10, -4))
-        and onlyat_hours(list(range(8, 22)), -4),
+        enable_on=onlyon_days([1, 14]),
     ),
     # Recipe(
     #     recipe="harvard-intl-review",
@@ -322,7 +318,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="Intl Magazines",
-        enable_on=onlyon_weekdays([0, 1, 2, 3, 4], -4),
+        enable_on=onlyon_weekdays([5]),
         cover_options=CoverOptions(
             text_colour="#444444",
             logo_path_or_url="https://dhjhkxawhe8q4.cloudfront.net/mit-press/wp-content/uploads/2022/03/25123303/mitp-reader-logo_0-scaled.jpg",
@@ -335,7 +331,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="Technology",
-        enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5], -4),
+        enable_on=onlyon_weekdays([5,0,2]),
         tags=["technology"],
         cover_options=CoverOptions(
             text_colour="#444444",
@@ -359,7 +355,7 @@ recipes: List[Recipe] = [
         target_ext=["epub"],
         category="Science",
         overwrite_cover=False,
-        enable_on=onlyon_weekdays([2, 3, 4], 0),
+        enable_on=onlyon_weekdays([5]),
     ),
     Recipe(
         recipe="lwn",
@@ -376,7 +372,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="Intl Magazines",
-        enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5]) and onlyat_hours(list(range(0, 9))),
+        enable_on=onlyon_weekdays([6]),
         tags=["technology"],
         cover_options=CoverOptions(
             border_width=2,
@@ -395,7 +391,7 @@ recipes: List[Recipe] = [
         src_ext="mobi",
         target_ext=["epub"],
         category="Science",
-        enable_on=onlyon_weekdays([0, 1, 2, 3, 4, 5]) and onlyat_hours(list(range(0, 9))),
+        enable_on=onlyon_weekdays([6]),
         tags=["science"],
         cover_options=CoverOptions(
             border_width=2,

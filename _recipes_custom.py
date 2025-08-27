@@ -70,7 +70,7 @@ recipes: List[Recipe] = [
             # title_font_size=80,
             datestamp_font_path="static/OpenSans-Semibold.ttf",
             # datestamp_font_size=72,
-            logo_path_or_url="https://upload.wikimedia.org/wikipedia/en/b/bf/Hackernews_logo.png",
+            logo_path_or_url="https://www.digital-adoption.com/wp-content/uploads/2019/06/Hacker-News-logo.png",
         ),
        enable_on=onlyat_hours(list(range(0, 9)), +5.5),  
     ),

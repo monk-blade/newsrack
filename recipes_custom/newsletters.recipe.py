@@ -31,7 +31,7 @@ class Newsletters(BasicNewsRecipe):
         ('Masala Chai', 'https://rss.beehiiv.com/feeds/Jk0t0xwJeq.xml'),
         ('Public Policy' ,'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=f781f37f49c75d5e12d31bf2610d0d54&f=rss'),
         ('India Wants to Know', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=5d2a22d418134e27d410bac251a9e307&f=rss'),
-        # ('Multitudes' ,'https://shantanukishwar.substack.com/feed'),
+        ('Last week in AI' ,'https://lastweekin.ai/feed'),
         # ('Wisdom Project', 'https://wisdomproject.substack.com/feed'),
         # ('Bank on Basak', 'https://www.bankonbasak.com/feed'),
         # ('Curated Commons', 'https://subbu.substack.com/feed'),

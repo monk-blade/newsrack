@@ -39,7 +39,7 @@ class GujaratSamachar(BasicNewsrackRecipe, BasicNewsRecipe):
         ('Sandesh | Opinion', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=a2abf353cf0a8c508fb6c10f36856ad9&f=rss'),
         ('GS | Editorials', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=93efd7f00ba0514c11e60494b70edd44&f=rss'),
         ('ઓરિજનલ | દિવ્યભાસ્કર', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=7a0609bc4ecc4fbadaf1c9c831ac62a1&f=rss'),
-        ('ગુજરાતી પૂર્તિઓ' ,'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=6d573adee7f766e07d3cbd8b8d4fee40&f=rss'),
+        # ('ગુજરાતી પૂર્તિઓ' ,'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=6d573adee7f766e07d3cbd8b8d4fee40&f=rss'),
     ]
 
     def download_google_font(self, font_family, font_weight=400):
@@ -108,7 +108,7 @@ class GujaratSamachar(BasicNewsrackRecipe, BasicNewsRecipe):
                 draw.line([(0, y), (width, y)], fill=(r, g, b))
 
             # Define the text
-            main_title = "ગુજરાતના સમાચાર"  # News of Gujarat
+            main_title = "ગુજરાતી લેખો"  # News of Gujarat
             date_text = datetime.now().strftime("%d %B %Y")
             day_text = datetime.now().strftime("%A")
 

@@ -11,13 +11,13 @@ from PIL import Image, ImageDraw, ImageFont
 import io
 import mechanize
 
-_name = 'News of Gujarat'
+_name = '1.News of Gujarat'
 class GujaratSamachar(BasicNewsrackRecipe, BasicNewsRecipe):
     title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     description = 'News of Gujarat is compilation of various feeds of Gujarati Paper'
     language = 'gu'
     __author__ = 'Arpan'
-    oldest_article = 1.25  # days
+    oldest_article = 1.2  # days
     max_articles_per_feed = 50
     summary_length = 175
     publication_type = "newspaper"

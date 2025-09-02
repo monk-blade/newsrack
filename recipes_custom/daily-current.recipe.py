@@ -3,10 +3,10 @@
 from calibre.web.feeds.news import BasicNewsRecipe, classes
 from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
-import io
+import io, re
 import mechanize
 calibre_most_common_ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36'
-_name = 'Daily Affairs'
+_name = '0.Daily Affairs'
 
 class DailyCurrentAffairs(BasicNewsRecipe):
     title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
@@ -25,27 +25,75 @@ class DailyCurrentAffairs(BasicNewsRecipe):
     compress_news_images_auto_size = 12
     scale_news_images = (800, 800)
     simultaneous_downloads = 9
-    # keep_only_tags = [
-    #     classes('page-hdng stry-shrt-head img-hgt-blk athr-info tm-stmp stry-bdy'),
-    # ]
-    extra_css = """
-            p{text-align: justify; font-size: 100%}
-    """
 
-    # remove_tags = [
-    #     classes('social-links site-nav-logo container c-search__form subscribe-main site-foot read-next-feed floating-header-share floating-header'),
-    #     dict(name='div', attrs={'id':'subs-popup-banner'}),
-    # #     dict(name='section', attrs={'class':'glry-cnt mostvdtm main-wdgt glry-bg'}),
+
+    extra_css = """
+    body {
+        font-size: 1em !important;
+        line-height: 1.6 !important;
+        margin: 0.5em !important;
+        background: #fff !important;
+        color: #222 !important;
+    }
+    h1, h2, h3, h4, h5, h6 {
+        font-weight: bold !important;
+        margin-top: 0.7em !important;
+        margin-bottom: 0.4em !important;
+        line-height: 1.2 !important;
+    }
+    h1 { font-size: 1.2em !important; }
+    h2 { font-size: 1.1em !important; }
+    h3 { font-size: 1.05em !important; }
+    h4, h5, h6 { font-size: 1em !important; }
+    p, li {
+        font-size: 1em !important;
+        margin-top: 0.3em !important;
+        margin-bottom: 0.3em !important;
+    }
+    b, strong {
+        font-weight: bold !important;
+    }
+    i, em {
+        font-style: italic !important;
+    }
+    img {
+        max-width: 95vw !important;
+        height: auto !important;
+        margin: 0.5em auto !important;
+        display: block !important;
+    }
+    hr {
+        border: none !important;
+        border-top: 1px solid #ccc !important;
+        margin: 1em 0 !important;
+    }
+    a {
+        color: #1a0dab !important;
+        text-decoration: underline !important;
+        word-break: break-all !important;
+    }
+    """
+    remove_tags = [
+        dict(name='a', attrs={'href': lambda x: x and 'linkedin.com' in x}),
+        dict(name='a', attrs={'href': lambda x: x and 'enrollment' in x}),
+        # dict(name='img', attrs={'src': lambda x: x and 'images/img' in x and any(keyword in x for keyword in ['promotion', 'ad', 'banner'])}),
+        classes('image-link-expand'),
+        # dict(name='div', attrs={'id':'subs-popup-banner'}),
+    #     dict(name='section', attrs={'class':'glry-cnt mostvdtm main-wdgt glry-bg'}),
+    ]
+
+    # remove_tags_after = [
+    #     dict(name='h5', attrs={'class': lambda x: x and 'heading' in x.lower()}),  # Remove everything after sponsor heading
+    #     dict(name='h5', string=lambda s: s and 'message from our sponsor' in s.lower()),
     # ]
-    # remove_tags_after = [ classes('stry-bdy')]
 
     feeds = [
         ('Finshots-AI','https://monk-blade.github.io/scripts-rss/processed-Q_Fin.xml'),
         ('IE Explained-AI','https://monk-blade.github.io/scripts-rss/processed-Explained__IE.xml'),
         ('Mint Opinions-AI','https://monk-blade.github.io/scripts-rss/processed-Q_mint_oped.xml'),
-        ('The Core', 'https://rss.beehiiv.com/feeds/4BOnz8D132.xml'),
-        ('The Daily Brief by Zerodha', 'https://thedailybrief.zerodha.com/feed'),
         ('Masala Chai', 'https://rss.beehiiv.com/feeds/Jk0t0xwJeq.xml'),
+        ('The Daily Brief by Zerodha', 'https://thedailybrief.zerodha.com/feed'),
+        ('The Core', 'https://rss.beehiiv.com/feeds/4BOnz8D132.xml'),
         ('Public Policy' ,'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=f781f37f49c75d5e12d31bf2610d0d54&f=rss'),
         ('India Wants to Know', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=5d2a22d418134e27d410bac251a9e307&f=rss'),
         ('Last Week in AI' ,'https://lastweekin.ai/feed'),
@@ -169,55 +217,3 @@ class DailyCurrentAffairs(BasicNewsRecipe):
             return False
         return True
 
-    # def postprocess_book(self, oeb, opts, log):
-    #     # Iterate over each item in the manifest
-    #     for item in oeb.manifest.items:
-    #         log.info(f"File Name: {item.href}")
-    #         if item.media_type == 'text/html':
-    #             # Access the content of the item
-    #             soup = item.data
-    #             # Ensure soup is an lxml element
-    #             if isinstance(soup, etree._Element):
-    #                 # Convert the lxml element to a string for processing
-    #                 html_content = etree.tostring(soup, pretty_print=True, encoding='unicode')
-    #                 # Parse the HTML content with lxml
-    #                 parser = etree.HTMLParser()
-    #                 tree = etree.fromstring(html_content, parser)
-                    
-    #                 # Find all <p> tags using XPath
-    #                 p_tags = tree.xpath('//p')
-                    
-    #                 # Iterate through the <p> tags
-    #                 for p in p_tags:
-    #                     # Check if the <p> tag contains the specified string
-    #                     if "This article was downloaded by" in ''.join(p.xpath('.//text()')):
-    #                         # Remove the <p> tag from the HTML content
-    #                         p.getparent().remove(p)
-                    
-    #                 # Find the h2 tag and the div with class calibre_navbar1 using XPath
-    #                 h2_tag = tree.xpath('//h1')
-    #                 div_tag = tree.xpath('//div[@class="calibre_navbar"]')
-                    
-    #                 if h2_tag and div_tag:
-    #                     h2_tag = h2_tag[0]
-    #                     div_tag = div_tag[0]
-    #                     # Get the parent of both tags
-    #                     parent = h2_tag.getparent()
-    #                     # Ensure both elements have the same parent
-    #                     if parent == div_tag.getparent():
-    #                         # Remove both tags from the parent
-    #                         parent.remove(h2_tag)
-    #                         parent.remove(div_tag)
-    #                         # Reinsert the tags in the desired order
-    #                         parent.insert(0, h2_tag)
-    #                         parent.insert(1, div_tag)
-                    
-    #                 # Convert the modified tree back to a string
-    #                 modified_html = etree.tostring(tree, pretty_print=True, encoding='unicode')
-    #                 # Parse the modified HTML back to an lxml element
-    #                 soup = etree.fromstring(modified_html)
-                    
-    #                 # Update the item data with the modified HTML content
-    #                 item.data = soup
-    #             else:
-    #                 log.error("The soup object is not an lxml element.")

@@ -22,7 +22,7 @@ from recipes_shared import (
     parse_date,
 )
 
-_name = 'Upvote'
+_name = '2.Upvote'
 class Upvote(BasicNewsRecipe):
     title = _name + ' - ' + datetime.now().strftime('%d.%m.%y')
     description = 'Upvote — curated collection of tech and social news from Hacker News, Lemmy, and Lobsters'

@@ -13,7 +13,7 @@ class DailyCurrentAffairs(BasicNewsRecipe):
     description = 'Daily Affairs related Articles.'
     language = 'en_IN'
     __author__ = 'Arpan'
-    oldest_article = 1.25  # days
+    oldest_article = 1.2  # days
     max_articles_per_feed = 50
     encoding = 'utf-8'
     use_embedded_content = True
@@ -43,6 +43,12 @@ class DailyCurrentAffairs(BasicNewsRecipe):
         ('Finshots-AI','https://monk-blade.github.io/scripts-rss/processed-Q_Fin.xml'),
         ('IE Explained-AI','https://monk-blade.github.io/scripts-rss/processed-Explained__IE.xml'),
         ('Mint Opinions-AI','https://monk-blade.github.io/scripts-rss/processed-Q_mint_oped.xml'),
+        ('The Core', 'https://rss.beehiiv.com/feeds/4BOnz8D132.xml'),
+        ('The Daily Brief by Zerodha', 'https://thedailybrief.zerodha.com/feed'),
+        ('Masala Chai', 'https://rss.beehiiv.com/feeds/Jk0t0xwJeq.xml'),
+        ('Public Policy' ,'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=f781f37f49c75d5e12d31bf2610d0d54&f=rss'),
+        ('India Wants to Know', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=5d2a22d418134e27d410bac251a9e307&f=rss'),
+        ('Last Week in AI' ,'https://lastweekin.ai/feed'),
         ('Daily OpEds','https://afeias.com/knowledge-centre/feed/'),
         ('The Hindu OpEd','https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=403b016ea7274f8e856ce18043cccd1b&f=rss'),
         ('CivilsDaily' ,'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=493f596d8391aa0893413b695b1f564f&f=rss'),   

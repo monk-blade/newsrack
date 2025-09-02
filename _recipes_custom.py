@@ -11,7 +11,7 @@ from _recipe_utils import (
 )
 
 # Define the categories display order, optional
-categories_sort: List[str] = ["News","Gujarati Supplements","Technology","Newsletters","Indian Magazines","Intl Magazines","Legal"]
+categories_sort: List[str] = ["Indian Newspapers","Daily","Gujarati Supplements","Technology","Newsletters","Indian Magazines","Intl Magazines","Legal"]
 
 # Define your custom recipes list here
 # Example: https://github.com/ping/newsrack-fork-test/blob/custom/_recipes_custom.py
@@ -22,7 +22,7 @@ recipes: List[Recipe] = [
         slug="live-mint",
         src_ext="mobi",
         target_ext=["epub"],
-        category="News",
+        category="Indian Newspapers",
         retry_attempts=1,
         overwrite_cover=False,
         enable_on=onlyat_hours(list(range(0, 9)), +5.5),
@@ -32,7 +32,7 @@ recipes: List[Recipe] = [
         slug="hindu",
         src_ext="mobi",
         target_ext=["epub"],
-        category="News",
+        category="Indian Newspapers",
         retry_attempts=1,
         overwrite_cover=False,
         # timeout=300,
@@ -43,7 +43,7 @@ recipes: List[Recipe] = [
         slug="business-standard",
         src_ext="mobi",
         target_ext=["epub"],
-        category="News",
+        category="Indian Newspapers",
         overwrite_cover=False,
         enable_on=onlyat_hours(list(range(0, 9)), +5.5),
     ),
@@ -52,7 +52,7 @@ recipes: List[Recipe] = [
         slug="indian-express",
         src_ext="mobi",
         target_ext=["epub"],
-        category="News",
+        category="Indian Newspapers",
         retry_attempts=1,
         overwrite_cover=False,
         enable_on=onlyat_hours(list(range(0, 9)), +5.5),
@@ -62,7 +62,7 @@ recipes: List[Recipe] = [
         slug="upvote",
         src_ext="mobi",
         target_ext=["epub"],
-        category="News",
+        category="Daily",
         cover_options=CoverOptions(
             border_width=10,
             text_colour="black",  # or in hex format, e.g. "#000000"
@@ -81,7 +81,7 @@ recipes: List[Recipe] = [
         slug="daily-current",
         src_ext="mobi",
         target_ext=["epub"],
-        category="News",
+        category="Daily",
         retry_attempts=1,
         overwrite_cover=False,
         enable_on=onlyat_hours(list(range(0, 9)), +5.5),
@@ -92,11 +92,22 @@ recipes: List[Recipe] = [
         slug="gujarat-samachar",
         src_ext="mobi",
         target_ext=["epub"],
-        category="News",
+        category="Daily",
         overwrite_cover=False,
         retry_attempts=1,
         enable_on=onlyat_hours(list(range(0, 9)), +5.5),
     ),
+#     Recipe(
+#         recipe="newsletters",
+#         slug="newsletters",
+#         src_ext="mobi",
+#         target_ext=["epub"],
+#         category="Daily",
+#         overwrite_cover=False,
+#         retry_attempts=1,
+#         enable_on=onlyon_weekdays([1,3,5,6]), 
+# #        enable_on=onlyat_hours(list(range(0, 9)), +5.5),
+#     ),
     Recipe(
         recipe="ravi-purti",
         slug="ravi-purti",
@@ -157,17 +168,7 @@ recipes: List[Recipe] = [
         retry_attempts=1,
         enable_on=onlyon_weekdays([2]),  # Wednesday only
     ),
-    Recipe(
-        recipe="newsletters",
-        slug="newsletters",
-        src_ext="mobi",
-        target_ext=["epub"],
-        category="Newsletters",
-        overwrite_cover=False,
-        retry_attempts=1,
-        enable_on=onlyon_weekdays([1,3,5,6]), 
-#        enable_on=onlyat_hours(list(range(0, 9)), +5.5),
-    ),
+
 
     Recipe(
         recipe="frontline",

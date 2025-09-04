@@ -33,7 +33,6 @@ class DailyCurrentAffairs(BasicNewsRecipe):
         line-height: 1.6 !important;
         margin: 0.5em !important;
         background: #fff !important;
-        color: #222 !important;
     }
     h1, h2, h3, h4, h5, h6 {
         font-weight: bold !important;

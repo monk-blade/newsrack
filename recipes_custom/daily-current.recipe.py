@@ -27,27 +27,35 @@ class DailyCurrentAffairs(BasicNewsRecipe):
     simultaneous_downloads = 9
 
 
+# ...existing code...
     extra_css = """
     body {
         font-size: 1em !important;
         line-height: 1.6 !important;
         margin: 0.5em !important;
         background: #fff !important;
+        font-family: 'DM Sans', 'Hind Vadodara', Arial, sans-serif !important;
     }
     h1, h2, h3, h4, h5, h6 {
+        font-family: 'DM Sans', 'Hind Vadodara', Arial, sans-serif !important;
         font-weight: bold !important;
         margin-top: 0.7em !important;
         margin-bottom: 0.4em !important;
         line-height: 1.2 !important;
     }
-    h1 { font-size: 1.2em !important; }
-    h2 { font-size: 1.1em !important; }
-    h3 { font-size: 1.05em !important; }
-    h4, h5, h6 { font-size: 1em !important; }
+    h1 { font-size: 1.4em !important; }
+    h2 { font-size: 1.3em !important; }
+    h3 { font-size: 1.25em !important; }
+    h4 { font-size: 1.2em !important; }
+    h5 { font-size: 1.2em !important; }
+    h6 { font-size: 1.2em !important; }
     p, li {
         font-size: 1em !important;
         margin-top: 0.3em !important;
         margin-bottom: 0.3em !important;
+    }
+    p {
+        text-indent: 1.75em !important;
     }
     b, strong {
         font-weight: bold !important;
@@ -67,7 +75,6 @@ class DailyCurrentAffairs(BasicNewsRecipe):
         margin: 1em 0 !important;
     }
     a {
-        color: #1a0dab !important;
         text-decoration: underline !important;
         word-break: break-all !important;
     }

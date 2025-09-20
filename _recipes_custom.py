@@ -88,6 +88,28 @@ recipes: List[Recipe] = [
     ),
 
     Recipe(
+        recipe="reddit",
+        slug="reddit",
+        src_ext="mobi",
+        target_ext=["epub"],
+        category="Daily",
+        retry_attempts=1,
+        cover_options=CoverOptions(
+            cover_width=900,
+            cover_height=1200,
+            border_width=10,
+            text_colour="black",  # or in hex format, e.g. "#000000"
+            background_colour="white",  # or in hex format, e.g. "#FFFFFF"
+            title_font_path="static/OpenSans-Bold.ttf",  # you can define your own font path
+            # title_font_size=80,
+            datestamp_font_path="static/OpenSans-Semibold.ttf",
+            # datestamp_font_size=72,
+            logo_path_or_url="https://cdn.freebiesupply.com/images/large/2x/reddit-logo-png-transparent.png",
+        ),
+        enable_on=onlyat_hours(list(range(0, 9)), +5.5),
+    ),
+
+    Recipe(
         recipe="gujarat-samachar",
         slug="gujarat-samachar",
         src_ext="mobi",

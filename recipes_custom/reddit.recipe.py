@@ -28,85 +28,36 @@ class Reddit(BasicNewsRecipe):
     description = 'Reddit — curated collection of posts from various subreddits'
     language = 'en'
     __author__ = 'Arpan'
-    oldest_article = 1.5  # days
+    oldest_article = 1.25  # days
     max_articles_per_feed = 50
     summary_length = 175
     encoding = 'utf-8'
-    simultaneous_downloads = 9
+    # simultaneous_downloads = 9
     use_embedded_content = True
-    masthead_url = 'https://logoeps.com/wp-content/uploads/2013/03/reddit-vector-logo.png'
+    masthead_url = 'https://download.logo.wine/logo/Reddit/Reddit-Logo.wine.png'
     no_stylesheets = True
     remove_attributes = ['style', 'height', 'width']
     ignore_duplicate_articles = {'url'}
     compress_news_images = True
-    extra_css = """
-    body {
-        font-size: 1em !important;
-        line-height: 1.6 !important;
-        margin: 0.5em !important;
-        font-family: 'DM Sans', 'Hind Vadodara', Arial, sans-serif !important;
-    }
-    h1, h2, h3, h4, h5, h6 {
-        font-family: 'DM Sans', 'Hind Vadodara', Arial, sans-serif !important;
-        font-weight: bold !important;
-        margin-top: 0.7em !important;
-        margin-bottom: 0.4em !important;
-        line-height: 1.2 !important;
-    }
-    h1 { font-size: 1.6em !important; }
-    h2 { font-size: 1.5em !important; }
-    h3 { font-size: 1.45em !important; }
-    h4 { font-size: 1.4em !important; }
-    h5 { font-size: 1.4em !important; }
-    h6 { font-size: 1.4em !important; }
-    p, li {
-        font-size: 1em !important;
-        margin-top: 0.3em !important;
-        margin-bottom: 0.3em !important;
-    }
-    p {
-        text-indent: 2em !important;
-        text-align: justify !important;
-    }
-    b, strong {
-        font-weight: bold !important;
-    }
-    i, em {
-        font-style: italic !important;
-    }
-    img {
-        max-width: 95vw !important;
-        height: auto !important;
-        margin: 0.5em auto !important;
-        display: block !important;
-    }
-    hr {
-        border: none !important;
-        border-top: 1px solid #ccc !important;
-        margin: 1em 0 !important;
-    }
-    a {
-        text-decoration: underline !important;
-        word-break: break-all !important;
-    }
-    """
+
 
     feeds = [
-        ('r/Programming', 'https://monk-blade.github.io/public-xml/feeds/reddit-programming.xml'),
-        ('r/Technology', 'https://monk-blade.github.io/public-xml/feeds/reddit-tech.xml'),
-        ('r/Science', 'https://monk-blade.github.io/public-xml/feeds/reddit-science.xml'),
-        # ('r/WorldNews', 'https://www.reddit.com/r/worldnews/.rss'),
-        ('r/52book', 'https://monk-blade.github.io/public-xml/feeds/reddit-52book.xml'),
-        ('r/AskScience', 'http://monk-blade.github.io/public-xml/feeds/reddit-askscience.xml'),
-        ('r/ELI5', 'https://monk-blade.github.io/public-xml/feeds/reddit-eli5.xml'),
-        # ('r/TodayILearned', 'https://www.reddit.com/r/todayilearned/.rss'),
-        ('r/India', 'https://monk-blade.github.io/public-xml/feeds/reddit-india.xml'),
-        ('r/Economics', 'https://monk-blade.github.io/public-xml/feeds/reddit-economics.xml'),
-        ('r/Linux', 'https://monk-blade.github.io/public-xml/feeds/reddit-linux.xml'),
-        ('r/RandomThoughts', 'https://monk-blade.github.io/public-xml/feeds/reddit-randomthoughts.xml'),
-        ('r/Futurology', 'https://monk-blade.github.io/public-xml/feeds/reddit-futurology.xml'),
-        ('r/Singularity', 'https://monk-blade.github.io/public-xml/feeds/reddit-singularity.xml'),
-        ('r/SelfHosted', 'https://monk-blade.github.io/public-xml/feeds/reddit-selfhosted.xml'),
+        
+        ('r/Programming', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=e46116f985f2dda5b18592da3c510a88&f=rss'),
+        ('r/Technology', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=b62cc0155fb3e453b9f187ee00bcf999&f=rss'),
+        ('r/Science', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=643a4a81253a380ad9abdb5227568d6d&f=rss'),
+        # # ('r/WorldNews', 'https://www.reddit.com/r/worldnews/.rss'),
+        ('r/52book', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=4166d59344720fe3dcf05f1df9266def&f=rss'),
+        ('r/AskScience', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=40c661e02ec20b99072800ba620ebe37&f=rss'),
+        ('r/ELI5', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=7dec37bd0a4ca121d5facd262479f213&f=rss'),
+        # # ('r/TodayILearned', 'https://www.reddit.com/r/todayilearned/.rss'),
+        ('r/India', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=0559e834de2d07f3bf992e20f0b2c52a&f=rss'),
+        ('r/Economics', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=c79f29564ad6edebb11f677ce5c804c5&f=rss'),
+        ('r/Linux', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=08987d65e5048c805c48e42a586b2b67&f=rss'),
+        ('r/RandomThoughts', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=12e9d13080872a1bb068b65c2a11360d&f=rss'),
+        ('r/Futurology', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=c4266fec1f0df74d1f5ef77dd32d6690&f=rss'),
+        ('r/Singularity', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=e40cf199173af9f95a15d2a886558457&f=rss'),
+        ('r/SelfHosted', 'https://reader.websitemachine.nl/api/query.php?user=arpanchavdaeng&t=375da6167f528da03ed4130ae7ba4fbf&f=rss'),
         ]
     
     def parse_feeds(self):
@@ -141,5 +92,12 @@ class Reddit(BasicNewsRecipe):
             default_log.info(f"[Reddit] Updated title: {article.title}")
 
     def preprocess_html(self, soup):
-        """Basic HTML preprocessing."""
+        """HTML preprocessing to clean up Reddit content."""
+        # Remove p tags that contain only non-breaking spaces and whitespace
+        for p in soup.find_all('p'):
+            text = p.get_text()
+            # Check if paragraph contains only non-breaking spaces and regular whitespace
+            if text and text.replace('\u00a0', '').replace('&nbsp;', '').strip() == '':
+                p.decompose()  # Remove the entire p tag
+        
         return soup
